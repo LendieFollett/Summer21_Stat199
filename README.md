@@ -1,6 +1,8 @@
 # Data Analytics Capstone
 
-In this capstone, we will be working on a project that is two-fold. First, we want to build a tool that food pantry organizers and policy makers can use to target food insecurity across the US at the block level. Second, we want to help understand what demographic characterstics are driving, or at least associated with, food insecurity. 
+In this capstone, we will be working on a project that is two-fold. First, we want to build a tool (e.g., a dashboard) that food pantry organizers and policy makers can use to target food insecurity across the US at the block level. Second, we want to help understand what demographic characterstics are driving, or at least associated with, food insecurity. 
+
+This is similar to what you did in Stat 172, but the data is much more comprehensive. 
 
 We will be using Github as our primary medium for course materials. You will use Github to
 1. Turn in reading assignments. See "Reading Assignment" folder. 
