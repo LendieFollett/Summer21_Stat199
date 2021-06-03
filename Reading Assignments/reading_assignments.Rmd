@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Data Analytics Lifecycle
-1. The article discussed the topic of ``interviewing the analytics sponsor" at length. What is one tip you found useful and/or interesting?
+1. The article discussed the topic of "interviewing the analytics sponsor" at length. What is one tip you found useful and/or interesting?
 
 Answer: 
 
