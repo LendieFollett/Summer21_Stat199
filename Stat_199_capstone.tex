@@ -1,0 +1,308 @@
+% This syllabus template was created by:
+% Brian R. Hall
+% Associate Professor, Champlain College
+% www.brianrhall.net
+
+% Document settings
+\documentclass[11pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\usepackage{ulem}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage[margin=.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage[table,xcdraw]{xcolor}
+\pagestyle{plain}
+\setlength\parindent{0pt}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+
+
+\usepackage[mmddyyyy]{datetime}
+\usepackage{advdate}
+\newdateformat{syldate}{\twodigit{\THEMONTH}/\twodigit{\THEDAY}}
+\newsavebox{\MONDAY}\savebox{\MONDAY}{Mon}% Mon
+\newsavebox{\WEDNESDAY}\savebox{\WEDNESDAY}{Wed}% Wed
+
+\newcommand{\week}[1]{
+
+ \paragraph*{\kern-2ex\quad #1, \AdvanceDate[2]\syldate{\today} :}  % Set heading \quad #1 % - \AdvanceDate[2]\syldate{\today}
+ %\paragraph*{\kern-2ex\quad #1, \syldate{\today} :} % Set heading \quad #1 % - \AdvanceDate[2]\syldate{\today}
+ \ifdim\wd1=\wd\MONDAY
+ \AdvanceDate[6]
+ \else
+ \AdvanceDate[3]
+ \fi%
+}
+
+\newcommand{\weekw}[1]{
+
+ %\paragraph*{\kern-2ex\quad #1, \AdvanceDate[2]\syldate{\today} :}  % Set heading \quad #1 % - \AdvanceDate[2]\syldate{\today}
+ \paragraph*{\kern-2ex\quad #1, \syldate{\today} :} % Set heading \quad #1 % - \AdvanceDate[2]\syldate{\today}
+ \ifdim\wd1=\wd\WEDNESDAY
+ \AdvanceDate[4]
+ \else
+ \AdvanceDate[4]
+ \fi%
+}
+
+\usepackage{Sweave}
+\begin{document}
+\input{Stat_199_capstone-concordance}
+
+% Course information
+\begin{tabular}{ l l }
+  \multirow{3}{*}{\includegraphics[height=1in,width=2.2in]{DU_PRIMARY_294C_NEW.png}} &  \Large Spring 2021 Stat 199 Syllabus \\
+  &  \Large Independent Case Studies in Data Analytics \\\\
+  & CRN 10007, 10069: MW, 8:00 AM - 9:15 AM, 06 Aliber Hall \\
+    & CRN 12267, 12230: MW, 9:30 AM - 10:45 AM, 06 Aliber Hall \\
+\end{tabular}
+\vspace{10mm}
+
+% Professor information
+\begin{tabular}{ l l }
+  \multirow{6}{*}{} & \large Dr. Lendie Follett \\\\
+  & \large Email: lendie.follett@drake.edu (best way to communicate with me) \\
+  %& \large website \\
+  & \large Office: Aliber 358 \\
+      & \large Phone: 515-271-4158\\
+  & \large Office Hours (Zoom): Tuesday, Thursday 12:00 PM - 2:00 PM \\ 
+ % & \large (123) 867-5309 \\
+\end{tabular}
+\vspace{.5cm}
+
+
+% Course details
+\textbf {\large \\ Course Description:} In this course, students will apply descriptive, predictive, and prescriptive data analysis methods learned in previous courses to new cases. Students will learn to effectively manage long-term data analysis projects within diverse teams through a complete data analytics project lifecycle and compellingly communicate outcomes through writing and oral presentations which include appropriate use of data visualizations.\\
+\textbf {Prerequisite(s):} (1) CS 66, (2) STAT/MATH 130 or ACTS/MATH 131, and (3) two of STAT 170, STAT 172, CS 167, CS 178
+
+%\textbf {Note(s):} A minimum grade of C is required in this course to progress to COURSE. 
+
+\textbf {Credit Hours:} 3 \\
+
+%\textbf {\large Text(s):} There is no required textbook for this class. Instead, I'll post links to material freely available online as reading expectations. \\ %\emph{The Ultimate Book}, 1\textsuperscript{st} Edition
+
+
+%
+%\textbf {\large Course Objectives:} \\
+%At the completion of this course, students will be able to:
+%\begin{enumerate} \itemsep-0.4em
+%  \item O
+%  \item B
+%  \item J
+%  \item E
+%  \item C
+%  \item T
+%  \item I
+%  \item V
+%  \item E
+%  \item S
+%\end{enumerate}
+
+% I recommend using \newpage here if necessary
+\textbf {\large Grade Distribution:} \\
+\hspace*{40mm}
+\begin{tabular}{ l l }
+Project & 80\% \\
+Reading checks & 20\% \\ 
+\end{tabular} \\\\
+
+%The 35\% allotted to Project 1 can be broken down as follows:\\
+
+%\hspace*{40mm}
+%\begin{tabular}{ l l }
+%Progress Reports & 7.5\% \\
+%Final Written Report & 20\% \\
+%Presentation & 7.5\% \\
+%\end{tabular} \\\\
+
+
+\textbf {\large Letter Grade Distribution:} \\\\
+\hspace*{40mm}
+\begin{tabular}{ l l | l l }
+ \textgreater 93.00  & A & 73.00 - 76.99 & C \\
+90.00 - 92.99 & A & 70.00 - 72.99 & C- \\
+87.00 - 89.99 & B+  & 67.00 - 69.99 & D+ \\
+83.00 - 86.99 & B  & 63.00 - 66.99 & D \\
+80.00 - 82.99 & B-  & 60.00 - 62.99 & D- \\
+77.00 - 79.99 & C+  & \textless= 59.99 & F \\
+\end{tabular} \\
+\newpage
+
+% Course Policies. These are just examples, modify to your liking.
+\textbf {\large Course Policies:}
+\begin{itemize}
+	\item \textbf {Grades}
+		\begin{itemize}
+			%\item As shown in the Grade Distribution table, the student's performance will be assessed by looking at multiple formats. This is to give the student every opportunity to demonstrate their mastery of the learning objectives. This will require the student's cooperation in attending class, completing in-class labs, and completing homework outside of class. 
+			\item Grades will be maintained in Blackboard. 
+			\item Progress reports are graded primarily on how well you address the topics. However, I will also provide feedback which must be addressed in the final report and/or presentation.
+			\item Grades on final report and presentation are based on rubric provided.
+			\item Grade for final presentation will be based partly on a peer-review system (your classmates will rate the presentation for content and delivery).
+						\item Grade for team article presentation will be based on rubric provided.
+		\end{itemize}
+
+	\item \textbf{Attendance and Absences}
+		\begin{itemize}
+		  \item This is primarily a individully-let course. For that reason, it is especially important that you attend our sessions and contribute. We will decide on a regular time to meet. 
+		  \item Thus, your first absence is excused, but you \textit{must} obtain instructor approval \textit{before} the day of class for any additional absences. That is, I need to know the night before if I am going to excuse it. Any unexcused absences will automatically drop your course grade by a $+/-$ letter grade. 
+		  \item \textbf{Being late by more than 5 minutes counts as an absence.}
+			\item With that being said, students are responsible for all missed work, regardless of the reason for absence. It is also the absentee's responsibility to get all missing notes or materials.
+		\end{itemize}
+
+\end{itemize}
+
+% College Policies
+\textbf {\large Academic Honesty Policy Summary:} 
+% This should be specific to your instituition, an example is provided.
+Review Drake University Academic Integrity here:
+\url{http://www.drake.edu/catalog/undergrad/15-16/geninfo/academicregulations/#INTEGRITY}
+
+The College of Business and Public Administration has an Academic Integrity Policy to which students must adhere. Any incidence of dishonesty will result in a score of 0.  I am a mandatory reporter to the Dean of the College for any reduced scores due to academic dishonesty.
+
+
+Further, please note that this course will heavily involve research into external sources. Plagiarism is a serious offense. Be sure to cite any/all sources you use.
+
+ \textbf{\textit{Any} incidence of dishonesty will result in a score of 0.}
+\vspace{1cm}
+
+\textbf {\large Disabilities:} 
+A student who has a physical or mental disability that substantially limits his or her ability to perform in this course under normal circumstances should contact Student Disability Services, 515-271-1835, to request any accommodations. Request must be received and approved (including instructor approval) at least one week before the necessary accommodation. All relevant information will be kept strictly confidential.
+\vspace{1cm}
+
+\textbf{\large Masks and Social Distancing:}
+If we do meet in person, we will all wear masks and maintain social distance to minimize the likelihood of the spread of the novel coronavirus. Doing so is not only a requirement in my class, but is also a campus-wide policy. I will ask those who choose not to wear a mask to leave the classroom and, following guidance from the Provost’s office, I will alert the dean of students’ office. As a last resort, if a student without a mask refuses to leave class, I will contact Drake Public Safety.  
+ \vspace{1cm}
+
+\textbf{\large Camera Use for Virtual Attendees:} A substantial part of your learning in this course will depend on your active and attentive engagement in class discussions and other collaborative learning opportunities. \textbf{I strongly encourage you to turn on your camera} during collaborative exchanges to help sustain a sense of community and co-presence as we learn together. However, doing so is not required; if you have reservations about doing so, please let me know in advance so I can plan accordingly.  
+
+ \vspace{1cm}
+
+
+\textbf {\large Project:}
+
+This project is be an individual-based project. I want you to find a sufficiently complex and novel (i.e., not an overly used one on Kaggle) data source that interests you and demonstrate mastery of data analytics in \textit{at least two} of the following areas: statistical modeling (e.g., GLMs), machine learning, data visualization, dashboard creation. No matter the areas you choose, you should be mindful of the readings and discussions from the first half of the course. See project description, rubric for more details.
+%\begin{itemize}
+%\item Project 1: Predicting food/nutritional choices 
+%\item Project 2 (option 1): Interactive dashboard with DMARC data 
+%\item Project 2 (option 2): Predicting clinical trial failures with text mining
+%\end{itemize}
+\vspace{.25cm}
+
+\textbf {\large Notes on other deliverables:} 
+{\small
+\noindent
+\begin{itemize}
+\item Throughout the course we will have reading assignments, indicated in the schedule by \textbf{Reading assignment due:}. To successfully complete the reading assignment you will (1) carefully read the assigned article(s) and (2) complete a short Blackboard quiz on the material during class. These are equally weighted assignments.
+
+\item In addition to the reading assignments, your participation in class will be monitored. If you regularly contribute to discussions and come to class every day, you will receive the points. In-person students are expected to be in class unless you've notified me otherwise. Fully online students are expected to be present synchronously and contribute verbally.
+
+\end{itemize}
+\vspace{.5cm}
+
+A \textbf{tentative schedule} can be found on the next two pages. 
+
+\newpage
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage[table,xcdraw]{xcolor}
+% If you use beamer only pass "xcolor=table" option, i.e. \documentclass[xcolor=table]{beamer}
+\begin{landscape}
+\begin{table}[]
+\small
+\begin{tabular}{p{2cm}p{1cm}p{12cm}p{8cm}} %|p{1cm}|p{3cm}|
+\textbf{Date}      & \textbf{Meet} & Assignments due             & In-class       \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+7-June              & Y   &              & \begin{tabular}[c]{@{}l@{}}Intro to Stat 199\\      Intro to Data Analytics Lifecycle \end{tabular}   \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+9-June              & N  & \begin{tabular}[c]{@{}l@{}}-RA**: Data Analytics Lifecycle,   Sections 2.2-2.6\\      from Data Science and Big Data Analytics\end{tabular}         & \begin{tabular}[c]{@{}l@{}} Start looking for data\end{tabular}    \\ \hline
+14-Jun              & Y   & \begin{tabular}[c]{@{}l@{}}-RA: \textit{The Data on Diversity} by Beryl Nelson\\      -\href{https://implicit.harvard.edu/implicit/takeatest.html}{Do >1 test of implicit association} (read above 1st)\\      -RA: \textit{The Science of Managing Data Science} by Kate Matsidaira\end{tabular}          & \begin{tabular}[c]{@{}l@{}}Diversity discussion\\   \end{tabular} \\ \hline
+16-Jun             & Y   &   Data scope and proposal & Data scope and proposal presentation by student \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+21-Jun             & N   & \begin{tabular}[c]{@{}l@{}}-RA: \textit{How to Display Data Badly} by   Howard Wainer\\      -RA: Issue with Pie Charts URL: \href{https://www.data-to-viz.com/caveat/pie.html}{Pie Charts} \end{tabular}            & \begin{tabular}[c]{@{}l@{}}    Worktime\end{tabular}  \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+23-Jun             & Y   & -Progress report 1          & Progress report presentation \\ \hline
+28-Jun             & N   & \begin{tabular}[c]{@{}l@{}}-RA:\textit{ Assessing Reproducibility}   \\             (pg 17-28 TPRR by   Kitzes et al.) \end{tabular} & \begin{tabular}[c]{@{}l@{}}Worktime\end{tabular}             \\ \hline
+30-Jun             & N   &              & Worktime       \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+5-July              & N   & \begin{tabular}[c]{@{}l@{}}-RA: \textit{The Basic Reproducible Workflow Template} \\         (pg 31-41 from TPRR by   Kidtzes et al.)  \end{tabular}& \begin{tabular}[c]{@{}l@{}}     Worktime\end{tabular}  \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+7-July              & Y   & -Progress Report 2          & Progress report presentation \\ \hline
+12-July              & Y   & \begin{tabular}[c]{@{}l@{}}-RA: \textit{Fundamental principles of analytic communication} by Evan   Levine\end{tabular}    &          \begin{tabular}[c]{@{}l@{}}Workshop on interactive   dashboards in R\\      \href{https://rmarkdown.rstudio.com/flexdashboard/index.html}{flexdashboard}\\      Worktime\end{tabular}      \\ \hline
+14-July             & N   &              & Worktime      \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+19-July             & N   & \begin{tabular}[c]{@{}l@{}}-RA:  \textit{Aspects of statistical consulting not taught}\\      \textit{by academia} by Kenett and Thyregod\end{tabular}              & \begin{tabular}[c]{@{}l@{}}     Worktime\end{tabular}  \\ \hline
+\rowcolor[HTML]{E7E6E6} 
+21-July             & Y   & -Progress report 3      & Progress report presentations \\ \hline
+26-July             & N   & \begin{tabular}[c]{@{}l@{}}-RA: Racial Justice (your choice; see assignment)\end{tabular}    & Worktime       \\ \hline
+28-July             & Y   &              & Worktime       \\ \hline
+30-July (Friday)    & N   & {Project deliverables due midnight}             & \\ \hline
+
+\rowcolor[HTML]{E7E6E6} 
+2-Aug             & I   & Project 1 Presentation    &       \\ \hline
+
+
+\end{tabular}
+\end{table}
+
+\end{landscape}
+The professor reserves the right to change anything in this syllabus, at her discretion, in writing (via email or blackboard) or by oral instruction during scheduled class times.
+\end{document}
+
+
+
