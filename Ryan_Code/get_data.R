@@ -47,7 +47,7 @@ acs <- acs[,c("GEOID","B01001_001","B01001_026","B25010_001","B03003_003","B0200
 colnames(acs) <- c("GEOID","population", "female", "avg_hhsize","hispanic","black","kids",
                    "elderly","education","employed","married","disability")
 acs$households <- acs$population/acs$avg_hhsize
-write.csv(acs, "acs(clean).csv")
+write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filepaths - this should work if you use a project
 
 # Get CPS data
 cps <- read.csv("cps(raw).csv")
@@ -76,5 +76,5 @@ cps$fsecurity[cps$fsecurity==98] <- NA   # Clean up missing values
 cps$fsecurity[cps$fsecurity==99] <- NA
 cps$fexpend[cps$fexpend==999] <- NA
 cps$fexpend <- cps$fexpend/cps$hhsize  # In per person terms
-write.csv(cps, "cps(clean).csv")
+write.csv(cps, "Ryan_data/cps(clean).csv")
 
