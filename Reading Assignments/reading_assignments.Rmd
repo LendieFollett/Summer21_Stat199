@@ -1,0 +1,49 @@
+---
+title: "Reading checks"
+author: "Ryan Holt"
+date: "6/3/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Analytics Lifecycle
+1. The article discussed the topic of ``interviewing the analytics sponsor" at length. What is one tip you found useful and/or interesting?
+
+Answer: 
+
+2. What is the phase that immediately precedes Phase 4: Model Building? (If you can't remember the exact name, describe the general idea of it.)
+
+Answer: 
+
+3. What is the phase that is most commonly underestimated and revisited by analytics teams? Why?
+
+Answer:
+
+
+## How to Display Data Badly
+1. Wainer discusses, in detail, 12 rules for how one can successfully display data badly (note this is tongue-in-cheek). For at least one of the rules, describe SPECIFICALLY how you could not-follow this rule in this or a past project to create a better visual. This might involve a previous visual you or someone else has made - perhaps you/they could have done it better had you/they not-followed one of these rules? 
+
+Answer:
+
+## Assessing Reproducibility
+1. What is the difference between reproducibility and replicability, according to the authors' preferred definitions?
+
+2. The authors divide the assessment of reproducibility into three different aspects. Name them and provide a short one sentence summary of each. 
+
+3. According to the authors, who is often the "first person to benefit from automation"?
+
+
+## The Basic Reproducible Workflow Template
+The article named many ways one can adopt reproducible practices in their workflow, from Stage 1: Data Acquisition to Stage 3: Data Analysis and Automation. Describe *at least* one suggestion that you can commit to implementing in this project. Be sure to describe - specifically - how you are committing to it. 
+
+## Fundamental principles of analytic communication
+
+## Aspects of statistical consulting not taught by academia
+
+## Last Reading Assignment 
+Create and turn in a new .Rmd / pdf for short essay.
+
+
