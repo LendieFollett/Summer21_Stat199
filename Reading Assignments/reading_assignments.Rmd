@@ -2,7 +2,7 @@
 title: "Reading checks"
 author: "Ryan Holt"
 date: "6/3/2021"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Data Analytics Lifecycle
 1. The article discussed the topic of "interviewing the analytics sponsor" at length. What is one tip you found useful and/or interesting?
 
-Answer: 
+Answer: dfjg;fjglsdglk
 
 2. What is the phase that immediately precedes Phase 4: Model Building? (If you can't remember the exact name, describe the general idea of it.)
 
