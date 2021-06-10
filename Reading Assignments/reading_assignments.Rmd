@@ -16,18 +16,18 @@ Answer: One tip that was interesting was the tip of creating and using open ende
 
 2. What is the phase that immediately precedes Phase 4: Model Building? (If you can't remember the exact name, describe the general idea of it.)
 
-Answer: The phase that precedes phase 4 is phase 3 - Model Planning. In this phase the team will explore the structure of datasets and what analytic techniques need to be used. Also, the determination of whether or not a single model will suffice 
+Answer: The phase that precedes phase 4 is phase 3 - Model Planning. In this phase the team will explore the structure of data sets and what analytic techniques need to be used. Also, the determination of whether or not a single model will suffice 
 for the project. 
 
 3. What is the phase that is most commonly underestimated and revisited by analytics teams? Why?
 
-Answer: 
+Answer: The phase that is most commonly underestimated and revisited is phase 5, communication of results. This is because the results can be communicated to multiple shareholders and needs to be honest with regards to success or failure of model or models. The team also has to indicate for possible paths forward that the team might not have followed in their own process for reasons. 
 
 
 ## How to Display Data Badly
 1. Wainer discusses, in detail, 12 rules for how one can successfully display data badly (note this is tongue-in-cheek). For at least one of the rules, describe SPECIFICALLY how you could not-follow this rule in this or a past project to create a better visual. This might involve a previous visual you or someone else has made - perhaps you/they could have done it better had you/they not-followed one of these rules? 
 
-Answer:
+Answer: 
 
 ## Assessing Reproducibility
 1. What is the difference between reproducibility and replicability, according to the authors' preferred definitions?
