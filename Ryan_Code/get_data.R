@@ -68,6 +68,9 @@ write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filep
 
 # Get CPS data
 cps <- read.csv("cps(raw).csv")
+
+# Can't we just get rid of this then? It seems to confine cps to only the state with the
+# STATEFIP to 19. If we comment this out it'll work for us, right?
 cps <- cps[cps$STATEFIP==19,]#Ryan: again, we want it for all states, not just iowa. 
 cps <- cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
                "HISPAN", "EDUC", "EMPSTAT","MARST", "DIFFHEAR", "DIFFEYE", "DIFFREM", "DIFFPHYS", 
