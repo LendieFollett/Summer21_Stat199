@@ -21,7 +21,7 @@ for the project.
 
 3. What is the phase that is most commonly underestimated and revisited by analytics teams? Why?
 
-Answer: The phase that is most commonly underestimated and revisited is phase 5, communication of results. This is because the results can be communicated to multiple shareholders and needs to be honest with regards to success or failure of model or models. The team also has to indicate for possible paths forward that the team might not have followed in their own process for reasons. 
+Answer: The phase that is most commonly underestimated and revisited is phase 2, data preparation. This is because the data analytics teams are anxious to move on to phase 3 and phase 4, model planning and model building, respectively. In their haste the team would have not prepared the data properly for models required to answer questions posed in phase 1, leading to the team having to circle back to phase 2 again. 
 
 
 ## How to Display Data Badly
