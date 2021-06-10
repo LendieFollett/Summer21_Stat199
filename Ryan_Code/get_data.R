@@ -26,9 +26,13 @@ geo.lookup(state=c("IA", "CA", "NY", "TX", "FL", "WA", "NJ", "MI", "AZ", "PA", "
 # a more complex look of each state.
 # Oops, this just grabs the U.S. as a whole and doesn't look at things on a per state basis
 
+# This works, although it takes a long time to create the csv file, could be a better way but
+# I think in any way it would be a hastle. 
 mygeo <- geo.make(state=c("IA", "CA", "NY", "TX", "FL", "WA", "NJ", "MI", "AZ", "PA", "AK", "MA", "OH", "GA", "MN", "HI", "IL", 
                           "CO", "NC", "VA", "AL", "OR", "IN", "MD", "MO", "TN", "WI", "MT", "SC", "ME", "UT", "CT", "MS", "WY", "LA", "NV", "KY",
                           "RI", "AR", "NM", "ID", "DE", "NE", "KS", "VT", "NH", "SD", "OK", "WV", "ND"), county="*", tract="*", block.group="*")
+
+
 
 mytable1 <- acs.lookup(endyear=2015, table.number="B01001") # Use 2015 just for a "look up" year
 mytable2 <- acs.lookup(endyear=2015, table.number="B25010")
