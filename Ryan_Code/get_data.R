@@ -98,3 +98,16 @@ cps$fexpend[cps$fexpend==999] <- NA
 cps$fexpend <- cps$fexpend/cps$hhsize  # In per person terms
 write.csv(cps, "Ryan_data/cps(clean).csv")
 
+
+# I think I got this all to work? I might need to work on the acs file in order to get it to match up more with the
+# cps file, not certain though. If not I can begin creating categorical variables and 
+# data visualizations and then begin to create randomForest, ROCCurve,
+# etc. 
+
+library(ggplot2)
+
+ggplot(data = cps) + geom_histogram(aes(x = hhsize), binwidth = 1)
+
+ggplot(data = cps) + geom_bar(aes (x = fsecurity))
+
+
