@@ -104,10 +104,89 @@ write.csv(cps, "Ryan_data/cps(clean).csv")
 # data visualizations and then begin to create randomForest, ROCCurve,
 # etc. 
 
+# These are all of the libraries needed for creating a heatmap of areas in danger of food insecurity.
 library(ggplot2)
+library(dplyr)
+library(DT)
+library(rmapshaper)
+library(leaflet)
+library(htmltools)
+library(tigris)
+library(totalcensus)
+library(rpart)
+library(rpart.plot)
+library(pROC)
+library(randomForest)
+
+# Create a factorized fsecurity
+
+cps$fsecurity_f = as.factor(cps$fsecurity)
+
+# We want to create a binary variable of fsecurity, with anything  >= 1 being food insecure
+
+cps$fsecurity_b = ifelse(cps$fsecurity > 0, 1, 0)
+
 
 ggplot(data = cps) + geom_histogram(aes(x = hhsize), binwidth = 1)
 
-ggplot(data = cps) + geom_bar(aes (x = fsecurity))
+ggplot(data = cps, aes(x = fsecurity)) + geom_bar() +  geom_text(stat = 'count', aes(label=..count..), vjust = -1)
+
+ggplot(data = cps) + geom_histogram()
+
+
+
+
+# CREATE FOREST, ROCCurve, Variable Importance Plot, confusion matrix
+
+# Test set
+test.df =  "Ryan_data/cps(clean).csv"
+# Will this work or do I have to read it in? Probably read it in, but we'll see
+
+# Training set
+train.df = cps
+
+# This will create a beginner forest, but we need to tune the forest so that we
+# can determine the correct number of _________ (whatever mtry stands for, ntree doesn't
+# change at all.)
+
+fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + hispanic +
+                                  education + employed + elderly + disability + hhsize, data = train.df, 
+                                ntree = 1000, mtry = 3, importance = T)
+
+# Should I get rid of all of the NA's? Is there a way to use them?
+
+# Should we tune the forest now?
+# Do a for loop to go through every possible value for mtry
+
+mtry = c(1:10)
+
+keeps = data.frame(m = rep(NA, length(mtry)),
+                           OOB_err_Rate = rep(NA, length(mtry)))
+
+
+# could I do for idx in 1:10 instead?
+for (idx in 1: length(mtry)){
+  tempforest = randomForest(fsecurity_f ~ female + kids + elderly + black + hispanic +
+                              education + employed + elderly + disability + hhsize, data = train.df,
+                            ntree = 1000, mtry = mtry[idx])
+  
+  keeps[idx, "m"] = mtry[idx]
+  
+  keeps[idx, "OOB_err_Rate"] = mean(predict(tempforest) != train.df$fsecurity_f)
+}
+
+qplot(m, OOB_err_Rate,  geom = c("line", "point"), data = keeps) +
+  them_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
+
+
+# CREATE GLM Based off of important variables
+
+# The response variable is fsecurity_b which is a binary numeric variable, therefore
+# we will probably use a bernoulli distributed logistic model with logit link to keep
+# the variable between 0 and 1. 
+
+
+
+# CREATE Heatmap, other cluster based visualizations?
 
 
