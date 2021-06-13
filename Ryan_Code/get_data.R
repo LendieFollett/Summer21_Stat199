@@ -181,6 +181,10 @@ qplot(m, OOB_err_Rate,  geom = c("line", "point"), data = keeps) +
 
 # CREATE GLM Based off of important variables
 
+fsecurity.glm = glm(fsecurity_b ~ , data = cps, family = binomial(link = "logit"))
+
+
+
 # The response variable is fsecurity_b which is a binary numeric variable, therefore
 # we will probably use a bernoulli distributed logistic model with logit link to keep
 # the variable between 0 and 1. 
