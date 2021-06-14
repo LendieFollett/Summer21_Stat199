@@ -41,8 +41,6 @@ cps_fsecurity <- cps[!is.na(cps$fsecurity),]
 
 cps_fexpend <- cps[!is.na(cps$fexpend),]
 
-# ZERO-INFLATED POISSON WITH REGARDS TO THE FSECURITY DATA
-
 # REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
 
 cps_fsecurity = subset(cps_fsecurity, select = -c(fsecurity_f, fsecurity_b, id, weight, fexpend))
@@ -61,7 +59,7 @@ train.df = cps_fsecurity
 # can determine the correct number of _________ (whatever mtry stands for, ntree doesn't
 # change at all.)
 
-fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + hispanic +
+fsecurity_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
                                   education + employed + elderly + disability + hhsize, data = train.df, 
                                 ntree = 1000, mtry = 3, importance = T)
 
@@ -69,6 +67,7 @@ fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + 
 # CREATE THE MTRY STUFF AND FOREST
 
 # Set up mtry to be 
+
 mtry = c(1:(ncol(cps_fsecurity) - 1))
 
 # Make room for B, OOB ERROR
@@ -95,4 +94,9 @@ qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 
 
+final_forest = randomForest()
 
+VarImpPlot(final_forest, type = 1)
+
+
+# ZERO-INFLATED POISSON WITH REGARDS TO THE FSECURITY DATA
