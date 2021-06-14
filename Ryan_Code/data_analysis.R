@@ -72,11 +72,13 @@ fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + 
 mtry = c(1:(ncol(cps_fsecurity) - 1))
 
 # Make room for B, OOB ERROR
-keeps <- data.frame(ntree = rep(NA, length(mtry)),
+# Why is it ntree = rep and not m = rep? Is that because of the 
+# difference in the type of response variable?
+keeps <- data.frame(m = rep(NA, length(mtry)),
                     OOB_Err_Rate = rep(NA, length(mtry)))
 
 for(idx in  1:length(mtry)){
-  print(paste0,("Now testing mtry =", mtry[idx]))
+  print(paste0("Now testing mtry =", mtry[idx]))
   tempForest = randomForest(fsecurity ~.,
                             data = cps_fsecurity,
                             mtry = mtry[idx])
@@ -88,5 +90,9 @@ keeps[idx, "m"] = mtry[idx]
 keeps[idx, "OOB_Err_Rate"] = mean((predict(tempForest) - cps_fsecurity$fsecurity)^2)
 
   }
+
+qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
+  theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
+
 
 
