@@ -150,7 +150,7 @@ train.df = cps
 # can determine the correct number of _________ (whatever mtry stands for, ntree doesn't
 # change at all.)
 
-fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + hispanic +
+fsecurity_forest = randomForest(fsecurity~ female + kids + elderly + black + hispanic +
                                   education + employed + elderly + disability + hhsize, data = train.df, 
                                 ntree = 1000, mtry = 3, importance = T)
 
@@ -169,7 +169,7 @@ keeps = data.frame(m = rep(NA, length(mtry)),
 
 # could I do for idx in 1:10 instead?
 for (idx in 1: length(mtry)){
-  tempforest = randomForest(fsecurity_f ~ female + kids + elderly + black + hispanic +
+  tempforest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
                               education + employed + elderly + disability + hhsize, data = train.df,
                             ntree = 1000, mtry = mtry[idx])
   
