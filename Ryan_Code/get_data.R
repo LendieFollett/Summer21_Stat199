@@ -183,6 +183,9 @@ qplot(m, OOB_err_Rate,  geom = c("line", "point"), data = keeps) +
 
 fsecurity.glm = glm(fsecurity_b ~ , data = cps, family = binomial(link = "logit"))
 
+beta_hat = coef(fsecurity.glm)
+
+cps$pred = predict(fsecurity.glm, cps, type = 'response')
 
 
 # The response variable is fsecurity_b which is a binary numeric variable, therefore
@@ -192,5 +195,42 @@ fsecurity.glm = glm(fsecurity_b ~ , data = cps, family = binomial(link = "logit"
 
 
 # CREATE Heatmap, other cluster based visualizations?
+
+acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
+
+
+#this is block groups w/in tracts
+ia_shp = block_groups(state = "IA")
+
+county_list = unique(counties("Iowa")$NAME)
+county_list = county_list[order(county_list)]
+all_counties = block_groups(state = 'IA', county = county_list)
+
+is_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
+  rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
+
+
+pal_bin = colorBin(
+  palette = "YlOrRd", domain = ia_shp_join$elderly,
+  bins = seq(0, max(ia_shp_join$elderly, na.rm = TRUE), length.out = 9)
+)
+
+leaflet(ia_shp_join, height = 500, width = 1000) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor =~ pal_bin(elderly),
+    color = "white",
+    stroke = FALSE,
+    fillOpacity = 0.6,
+    highlight = highlightOptions(
+      color = "black",
+      bringToFront = TRUE
+    )
+  )%>%
+  leaflet::addLegend(
+    pal = pal_bin, values=~elderly,
+    opacity = 0.7, title = "Iowa Elderly",
+    position = "bottomright"
+  )
 
 
