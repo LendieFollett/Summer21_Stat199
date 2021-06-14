@@ -98,6 +98,9 @@ cps$fexpend[cps$fexpend==999] <- NA
 cps$fexpend <- cps$fexpend/cps$hhsize  # In per person terms
 write.csv(cps, "Ryan_data/cps(clean).csv")
 
+# THE NA's are around 15007 out of 49259
+
+table(cps$fexpend > 0)
 
 # I think I got this all to work? I might need to work on the acs file in order to get it to match up more with the
 # cps file, not certain though. If not I can begin creating categorical variables and 
@@ -132,8 +135,6 @@ ggplot(data = cps) + geom_histogram(aes(x = hhsize), binwidth = 1)
 ggplot(data = cps, aes(x = fsecurity)) + geom_bar() +  geom_text(stat = 'count', aes(label=..count..), vjust = -1)
 
 ggplot(data = cps) + geom_histogram()
-
-
 
 
 # CREATE FOREST, ROCCurve, Variable Importance Plot, confusion matrix
