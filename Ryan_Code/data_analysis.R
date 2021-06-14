@@ -43,7 +43,50 @@ cps_fexpend <- cps[!is.na(cps$fexpend),]
 
 # ZERO-INFLATED POISSON WITH REGARDS TO THE FSECURITY DATA
 
-# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity 
+# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
 
+cps_fsecurity = subset(cps_fsecurity, select = -c(fsecurity_f, fsecurity_b, id, weight, fexpend))
+
+cps_fexpend = subset(cps_fexpend, select = -c(fsecurity_f, fsecurity_b, id, weight, fsecurity))
+
+
+# Create the Forrest
+
+#test.df = 
+
+train.df = cps_fsecurity
+
+
+# This will create a beginner forest, but we need to tune the forest so that we
+# can determine the correct number of _________ (whatever mtry stands for, ntree doesn't
+# change at all.)
+
+fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + hispanic +
+                                  education + employed + elderly + disability + hhsize, data = train.df, 
+                                ntree = 1000, mtry = 3, importance = T)
+
+
+# CREATE THE MTRY STUFF AND FOREST
+
+# Set up mtry to be 
+mtry = c(1:(ncol(cps_fsecurity) - 1))
+
+# Make room for B, OOB ERROR
+keeps <- data.frame(ntree = rep(NA, length(mtry)),
+                    OOB_Err_Rate = rep(NA, length(mtry)))
+
+for(idx in  1:length(mtry)){
+  print(paste0,("Now testing mtry =", mtry[idx]))
+  tempForest = randomForest(fsecurity ~.,
+                            data = cps_fsecurity,
+                            mtry = mtry[idx])
+
+keeps[idx, "m"] = mtry[idx]
+  
+# We do this since we are using a continuous response variable rather than a binary categorical
+# variable.
+keeps[idx, "OOB_Err_Rate"] = mean((predict(tempForest) - cps_fsecurity$fsecurity)^2)
+
+  }
 
 
