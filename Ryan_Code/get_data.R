@@ -155,6 +155,8 @@ fsecurity_forest = randomForest(fsecurity_f ~ female + kids + elderly + black + 
 
 # Should I get rid of all of the NA's? Is there a way to use them?
 
+# MAKE SURE TO STANDARDIZE ACS 
+
 # Should we tune the forest now?
 # Do a for loop to go through every possible value for mtry
 
