@@ -178,6 +178,9 @@ for (idx in 1: length(mtry)){
 qplot(m, OOB_err_Rate,  geom = c("line", "point"), data = keeps) +
   them_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 
+final_forest = randomForest()
+
+varImpPlot(final_forest , type = 1)
 
 # CREATE GLM Based off of important variables
 
