@@ -105,4 +105,9 @@ VarImpPlot(final_forest, type = 1)
 
 # ZERO-INFLATED POISSON WITH REGARDS TO THE FSECURITY DATA
 
+# DO THE VARIABLES NEED TO BE FACTORS? WHY?
 
+# Negative binomial model vs logit part of model, which one goes where?
+
+fsecurity.glm =  zeroinfl(fsecurity ~ female + kids + elderly
+                          , data = cps_fsecurity)
