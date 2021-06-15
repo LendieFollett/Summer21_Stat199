@@ -18,6 +18,10 @@ library(rpart)
 library(rpart.plot)
 library(pROC)
 library(randomForest)
+#These are for the zero-inflation model specifically
+install.packages('pscl')
+library(pscl)
+library(boot)
 
 
 read.csv = ("Ryan_Data/cps(clean).csv")
