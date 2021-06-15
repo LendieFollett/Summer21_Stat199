@@ -24,7 +24,7 @@ library(pscl)
 library(boot)
 
 
-read.csv = ("Ryan_Data/cps(clean).csv")
+cps = read.csv("Ryan_Data/cps(clean).csv")
 
 # ADD STATE AS A CATEGORICAL VARIABLE
 # ADD REGION
@@ -47,9 +47,9 @@ cps_fexpend <- cps[!is.na(cps$fexpend),]
 
 # REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
 
-cps_fsecurity = subset(cps_fsecurity, select = -c(fsecurity_f, fsecurity_b, id, weight, fexpend))
+cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
 
-cps_fexpend = subset(cps_fexpend, select = -c(fsecurity_f, fsecurity_b, id, weight, fsecurity))
+cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
 
 
 # Create the Forrest
@@ -81,7 +81,7 @@ keeps <- data.frame(m = rep(NA, length(mtry)),
                     OOB_Err_Rate = rep(NA, length(mtry)))
 
 for(idx in  1:length(mtry)){
-  print(paste0("Now testing mtry =", mtry[idx]))
+  print(paste0("Now testing mtry = ", mtry[idx]))
   tempForest = randomForest(fsecurity ~.,
                             data = cps_fsecurity,
                             mtry = mtry[idx])
