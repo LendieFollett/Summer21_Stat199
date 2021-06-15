@@ -27,11 +27,19 @@ Answer: The phase that is most commonly underestimated and revisited is phase 2,
 
 1. The Nelson article (The Data on Diversity) mentioned several challenges faced by diverse teams. Name one of them.
 
+Answer: 
+
 2. What is the stereotype threat (you can give an example to help explain)? How can it be mitigated?
+
+Answer: 
 
 3. Recall the study of collective intelligence which measured the performances of teams of 3-5 people. Groups with 50\% women were the highest scoring. However, some of the lowest scoring teams were also near 50\% women. What was found to be the difference?
 
+Answer: 
+
 4. What was the point of the coffee example?
+
+Answer: 
 
 ## How to Display Data Badly
 1. Wainer discusses, in detail, 12 rules for how one can successfully display data badly (note this is tongue-in-cheek). For at least one of the rules, describe SPECIFICALLY how you could not-follow this rule in this or a past project to create a better visual. This might involve a previous visual you or someone else has made - perhaps you/they could have done it better had you/they not-followed one of these rules? 
