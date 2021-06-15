@@ -109,5 +109,4 @@ VarImpPlot(final_forest, type = 1)
 
 # Negative binomial model vs logit part of model, which one goes where?
 
-fsecurity.glm =  zeroinfl(fsecurity ~ female + kids + elderly
-                          , data = cps_fsecurity)
+fsecurity.glm =  zeroinfl(fsecurity ~ , data = cps_fsecurity)
