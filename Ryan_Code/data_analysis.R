@@ -23,6 +23,7 @@ library(boot)
 #These are for the zero-inflation model specifically
 #install.packages('pscl')
 
+county_codes = read.csv()
 
 cps = read.csv("Ryan_Data/cps(clean).csv")
 
@@ -63,45 +64,49 @@ train.df = cps_fsecurity
 # can determine the correct number of _________ (whatever mtry stands for, ntree doesn't
 # change at all.)
 
-fsecurity_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-                                  education + employed + elderly + disability + hhsize, data = train.df, 
-                                ntree = 1000, mtry = 3, importance = T)
+# fsecurity_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
+#                                   education + employed + elderly + disability + hhsize, data = train.df, 
+#                                 ntree = 1000, mtry = 3, importance = T)
+# 
+# 
+# # CREATE THE MTRY STUFF AND FOREST
+# 
+# # Set up mtry to be 
+# 
+# mtry = c(1:(ncol(cps_fsecurity) - 1))
+# 
+# # Make room for B, OOB ERROR
+# # Why is it ntree = rep and not m = rep? Is that because of the 
+# # difference in the type of response variable?
+# keeps <- data.frame(m = rep(NA, length(mtry)),
+#                     OOB_Err_Rate = rep(NA, length(mtry)))
+# 
+# for(idx in  1:length(mtry)){
+#   print(paste0("Now testing mtry = ", mtry[idx]))
+#   tempForest = randomForest(fsecurity ~.,
+#                             data = cps_fsecurity,
+#                             mtry = mtry[idx])
+# 
+# keeps[idx, "m"] = mtry[idx]
+#   
+# # We do this since we are using a continuous response variable rather than a binary categorical
+# # variable.
+# keeps[idx, "OOB_Err_Rate"] = mean((predict(tempForest) - cps_fsecurity$fsecurity)^2)
+# 
+#   }
+# 
+# qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
+#   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
+# 
+# 
+# # OOB Error Rate is lowest at 2 it seems, so I'll go with 2, I guess?
+# final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
+#                               education + employed + elderly + disability + hhsize, data = train.df, 
+#                             ntree = 1000, mtry = 2, importance = T)
 
+#saveRDS(final_forest, "final_forest.RDS")
+final_forest <- readRDS("final_forest.RDS")
 
-# CREATE THE MTRY STUFF AND FOREST
-
-# Set up mtry to be 
-
-mtry = c(1:(ncol(cps_fsecurity) - 1))
-
-# Make room for B, OOB ERROR
-# Why is it ntree = rep and not m = rep? Is that because of the 
-# difference in the type of response variable?
-keeps <- data.frame(m = rep(NA, length(mtry)),
-                    OOB_Err_Rate = rep(NA, length(mtry)))
-
-for(idx in  1:length(mtry)){
-  print(paste0("Now testing mtry = ", mtry[idx]))
-  tempForest = randomForest(fsecurity ~.,
-                            data = cps_fsecurity,
-                            mtry = mtry[idx])
-
-keeps[idx, "m"] = mtry[idx]
-  
-# We do this since we are using a continuous response variable rather than a binary categorical
-# variable.
-keeps[idx, "OOB_Err_Rate"] = mean((predict(tempForest) - cps_fsecurity$fsecurity)^2)
-
-  }
-
-qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
-  theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
-
-
-# OOB Error Rate is lowest at 2 it seems, so I'll go with 2, I guess?
-final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-                              education + employed + elderly + disability + hhsize, data = train.df, 
-                            ntree = 1000, mtry = 2, importance = T)
 
 varImpPlot(final_forest, type = 1)
 
@@ -114,25 +119,40 @@ varImpPlot(final_forest, type = 1)
 # I just made multiple models and then I plan to test them all against one another
 # THE STRONGEST SHALL SURVIVE!!! (LOWEST AIC VALUE)
 
-fsecurity.glm =  zeroinfl(fsecurity ~ disability + education + elderly + employed + hhsize, data = cps_fsecurity)
+# THIS IS THE SELECTED MODEL, RIGHT NOW, WE WILL NOW INTERPRET THE COEFFICIENTS FOR THIS MODEL.
+fsecurity.glm =  zeroinfl(fsecurity ~ disability + education | disability + education, data = cps_fsecurity)
 
-fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + employed | hhsize, data = cps_fsecurity)
 
-fsecurity.glm3 = zeroinfl(fsecurity ~ disability + education + elderly | employed + hhsize, data = cps_fsecurity)
 
-fsecurity.glm4 = zeroinfl(fsecurity ~ disability + education | elderly + employed + hhsize, data = cps_fsecurity)
+fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly | disability + education + elderly, data = cps_fsecurity)
 
-fsecurity.glm5 = zeroinfl(fsecurity ~ disability | education + elderly + employed + hhsize, data = cps_fsecurity)
+fsecurity.glm3 = zeroinfl(fsecurity ~ disability + education + elderly + employed | disability + education + employed, data = cps_fsecurity)
+
+fsecurity.glm4 = zeroinfl(fsecurity ~ disability + education +  elderly + employed + hhsize | disability + education + employed + hhsize, data = cps_fsecurity)
+
 
 # THIS IS USED TO TEST BETWEEN MODELS
-# THERE'S GOT TO BE A BETTER WAY 
+# THERE'S GOT TO BE A BETTER WAY, THIS WOULD TAKE TOO LONG, WHAT GOES INTO THE LOGIT AREA, 
+# WHAT GOES INTO THE OTHER AREA, I FEEL LIKE I'M FORGETTING SOMETHING.
 vuong(fsecurity.glm, fsecurity.glm3)
 # Vuong, which stands for Vuong's closeness test (I believe), which uses the Kullback - Leibler
 # Information Criterion. 
 
-vuong(fsecurity.glm2, fsecurity.glm3)
+# COLLECT AIC's INDIVIDUALLY
 
+AIC(fsecurity.glm)
+# AIC = 53419.87
 
+AIC(fsecurity.glm2)
+# AIC = 56816.14
+
+AIC(fsecurity.glm3)
+# AIC = 56394.28
+
+AIC(fsecurity.glm4)
+# AIC = 55793.17
+
+# It seems that fsecurity.glm2 is the best
 
 summary(fsecurity.glm)
 
