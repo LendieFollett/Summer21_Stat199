@@ -125,11 +125,14 @@ fsecurity.glm4 = zeroinfl(fsecurity ~ disability + education | elderly + employe
 fsecurity.glm5 = zeroinfl(fsecurity ~ disability | education + elderly + employed + hhsize, data = cps_fsecurity)
 
 # THIS IS USED TO TEST BETWEEN MODELS
+# THERE'S GOT TO BE A BETTER WAY 
 vuong(fsecurity.glm, fsecurity.glm3)
 # Vuong, which stands for Vuong's closeness test (I believe), which uses the Kullback - Leibler
 # Information Criterion. 
 
-vuong()
+vuong(fsecurity.glm2, fsecurity.glm3)
+
+
 
 summary(fsecurity.glm)
 
