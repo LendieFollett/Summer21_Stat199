@@ -72,171 +72,51 @@ cps <- read.csv("Ryan_data/cps(raw).csv")
 # Can't we just get rid of this then? It seems to confine cps to only the state with the
 # STATEFIP to 19. If we comment this out it'll work for us, right?
 #cps <- cps[cps$STATEFIP==19,]#Ryan: again, we want it for all states, not just iowa. 
-cps <- cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
+new_cps <- new_cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
                "HISPAN", "EDUC", "EMPSTAT","MARST", "DIFFHEAR", "DIFFEYE", "DIFFREM", "DIFFPHYS", 
-               "DIFFMOB", "DIFFCARE", "HWTFINL")]
-cps$SEX <- cps$SEX - 1    # Create dummy variables
-cps$CHILD <- ifelse(cps$AGE < 18, 1, 0)
-cps$ELDERLY <- ifelse(cps$AGE > 64, 1, 0)
-cps$BLACK <- ifelse(cps$RACE==200, 1, 0)
-cps$HISPANIC <- ifelse(cps$HISPAN>0, 1, 0)
-cps$EDUC <- as.integer(cps$EDUC %in% c(91,92,111,123,124,125))
-cps$EMP <- as.integer(cps$EMPSTAT %in% c(1,10,12))
-cps$MARRIED <- as.integer(cps$MARST %in% c(1,2))
-cps$DIFF <- apply(cps[, c("DIFFHEAR","DIFFEYE","DIFFREM","DIFFPHYS","DIFFMOB","DIFFCARE")], 1, max)
-cps$DIFF <- ifelse(cps$DIFF==2, 1, 0)
-cps <- merge(
-  aggregate(list(fsecurity=cps$FSRAWSCRA, fexpend=cps$FSTOTXPNC, hhsize=cps$FAMSIZE), 
-            by = list(id=cps$CPSID), mean),
-  aggregate(list(female=cps$SEX, kids=cps$CHILD, elderly=cps$ELDERLY, black=cps$BLACK, 
-                 hispanic=cps$HISPANIC, education=cps$EDUC, employed=cps$EMP,
-                 married=cps$MARRIED, disability=cps$DIFF,weight = cps$HWTFINL), by = list(id=cps$CPSID), sum))
-cps$disability <- ifelse(cps$disability>0, 1, 0)  # Recode to dummy variable
-cps$fsecurity[cps$fsecurity==98] <- NA   # Clean up missing values
-cps$fsecurity[cps$fsecurity==99] <- NA
-cps$fexpend[cps$fexpend==999] <- NA
-cps$fexpend <- cps$fexpend/cps$hhsize  # In per person terms
+               "DIFFMOB", "DIFFCARE", "HWTFINL", "urban_code")]
+new_cps$SEX <- new_cps$SEX - 1    # Create dummy variables
+new_cps$CHILD <- ifelse(new_cps$AGE < 18, 1, 0)
+new_cps$ELDERLY <- ifelse(new_cps$AGE > 64, 1, 0)
+new_cps$BLACK <- ifelse(new_cps$RACE==200, 1, 0)
+new_cps$HISPANIC <- ifelse(new_cps$HISPAN>0, 1, 0)
+new_cps$EDUC <- as.integer(new_cps$EDUC %in% c(91,92,111,123,124,125))
+new_cps$EMP <- as.integer(new_cps$EMPSTAT %in% c(1,10,12))
+new_cps$MARRIED <- as.integer(new_cps$MARST %in% c(1,2))
+new_cps$DIFF <- apply(new_cps[, c("DIFFHEAR","DIFFEYE","DIFFREM","DIFFPHYS","DIFFMOB","DIFFCARE")], 1, max)
+new_cps$DIFF <- ifelse(new_cps$DIFF==2, 1, 0)
+new_cps <- merge(
+  aggregate(list(fsecurity=new_cps$FSRAWSCRA, fexpend=new_cps$FSTOTXPNC, hhsize=new_cps$FAMSIZE, urban = new_cps$urban_code), 
+            by = list(id=new_cps$CPSID), mean),
+  aggregate(list(female=new_cps$SEX, kids=new_cps$CHILD, elderly=new_cps$ELDERLY, black=new_cps$BLACK, 
+                 hispanic=new_cps$HISPANIC, education=new_cps$EDUC, employed=new_cps$EMP,
+                 married=new_cps$MARRIED, disability=new_cps$DIFF,weight = new_cps$HWTFINL), by = list(id=new_cps$CPSID), sum))
+new_cps$disability <- ifelse(new_cps$disability>0, 1, 0)  # Recode to dummy variable
+new_cps$fsecurity[new_cps$fsecurity==98] <- NA   # Clean up missing values
+new_cps$fsecurity[new_cps$fsecurity==99] <- NA
+new_cps$fexpend[new_cps$fexpend==999] <- NA
+new_cps$fexpend <- new_cps$fexpend/new_cps$hhsize  # In per person terms
 write.csv(cps, "Ryan_data/cps(clean).csv")
 
 # THE NA's are around 15007 out of 49259
 
-table(cps$fexpend > 0)
+table(new_cps$fexpend > 0)
 
 # I think I got this all to work? I might need to work on the acs file in order to get it to match up more with the
 # cps file, not certain though. If not I can begin creating categorical variables and 
 # data visualizations and then begin to create randomForest, ROCCurve,
 # etc. 
 
-# These are all of the libraries needed for creating a heatmap of areas in danger of food insecurity.
-library(ggplot2)
-library(dplyr)
-library(DT)
-library(rmapshaper)
-library(leaflet)
-library(htmltools)
-library(tigris)
-library(totalcensus)
-library(rpart)
-library(rpart.plot)
-library(pROC)
-library(randomForest)
+county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
 
-# Create a factorized fsecurity
+county_codes = rename(county_codes, "COUNTY" = "ï..FIPS.code")
 
-cps$fsecurity_f = as.factor(cps$fsecurity)
+cps_raw = read.csv("Ryan_Data/cps(raw).csv")
 
-# We want to create a binary variable of fsecurity, with anything  >= 1 being food insecure
+cps_raw$COUNTY = as.numeric(cps_raw$COUNTY)
 
-cps$fsecurity_b = ifelse(cps$fsecurity > 0, 1, 0)
+county_codes$COUNTY = as.numeric(county_codes$COUNTY)
 
+new_cps = merge(x = cps_raw, y = county_codes, by = "COUNTY" , all.x = TRUE)
 
-ggplot(data = cps) + geom_histogram(aes(x = hhsize), binwidth = 1)
-
-ggplot(data = cps, aes(x = fsecurity)) + geom_bar() +  geom_text(stat = 'count', aes(label=..count..), vjust = -1)
-
-ggplot(data = cps) + geom_histogram()
-
-
-# CREATE FOREST, ROCCurve, Variable Importance Plot, confusion matrix
-
-# Test set
-test.df =  "Ryan_data/cps(clean).csv"
-# Will this work or do I have to read it in? Probably read it in, but we'll see
-
-# Training set
-train.df = cps
-
-# This will create a beginner forest, but we need to tune the forest so that we
-# can determine the correct number of _________ (whatever mtry stands for, ntree doesn't
-# change at all.)
-
-fsecurity_forest = randomForest(fsecurity~ female + kids + elderly + black + hispanic +
-                                  education + employed + elderly + disability + hhsize, data = train.df, 
-                                ntree = 1000, mtry = 3, importance = T)
-
-# Should I get rid of all of the NA's? Is there a way to use them?
-
-# MAKE SURE TO STANDARDIZE ACS 
-
-# Should we tune the forest now?
-# Do a for loop to go through every possible value for mtry
-
-mtry = c(1:10)
-
-keeps = data.frame(m = rep(NA, length(mtry)),
-                           OOB_err_Rate = rep(NA, length(mtry)))
-
-
-# could I do for idx in 1:10 instead?
-for (idx in 1: length(mtry)){
-  tempforest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-                              education + employed + elderly + disability + hhsize, data = train.df,
-                            ntree = 1000, mtry = mtry[idx])
-  
-  keeps[idx, "m"] = mtry[idx]
-  
-  keeps[idx, "OOB_err_Rate"] = mean(predict(tempforest) != train.df$fsecurity_f)
-}
-
-qplot(m, OOB_err_Rate,  geom = c("line", "point"), data = keeps) +
-  them_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
-
-final_forest = randomForest()
-
-varImpPlot(final_forest , type = 1)
-
-# CREATE GLM Based off of important variables
-
-fsecurity.glm = glm(fsecurity_b ~ , data = cps, family = binomial(link = "logit"))
-
-beta_hat = coef(fsecurity.glm)
-
-cps$pred = predict(fsecurity.glm, cps, type = 'response')
-
-
-# The response variable is fsecurity_b which is a binary numeric variable, therefore
-# we will probably use a bernoulli distributed logistic model with logit link to keep
-# the variable between 0 and 1. 
-
-
-
-# CREATE Heatmap, other cluster based visualizations?
-
-acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
-
-
-#this is block groups w/in tracts
-ia_shp = block_groups(state = "IA")
-
-county_list = unique(counties("Iowa")$NAME)
-county_list = county_list[order(county_list)]
-all_counties = block_groups(state = 'IA', county = county_list)
-
-is_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
-  rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
-
-
-pal_bin = colorBin(
-  palette = "YlOrRd", domain = ia_shp_join$elderly,
-  bins = seq(0, max(ia_shp_join$elderly, na.rm = TRUE), length.out = 9)
-)
-
-leaflet(ia_shp_join, height = 500, width = 1000) %>%
-  addTiles() %>%
-  addPolygons(
-    fillColor =~ pal_bin(elderly),
-    color = "white",
-    stroke = FALSE,
-    fillOpacity = 0.6,
-    highlight = highlightOptions(
-      color = "black",
-      bringToFront = TRUE
-    )
-  )%>%
-  leaflet::addLegend(
-    pal = pal_bin, values=~elderly,
-    opacity = 0.7, title = "Iowa Elderly",
-    position = "bottomright"
-  )
-
-
+new_cps = rename(new_cps, "urban_code" = "X2013.code")
