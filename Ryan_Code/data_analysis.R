@@ -23,8 +23,6 @@ library(boot)
 #These are for the zero-inflation model specifically
 #install.packages('pscl')
 
-county_codes = read.csv()
-
 cps = read.csv("Ryan_Data/cps(clean).csv")
 
 # ADD STATE AS A CATEGORICAL VARIABLE
@@ -42,9 +40,9 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
-cps_fsecurity <- cps[!is.na(cps$fsecurity),]
+cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
 
-cps_fexpend <- cps[!is.na(cps$fexpend),]
+cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
 
 # REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
 
@@ -52,6 +50,28 @@ cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
 
 cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
 
+
+# NEED TO DO AN IF ELSE FOR urban_code
+
+if(new_cps$urban = 1){
+  
+  
+} else if (new_cps$urban = 2) {
+  
+  
+} else if (new_cps$urban = 3) {
+  
+  
+} else if (new_cps$urban = 4) {
+  
+  
+} else if (new_cps$urban = 5) {
+  
+  
+} else{
+  
+  
+}
 
 # Create the Forrest
 
