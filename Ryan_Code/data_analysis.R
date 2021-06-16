@@ -18,10 +18,10 @@ library(rpart)
 library(rpart.plot)
 library(pROC)
 library(randomForest)
-#These are for the zero-inflation model specifically
-install.packages('pscl')
 library(pscl)
 library(boot)
+#These are for the zero-inflation model specifically
+#install.packages('pscl')
 
 
 cps = read.csv("Ryan_Data/cps(clean).csv")
@@ -98,9 +98,12 @@ qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 
 
-final_forest = randomForest()
+# OOB Error Rate is lowest at 2 it seems, so I'll go with 2, I guess?
+final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
+                              education + employed + elderly + disability + hhsize, data = train.df, 
+                            ntree = 1000, mtry = 2, importance = T)
 
-VarImpPlot(final_forest, type = 1)
+varImpPlot(final_forest, type = 1)
 
 
 # ZERO-INFLATED POISSON WITH REGARDS TO THE FSECURITY DATA
@@ -108,5 +111,27 @@ VarImpPlot(final_forest, type = 1)
 # DO THE VARIABLES NEED TO BE FACTORS? WHY?
 
 # Negative binomial model vs logit part of model, which one goes where?
+# I just made multiple models and then I plan to test them all against one another
+# THE STRONGEST SHALL SURVIVE!!! (LOWEST AIC VALUE)
 
-fsecurity.glm =  zeroinfl(fsecurity ~ , data = cps_fsecurity)
+fsecurity.glm =  zeroinfl(fsecurity ~ disability + education + elderly + employed + hhsize, data = cps_fsecurity)
+
+fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + employed | hhsize, data = cps_fsecurity)
+
+fsecurity.glm3 = zeroinfl(fsecurity ~ disability + education + elderly | employed + hhsize, data = cps_fsecurity)
+
+fsecurity.glm4 = zeroinfl(fsecurity ~ disability + education | elderly + employed + hhsize, data = cps_fsecurity)
+
+fsecurity.glm5 = zeroinfl(fsecurity ~ disability | education + elderly + employed + hhsize, data = cps_fsecurity)
+
+# THIS IS USED TO TEST BETWEEN MODELS
+vuong(fsecurity.glm, fsecurity.glm3)
+# Vuong, which stands for Vuong's closeness test (I believe), which uses the Kullback - Leibler
+# Information Criterion. 
+
+summary(fsecurity.glm)
+
+summary(fsecurity.glm3)
+
+# THIS DOES NOT WORK FORE ZERO INFLATION MODELS, WHY VUONG IS USED.
+#anova(fsecurity.glm, test = "Chisq")
