@@ -45,7 +45,7 @@ Answer: The coffee example was used to demonstrate the existence of unconscious 
 ## How to Display Data Badly
 1. Wainer discusses, in detail, 12 rules for how one can successfully display data badly (note this is tongue-in-cheek). For at least one of the rules, describe SPECIFICALLY how you could not-follow this rule in this or a past project to create a better visual. This might involve a previous visual you or someone else has made - perhaps you/they could have done it better had you/they not-followed one of these rules? 
 
-Answer: 
+Answer: One rule that would be bad to follow would be Rule10, Label (a) Illegibly, (b) Incompletely, (c) Incorrectly, and (d) Ambiguously. This has been a problem in the past, since the names of variables can have complex names and need to be changed during representation. An example would be in my current project where I have to create a plot to demonstrate the effect changing the value m, which is the    , on the Out of Bag Error Rate, which is the 
 
 ## Assessing Reproducibility
 1. What is the difference between reproducibility and replicability, according to the authors' preferred definitions?
