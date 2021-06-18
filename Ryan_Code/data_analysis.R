@@ -40,6 +40,8 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
+#RYAN: WHAT IS NEW_CPS? IT ISN'T CREATED HERE, I GET AN ERROR
+
 cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
 
 cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]

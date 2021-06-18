@@ -72,6 +72,7 @@ cps <- read.csv("Ryan_data/cps(raw).csv")
 # Can't we just get rid of this then? It seems to confine cps to only the state with the
 # STATEFIP to 19. If we comment this out it'll work for us, right?
 #cps <- cps[cps$STATEFIP==19,]#Ryan: again, we want it for all states, not just iowa. 
+#Ryan: what is new_cps? i get an error here
 new_cps <- new_cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
                "HISPAN", "EDUC", "EMPSTAT","MARST", "DIFFHEAR", "DIFFEYE", "DIFFREM", "DIFFPHYS", 
                "DIFFMOB", "DIFFCARE", "HWTFINL", "urban_code")]
