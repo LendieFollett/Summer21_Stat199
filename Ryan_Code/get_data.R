@@ -77,43 +77,43 @@ cps_raw$COUNTY = as.numeric(cps_raw$COUNTY)
 
 county_codes$COUNTY = as.numeric(county_codes$COUNTY)
 
-new_cps = merge(x = cps_raw, y = county_codes, by = "COUNTY" , all.x = TRUE)
+cps = merge(x = cps_raw, y = county_codes, by = "COUNTY" , all.x = TRUE)
 
-new_cps = rename(new_cps, "urban_code" = "X2013.code")
+cps = rename(cps, "urban_code" = "X2013.code")
 
 # Can't we just get rid of this then? It seems to confine cps to only the state with the
 # STATEFIP to 19. If we comment this out it'll work for us, right?
 #cps <- cps[cps$STATEFIP==19,]#Ryan: again, we want it for all states, not just iowa. 
-#Ryan: what is new_cps? i get an error here
-new_cps <- new_cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
+#Ryan: what is cps? i get an error here
+cps <- cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
                "HISPAN", "EDUC", "EMPSTAT","MARST", "DIFFHEAR", "DIFFEYE", "DIFFREM", "DIFFPHYS", 
                "DIFFMOB", "DIFFCARE", "HWTFINL", "urban_code")]
-new_cps$SEX <- new_cps$SEX - 1    # Create dummy variables
-new_cps$CHILD <- ifelse(new_cps$AGE < 18, 1, 0)
-new_cps$ELDERLY <- ifelse(new_cps$AGE > 64, 1, 0)
-new_cps$BLACK <- ifelse(new_cps$RACE==200, 1, 0)
-new_cps$HISPANIC <- ifelse(new_cps$HISPAN>0, 1, 0)
-new_cps$EDUC <- as.integer(new_cps$EDUC %in% c(91,92,111,123,124,125))
-new_cps$EMP <- as.integer(new_cps$EMPSTAT %in% c(1,10,12))
-new_cps$MARRIED <- as.integer(new_cps$MARST %in% c(1,2))
-new_cps$DIFF <- apply(new_cps[, c("DIFFHEAR","DIFFEYE","DIFFREM","DIFFPHYS","DIFFMOB","DIFFCARE")], 1, max)
-new_cps$DIFF <- ifelse(new_cps$DIFF==2, 1, 0)
-new_cps <- merge(
-  aggregate(list(fsecurity=new_cps$FSRAWSCRA, fexpend=new_cps$FSTOTXPNC, hhsize=new_cps$FAMSIZE, urban = new_cps$urban_code), 
-            by = list(id=new_cps$CPSID), mean),
-  aggregate(list(female=new_cps$SEX, kids=new_cps$CHILD, elderly=new_cps$ELDERLY, black=new_cps$BLACK, 
-                 hispanic=new_cps$HISPANIC, education=new_cps$EDUC, employed=new_cps$EMP,
-                 married=new_cps$MARRIED, disability=new_cps$DIFF,weight = new_cps$HWTFINL), by = list(id=new_cps$CPSID), sum))
-new_cps$disability <- ifelse(new_cps$disability>0, 1, 0)  # Recode to dummy variable
-new_cps$fsecurity[new_cps$fsecurity==98] <- NA   # Clean up missing values
-new_cps$fsecurity[new_cps$fsecurity==99] <- NA
-new_cps$fexpend[new_cps$fexpend==999] <- NA
-new_cps$fexpend <- new_cps$fexpend/new_cps$hhsize  # In per person terms
-write.csv(new_cps, "Ryan_data/cps(clean).csv")
+cps$SEX <- cps$SEX - 1    # Create dummy variables
+cps$CHILD <- ifelse(cps$AGE < 18, 1, 0)
+cps$ELDERLY <- ifelse(cps$AGE > 64, 1, 0)
+cps$BLACK <- ifelse(cps$RACE==200, 1, 0)
+cps$HISPANIC <- ifelse(cps$HISPAN>0, 1, 0)
+cps$EDUC <- as.integer(cps$EDUC %in% c(91,92,111,123,124,125))
+cps$EMP <- as.integer(cps$EMPSTAT %in% c(1,10,12))
+cps$MARRIED <- as.integer(cps$MARST %in% c(1,2))
+cps$DIFF <- apply(cps[, c("DIFFHEAR","DIFFEYE","DIFFREM","DIFFPHYS","DIFFMOB","DIFFCARE")], 1, max)
+cps$DIFF <- ifelse(cps$DIFF==2, 1, 0)
+cps <- merge(
+  aggregate(list(fsecurity=cps$FSRAWSCRA, fexpend=cps$FSTOTXPNC, hhsize=cps$FAMSIZE, urban = cps$urban_code), 
+            by = list(id=cps$CPSID), mean),
+  aggregate(list(female=cps$SEX, kids=cps$CHILD, elderly=cps$ELDERLY, black=cps$BLACK, 
+                 hispanic=cps$HISPANIC, education=cps$EDUC, employed=cps$EMP,
+                 married=cps$MARRIED, disability=cps$DIFF,weight = cps$HWTFINL), by = list(id=cps$CPSID), sum))
+cps$disability <- ifelse(cps$disability>0, 1, 0)  # Recode to dummy variable
+cps$fsecurity[cps$fsecurity==98] <- NA   # Clean up missing values
+cps$fsecurity[cps$fsecurity==99] <- NA
+cps$fexpend[cps$fexpend==999] <- NA
+cps$fexpend <- cps$fexpend/cps$hhsize  # In per person terms
+write.csv(cps, "Ryan_data/cps(clean).csv")
 
 # THE NA's are around 15007 out of 49259
 
-table(new_cps$fexpend > 0)
+table(cps$fexpend > 0)
 
 # I think I got this all to work? I might need to work on the acs file in order to get it to match up more with the
 # cps file, not certain though. If not I can begin creating categorical variables and 
