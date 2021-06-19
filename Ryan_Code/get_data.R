@@ -66,8 +66,20 @@ colnames(acs) <- c("GEOID","population", "female", "avg_hhsize","hispanic","blac
 acs$households <- acs$population/acs$avg_hhsize
 write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filepaths - this should work if you use a project
 
-# Get CPS data
-cps <- read.csv("Ryan_data/cps(raw).csv")
+# Get CPS data & The FIPS codes for each county
+county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
+
+county_codes = rename(county_codes, "COUNTY" = "ï..FIPS.code")
+
+cps_raw = read.csv("Ryan_Data/cps(raw).csv")
+
+cps_raw$COUNTY = as.numeric(cps_raw$COUNTY)
+
+county_codes$COUNTY = as.numeric(county_codes$COUNTY)
+
+new_cps = merge(x = cps_raw, y = county_codes, by = "COUNTY" , all.x = TRUE)
+
+new_cps = rename(new_cps, "urban_code" = "X2013.code")
 
 # Can't we just get rid of this then? It seems to confine cps to only the state with the
 # STATEFIP to 19. If we comment this out it'll work for us, right?
@@ -96,7 +108,7 @@ new_cps$fsecurity[new_cps$fsecurity==98] <- NA   # Clean up missing values
 new_cps$fsecurity[new_cps$fsecurity==99] <- NA
 new_cps$fexpend[new_cps$fexpend==999] <- NA
 new_cps$fexpend <- new_cps$fexpend/new_cps$hhsize  # In per person terms
-write.csv(cps, "Ryan_data/cps(clean).csv")
+write.csv(new_cps, "Ryan_data/cps(clean).csv")
 
 # THE NA's are around 15007 out of 49259
 
@@ -106,17 +118,3 @@ table(new_cps$fexpend > 0)
 # cps file, not certain though. If not I can begin creating categorical variables and 
 # data visualizations and then begin to create randomForest, ROCCurve,
 # etc. 
-
-county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
-
-county_codes = rename(county_codes, "COUNTY" = "ï..FIPS.code")
-
-cps_raw = read.csv("Ryan_Data/cps(raw).csv")
-
-cps_raw$COUNTY = as.numeric(cps_raw$COUNTY)
-
-county_codes$COUNTY = as.numeric(county_codes$COUNTY)
-
-new_cps = merge(x = cps_raw, y = county_codes, by = "COUNTY" , all.x = TRUE)
-
-new_cps = rename(new_cps, "urban_code" = "X2013.code")
