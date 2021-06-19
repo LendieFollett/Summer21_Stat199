@@ -38,19 +38,6 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 # ISSUES WITH THE CPS DATASET, SEEMS THAT THERE ARE ISSUES WITH HOW FEXPEND WAS
 # COLLECTED. 
 
-# CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
-
-cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
-
-cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
-
-# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
-
-cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
-
-cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
-
-
 # NEED TO DO AN IF ELSE FOR urban_code
 # CREATE A NEW VARIABLE? TECHNICALLY I DON'T NEED TO, I COULD
 # JUST FIX THE ALREADY EXISTING URBAN VARIABLE
@@ -65,9 +52,25 @@ new_cps$urban_c <- ifelse(new_cps$urban_c == 1, "Large Central Metro",
 
 new_cps$urban_c[is.na(new_cps$urban_c)] <- c("Possibly Non-core/Rural")
 
-new_cps <- subset(new_cps, select = -c(urban_C))
+new_cps <- subset(new_cps, select = -c(urban))
 
 str(urban_c)
+
+new_cps$urban_c <- as.factor(new_cps$urban_c)
+
+# CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
+
+cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
+
+cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
+
+# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
+
+cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
+
+cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
+
+
 # Create the Forrest
 
 #test.df = 
@@ -80,7 +83,7 @@ train.df = cps_fsecurity
 # change at all.)
 
 # fsecurity_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-#                                   education + employed + elderly + disability + hhsize, data = train.df, 
+#                                   education + employed + elderly + disability + hhsize + urban_c, data = train.df, 
 #                                 ntree = 1000, mtry = 3, importance = T)
 # 
 # 
@@ -90,9 +93,9 @@ train.df = cps_fsecurity
 # 
 # mtry = c(1:(ncol(cps_fsecurity) - 1))
 # 
-# # Make room for B, OOB ERROR
-# # Why is it ntree = rep and not m = rep? Is that because of the 
-# # difference in the type of response variable?
+# # # # Make room for B, OOB ERROR
+# # # # Why is it ntree = rep and not m = rep? Is that because of the 
+# # # # difference in the type of response variable?
 # keeps <- data.frame(m = rep(NA, length(mtry)),
 #                     OOB_Err_Rate = rep(NA, length(mtry)))
 # 
@@ -100,26 +103,26 @@ train.df = cps_fsecurity
 #   print(paste0("Now testing mtry = ", mtry[idx]))
 #   tempForest = randomForest(fsecurity ~.,
 #                             data = cps_fsecurity,
-#                             mtry = mtry[idx])
+#                            mtry = mtry[idx])
 # 
 # keeps[idx, "m"] = mtry[idx]
-#   
+#  
 # # We do this since we are using a continuous response variable rather than a binary categorical
 # # variable.
 # keeps[idx, "OOB_Err_Rate"] = mean((predict(tempForest) - cps_fsecurity$fsecurity)^2)
 # 
-#   }
+#    }
 # 
 # qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
 #   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
-# 
+#  
 # 
 # # OOB Error Rate is lowest at 2 it seems, so I'll go with 2, I guess?
 # final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-#                               education + employed + elderly + disability + hhsize, data = train.df, 
-#                             ntree = 1000, mtry = 2, importance = T)
-
-#saveRDS(final_forest, "final_forest.RDS")
+#                               education + employed + elderly + disability + hhsize + urban_c, data = train.df, 
+#                              ntree = 1000, mtry = 2, importance = T)
+# 
+# saveRDS(final_forest, "final_forest.RDS")
 final_forest <- readRDS("final_forest.RDS")
 
 
@@ -136,8 +139,6 @@ varImpPlot(final_forest, type = 1)
 
 # THIS IS THE SELECTED MODEL, RIGHT NOW, WE WILL NOW INTERPRET THE COEFFICIENTS FOR THIS MODEL.
 fsecurity.glm =  zeroinfl(fsecurity ~ disability + education | disability + education, data = cps_fsecurity)
-
-
 
 fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly | disability + education + elderly, data = cps_fsecurity)
 
