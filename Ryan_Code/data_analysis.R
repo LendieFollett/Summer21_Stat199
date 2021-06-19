@@ -137,14 +137,39 @@ varImpPlot(final_forest, type = 1)
 # THIS IS THE SELECTED MODEL, RIGHT NOW, WE WILL NOW INTERPRET THE COEFFICIENTS FOR THIS MODEL.
 fsecurity.glm =  zeroinfl(fsecurity ~ disability + education | disability + education, data = cps_fsecurity)
 
-
-
 fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly | disability + education + elderly, data = cps_fsecurity)
 
 fsecurity.glm3 = zeroinfl(fsecurity ~ disability + education + elderly + employed | disability + education + employed, data = cps_fsecurity)
 
 fsecurity.glm4 = zeroinfl(fsecurity ~ disability + education +  elderly + employed + hhsize | disability + education + employed + hhsize, data = cps_fsecurity)
 
+fsecurity.glm2
+beta_hat <- coef(fsecurity.glm2)
+exp(beta_hat)
+exp(confint(fsecurity.glm2))
+
+# Disability Interpretation (Count Model): With all other variables held constant, the level of food insecurity increases by 
+# exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
+# living within the house than the expected level of food insecurity would increase by 1.2961011.
+
+# Education Interpretation (Count Model): With all other variables held constant, the level of food insecurity decreases by 
+# exp(-.1114594) = .8945277 for every educated person within the house. 
+
+# Elderly Interpretation (Count Model): With all other variables held constant, the level of food insecurity decreases by
+# exp(-.1748214) = .8396069 for every educated person within the house. 
+
+# Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
+# "Certain Zero" Group, meaning that they are certain to be food secure is exp(-1.0453348) = 0.3515741. This means that being certain the odds
+# of a house with a disabled person will be food secure is 64.84% less likely than in other households. 
+
+# Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
+ # "Certain Zero" Group, meaning that they are certain to be food secure is exp(0.7795625) = 2.1805181. This means that the odds of being certain
+# that a house is food secure increases by 118% for every person with an associates degree or higher. 
+
+# Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
+# "Certain Zero" Group, meaning that htey are certain to be food secure is exp(6967225) = 2.0071634.  This means that the odds of being certain
+# that a house is food secure increases by 100% for every elderly person within the house. This is odd, and probably is more 
+# indicative of how elderly people eat less, not that we should put an elderly person in each home. 
 
 # THIS IS USED TO TEST BETWEEN MODELS
 # THERE'S GOT TO BE A BETTER WAY, THIS WOULD TAKE TOO LONG, WHAT GOES INTO THE LOGIT AREA, 
