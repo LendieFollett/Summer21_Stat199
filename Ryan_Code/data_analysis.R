@@ -38,6 +38,24 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 # ISSUES WITH THE CPS DATASET, SEEMS THAT THERE ARE ISSUES WITH HOW FEXPEND WAS
 # COLLECTED. 
 
+<<<<<<< HEAD
+=======
+# CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
+
+#RYAN: WHAT IS NEW_CPS? IT ISN'T CREATED HERE, I GET AN ERROR
+
+cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
+
+cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
+
+# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
+
+cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
+
+cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
+
+
+>>>>>>> b1ecdd279dc33a1750ffda28019564b74eee4475
 # NEED TO DO AN IF ELSE FOR urban_code
 # CREATE A NEW VARIABLE? TECHNICALLY I DON'T NEED TO, I COULD
 # JUST FIX THE ALREADY EXISTING URBAN VARIABLE
