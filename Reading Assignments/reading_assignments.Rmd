@@ -45,18 +45,25 @@ Answer: The coffee example was used to demonstrate the existence of unconscious 
 ## How to Display Data Badly
 1. Wainer discusses, in detail, 12 rules for how one can successfully display data badly (note this is tongue-in-cheek). For at least one of the rules, describe SPECIFICALLY how you could not-follow this rule in this or a past project to create a better visual. This might involve a previous visual you or someone else has made - perhaps you/they could have done it better had you/they not-followed one of these rules? 
 
-Answer: One rule that would be bad to follow would be Rule10, Label (a) Illegibly, (b) Incompletely, (c) Incorrectly, and (d) Ambiguously. This has been a problem in the past, since the names of variables can have complex names and need to be changed during representation. An example would be in my current project where I have to create a plot to demonstrate the effect changing the value m, which is the    , on the Out of Bag Error Rate, which is the 
+Answer: One rule that would be bad to follow would be Rule10, Label (a) Illegibly, (b) Incompletely, (c) Incorrectly, and (d) Ambiguously. This has been a problem in the past, since the names of variables can have complex names and need to be changed during representation. An example would be in my current project where I have to create a plot to demonstrate the effect changing the value m, which is the number of predictor variables wanted, on the Out of Bag Error Rate, which is the rate of error a tree in the forest has when predicting the response variable, this is done for each tree to determine which one is most efficient with each value of mtry. If the variables are labeled incorrect then it would make no sense even to someone who is well-versed in data analytics. 
 
 ## Assessing Reproducibility
 1. What is the difference between reproducibility and replicability, according to the authors' preferred definitions?
 
+Reproducibility is the ability of a researcher to replicate a previous study using the same tools and data. Replicability is the ability of a researcher to get similar results from a study using similar procedures and tools but different data. These definitions are supported by Goodman et al.
+
 2. The authors divide the assessment of reproducibility into three different aspects. Name them and provide a short one sentence summary of each. 
+
+The three different aspects are automation and provenance tracking, availability of software and data, and open reporting of results. Automation and provenance tracking is the documenting and encoding of software such that future teams can easily run through the process of data transformation and visualization. Availability of software and data is as it sounds, to gauge the availability of the data set, meaning what file format it is in and if it is open to the public, and to determine if the software package used to perform the study is available to the public or not, also a readme file couldn't hurt. Finally, open reporting of results is also as it sounds, being able to be completely transparent about your process, the results found, and the overall work done, which can be done by putting your finding in journals. 
 
 3. According to the authors, who is often the "first person to benefit from automation"?
 
+The first person to benefit from automation is the researcher performing the initial or original research. 
 
 ## The Basic Reproducible Workflow Template
 The article named many ways one can adopt reproducible practices in their workflow, from Stage 1: Data Acquisition to Stage 3: Data Analysis and Automation. Describe *at least* one suggestion that you can commit to implementing in this project. Be sure to describe - specifically - how you are committing to it. 
+
+
 
 ## Fundamental principles of analytic communication
 
