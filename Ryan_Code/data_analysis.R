@@ -38,47 +38,29 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 # ISSUES WITH THE CPS DATASET, SEEMS THAT THERE ARE ISSUES WITH HOW FEXPEND WAS
 # COLLECTED. 
 
-<<<<<<< HEAD
-=======
-# CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
-
-#RYAN: WHAT IS NEW_CPS? IT ISN'T CREATED HERE, I GET AN ERROR
-
-cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
-
-cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
-
-# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
-
-cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
-
-cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
-
-
->>>>>>> b1ecdd279dc33a1750ffda28019564b74eee4475
 # NEED TO DO AN IF ELSE FOR urban_code
 # CREATE A NEW VARIABLE? TECHNICALLY I DON'T NEED TO, I COULD
 # JUST FIX THE ALREADY EXISTING URBAN VARIABLE
 
-new_cps$urban_c <- new_cps$urban
+cps$urban_c <- cps$urban
 
-new_cps$urban_c <- ifelse(new_cps$urban_c == 1, "Large Central Metro",
-                          ifelse(new_cps$urban_c == 2, "Large Fringe Metro",
-                            ifelse(new_cps$urban_c == 3, "Medium Metro", 
-                                 ifelse(new_cps$urban_c == 4, "Small Metro",
-                                        ifelse(new_cps$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
+cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
+                          ifelse(cps$urban_c == 2, "Large Fringe Metro",
+                            ifelse(cps$urban_c == 3, "Medium Metro", 
+                                 ifelse(cps$urban_c == 4, "Small Metro",
+                                        ifelse(cps$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
 
-new_cps$urban_c[is.na(new_cps$urban_c)] <- c("Possibly Non-core/Rural")
+cps$urban_c[is.na(cps$urban_c)] <- c("Possibly Non-core/Rural")
 
-new_cps <- subset(new_cps, select = -c(urban_C))
+cps <- subset(cps, select = -c(urban_C))
 
 str(urban_c)
 
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
-cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
+cps_fsecurity <- cps[!is.na(cps$fsecurity),]
 
-cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
+cps_fexpend <- cps[!is.na(cps$fexpend),]
 
 # REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
 
