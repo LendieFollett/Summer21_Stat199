@@ -38,19 +38,6 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 # ISSUES WITH THE CPS DATASET, SEEMS THAT THERE ARE ISSUES WITH HOW FEXPEND WAS
 # COLLECTED. 
 
-# CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
-
-cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
-
-cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
-
-# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
-
-cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
-
-cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
-
-
 # NEED TO DO AN IF ELSE FOR urban_code
 # CREATE A NEW VARIABLE? TECHNICALLY I DON'T NEED TO, I COULD
 # JUST FIX THE ALREADY EXISTING URBAN VARIABLE
@@ -68,6 +55,19 @@ new_cps$urban_c[is.na(new_cps$urban_c)] <- c("Possibly Non-core/Rural")
 new_cps <- subset(new_cps, select = -c(urban_C))
 
 str(urban_c)
+
+# CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
+
+cps_fsecurity <- new_cps[!is.na(new_cps$fsecurity),]
+
+cps_fexpend <- new_cps[!is.na(new_cps$fexpend),]
+
+# REMOVE ID, Binary Fsecurity and, Factorized Fsecurity, what is weight?
+
+cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
+
+cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
+
 # Create the Forrest
 
 #test.df = 
