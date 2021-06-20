@@ -202,6 +202,12 @@ summary(fsecurity.glm3)
 #anova(fsecurity.glm, test = "Chisq")
 
 
+# WORK ON FEXPEND, THAT WILL BE THE NEXT SECTION
+# IF I HAVE TO CREATE A FORREST I THINK ILL TRY TO USE MY GPU's
+# ALONG IN THE PROCESS, THAT MIGHT HELP TIME WISE
+
+
+
 # FOR LATER
 
 # CREATE Heatmap, other cluster based visualizations?
