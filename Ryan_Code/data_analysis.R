@@ -206,6 +206,26 @@ summary(fsecurity.glm3)
 # IF I HAVE TO CREATE A FORREST I THINK ILL TRY TO USE MY GPU's
 # ALONG IN THE PROCESS, THAT MIGHT HELP TIME WISE
 
+fexpend_train.df <- cps_fexpend
+
+fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = 3, importance = TRUE)
+
+keeps = data.frame(m = rep(NA, length(mtry)),
+                   OOB_Err_Rate = rep(NA, length(mtry)))
+
+for(idx in 1:length(mtry)){
+  print(paste0("Now testing mtry = ", mtry[idx]))
+  fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = mtry[idx])
+  
+  keeps[idx, "m"] = mtry[idx]
+  
+  keeps[idx, "OOB_Err_Rate"] = mean((fexpend_forest - cps_fexpend$fexpend)^2)
+}
+
+qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
+  theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
+
+
 
 
 # FOR LATER
