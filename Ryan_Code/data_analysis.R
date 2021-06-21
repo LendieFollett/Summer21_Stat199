@@ -42,6 +42,8 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 # CREATE A NEW VARIABLE? TECHNICALLY I DON'T NEED TO, I COULD
 # JUST FIX THE ALREADY EXISTING URBAN VARIABLE
 
+# This just cleans up the urbanicity variable and removes the NA's from the list while also
+# making it a factorized variable not a numeric variable. 
 cps$urban_c <- cps$urban
 
 cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
@@ -55,7 +57,6 @@ cps$urban_c[is.na(cps$urban_c)] <- c("Possibly Non-core/Rural")
 cps <- subset(cps, select = -c(urban_C))
 
 str(urban_c)
-
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
 cps_fsecurity <- cps[!is.na(cps$fsecurity),]
@@ -68,6 +69,10 @@ cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
 
 cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
 
+# Quick analysis of response variables
+ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecure", y = "Number of Households")
+
+ggplot(data = cps_fexpend, aes(x = fexpend))+geom_histogram(binwidth = 5)+ labs(x = "Food Expense", y = "Numer of Households" )
 # Create the Forrest
 
 #test.df = 
@@ -80,7 +85,7 @@ train.df = cps_fsecurity
 # change at all.)
 
 # fsecurity_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-#                                   education + employed + elderly + disability + hhsize, data = train.df, 
+#                                   education + employed + married + disability + hhsize + urban_c, data = train.df, 
 #                                 ntree = 1000, mtry = 3, importance = T)
 # 
 # 
@@ -114,12 +119,13 @@ train.df = cps_fsecurity
 #   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 # 
 # 
-# # OOB Error Rate is lowest at 2 it seems, so I'll go with 2, I guess?
-# final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-#                               education + employed + elderly + disability + hhsize, data = train.df, 
-#                             ntree = 1000, mtry = 2, importance = T)
 
-#saveRDS(final_forest, "final_forest.RDS")
+# OOB Error Rate is lowest at 2 it seems, so I'll go with 2.
+ final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
+                              education + employed + married + disability + hhsize + urban_c, data = train.df, 
+                             ntree = 1000, mtry = 2, importance = T)
+
+saveRDS(final_forest, "final_forest.RDS")
 final_forest <- readRDS("final_forest.RDS")
 
 
@@ -148,6 +154,10 @@ beta_hat <- coef(fsecurity.glm2)
 exp(beta_hat)
 exp(confint(fsecurity.glm2))
 
+# CREATE A POISSON MODEL FOR COMPARISON AND TO DEMONSTRATE NEED FOR ZERO-INFLATED
+
+
+
 # Disability Interpretation (Count Model): With all other variables held constant, the level of food insecurity increases by 
 # exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
 # living within the house than the expected level of food insecurity would increase by 1.2961011.
@@ -174,7 +184,7 @@ exp(confint(fsecurity.glm2))
 # THIS IS USED TO TEST BETWEEN MODELS
 # THERE'S GOT TO BE A BETTER WAY, THIS WOULD TAKE TOO LONG, WHAT GOES INTO THE LOGIT AREA, 
 # WHAT GOES INTO THE OTHER AREA, I FEEL LIKE I'M FORGETTING SOMETHING.
-vuong(fsecurity.glm, fsecurity.glm3)
+# vuong(fsecurity.glm, fsecurity.glm3), Don't use this, just use AIC values for comparison
 # Vuong, which stands for Vuong's closeness test (I believe), which uses the Kullback - Leibler
 # Information Criterion. 
 
@@ -219,7 +229,7 @@ for(idx in 1:length(mtry)){
   
   keeps[idx, "m"] = mtry[idx]
   
-  keeps[idx, "OOB_Err_Rate"] = mean((fexpend_forest - cps_fexpend$fexpend)^2)
+  keeps[idx, "OOB_Err_Rate"] = mean((predict(fexpend_forest) - cps_fexpend$fexpend)^2)
 }
 
 qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
