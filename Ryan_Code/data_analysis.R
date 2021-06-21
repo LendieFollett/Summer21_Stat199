@@ -225,6 +225,10 @@ for(idx in 1:length(mtry)){
 qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 
+fexpend_final_forest = randomForest()
+
+saveRDS(fexpend_final_forest, "fexpend_final_forest.RDS")
+fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
 
 
 
