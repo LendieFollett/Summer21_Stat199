@@ -85,6 +85,8 @@ cps = rename(cps, "urban_code" = "X2013.code")
 # STATEFIP to 19. If we comment this out it'll work for us, right?
 #cps <- cps[cps$STATEFIP==19,]#Ryan: again, we want it for all states, not just iowa. 
 #Ryan: what is cps? i get an error here
+# I think I've fixed it, I had everything out of order, now it goes from creating the cps dataset and combining 
+# it with the county_code dataset to cleaning up that dataset so that it can be more easily used. 
 cps <- cps[, c("CPSID", "PERNUM", "FSRAWSCRA","FSTOTXPNC", "AGE", "SEX",  "FAMSIZE", "RACE", 
                "HISPAN", "EDUC", "EMPSTAT","MARST", "DIFFHEAR", "DIFFEYE", "DIFFREM", "DIFFPHYS", 
                "DIFFMOB", "DIFFCARE", "HWTFINL", "urban_code")]
