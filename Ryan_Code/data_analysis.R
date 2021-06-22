@@ -22,6 +22,7 @@ library(pscl)
 library(boot)
 #These are for the zero-inflation model specifically
 #install.packages('pscl')
+library(gamlss.dist)
 
 cps = read.csv("Ryan_Data/cps(clean).csv")
 
@@ -307,15 +308,29 @@ varImpPlot(fexpend_final_forest, type = 1)
 #  CREATE LOGIT LINKED NORMAL DISTRIBUTION, IF TIME PERMITS COMPARE IT TO ZERO ADJUSTED GAMMA - NEED TO 
 # ADD 0.001 TO EVERYTHING AS GAMMA NEEDS DATA BETWEEN 0 AND INFINITY.
 
+ZAGA()
 
+cps_fexpend$fexpend1 <- cps_fexpend$fexpend + 0.0001
 
 fexpend.glm <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "identity"))
 
-fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = Gamma(link = "log"))
+fexpend.glm2 <- glm(fexpend1 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = Gamma(link = "log"))
 
-fexpend.glm3 <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = inverse.gaussian(link = "identity"))
+fexpend.glm3 <- glm(fexpend1 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "log"))
+
+fexpend.glm4 <- glm(fexpend1 ~ hhsize + elderly + employed + disability, data = cps_fexpend, family = Gamma(link = "log"))
+
+fexpend.glm5 <- glm(fexpend1 ~ hhsize + elderly + employed, data = cps_fexpend, family = Gamma(link = "log"))
 
 AIC(fexpend.glm)
+
+AIC(fexpend.glm2)
+
+AIC(fexpend.glm3)
+
+AIC(fexpend.glm4)
+
+AIC(fexpend.glm5)
 
 # FOR LATER
 
