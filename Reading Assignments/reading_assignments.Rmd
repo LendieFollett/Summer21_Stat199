@@ -63,7 +63,7 @@ The first person to benefit from automation is the researcher performing the ini
 ## The Basic Reproducible Workflow Template
 The article named many ways one can adopt reproducible practices in their workflow, from Stage 1: Data Acquisition to Stage 3: Data Analysis and Automation. Describe *at least* one suggestion that you can commit to implementing in this project. Be sure to describe - specifically - how you are committing to it. 
 
-One suggestion I can comit to implementing is the use of a metadata file in order to document where any data I got came from. Specifically, I plan to create a metadata file for the most recent data gathered from the CDC, and I plan to do so in the future with any data gathered. 
+One suggestion I can commit to implementing is the use of a metadata file in order to document where any data I got came from. Specifically, I plan to create a metadata file for the most recent data gathered from the CDC, and I plan to do so in the future with any data gathered. 
 
 ## Fundamental principles of analytic communication
 
