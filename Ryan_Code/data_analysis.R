@@ -22,6 +22,7 @@ library(pscl)
 library(boot)
 #These are for the zero-inflation model specifically
 #install.packages('pscl')
+library(gamlss.dist)
 
 cps = read.csv("Ryan_Data/cps(clean).csv")
 
@@ -42,6 +43,8 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 # CREATE A NEW VARIABLE? TECHNICALLY I DON'T NEED TO, I COULD
 # JUST FIX THE ALREADY EXISTING URBAN VARIABLE
 
+# This just cleans up the urbanicity variable and removes the NA's from the list while also
+# making it a factorized variable not a numeric variable. 
 cps$urban_c <- cps$urban
 
 cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
@@ -54,8 +57,9 @@ cps$urban_c[is.na(cps$urban_c)] <- c("Possibly Non-core/Rural")
 
 cps <- subset(cps, select = -c(urban_C))
 
-str(urban_c)
+cps$fsecurity_f = ifelse(cps$fsecurity > 0, "yes", "no")
 
+str(urban_c)
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
 cps_fsecurity <- cps[!is.na(cps$fsecurity),]
@@ -67,6 +71,75 @@ cps_fexpend <- cps[!is.na(cps$fexpend),]
 cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
 
 cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
+
+# ANALYSIS OF VARIABLES
+ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecure", y = "Number of Households")
+
+# ANALYSIS OF DISABILITY VARIABLE
+
+ggplot(data = cps_fsecurity, aes (x = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Disability Level", y = "Number of Households") 
+
+cps_disability <- cps_fsecurity %>% group_by(disability) %>% summarise(me = mean(fsecurity))
+
+ggplot(aes(x = disability, y = me), data = cps_disability) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity")
+
+ggplot(aes(x = disability, y = fsecurity), data = cps_fsecurity) + geom_boxplot(stat = "Identity") +
+  labs(x = "Number of Disabled Individuals in Household", y = "Level of Food Insecurity")
+
+ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fsecurity), data = cps_fsecurity)
+
+ggplot(data = cps_fsecurity) +
+  geom_histogram(aes(x = disability, fill = fsecurity_f), position = 'fill', binwidth = 1) +
+  ggtitle("Food Insecurity as Disabled Individuals Increases") +
+  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity") +
+  scale_fill_grey("Food Insecure") +
+  theme_bw()
+
+# ANALYSIS OF ELDERLY VARIABLE
+
+ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Food Insecure", y = "Number of Households")
+
+cps_elderly <- cps_fsecurity %>% group_by(elderly) %>% summarise(meld = mean(fsecurity))
+
+ggplot(aes(x = elderly, y = meld), data = cps_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity")
+
+ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fsecurity), data = cps_fsecurity)
+
+
+# ANALYSIS OF EDUCATION VARIABLE
+
+ggplot(data = cps_fsecurity, aes(x = education))+ geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
+  labs(x = "Number of Educated Individuals Within Household", y = "Number of Households")
+
+cps_education <- cps_fsecurity %>% group_by(education) %>% summarise(med = mean(fsecurity))
+
+ggplot(aes(x = education, y = med), data = cps_education) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity")
+
+# ANALYSIS OF EMPLOYED VARIABLE
+
+ggplot(data = cps_fsecurity, aes(x = employed))+ geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Employed Individuals Within Household", y = "Number of Households")
+
+cps_employed <- cps_fsecurity %>% group_by(employed) %>% summarise(memp = mean(fsecurity))
+
+ggplot(aes(x = employed, y = memp), data = cps_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Employed Individuals Within Household", y = "Average Level of Food Insecurity")
+
+# ANALYSIS OF HHSIZE VARIABLE
+
+ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Family Members Within Household", y = "Number of Households")
+
+
+
+ggplot(data = cps_fexpend, aes(x = fexpend))+geom_histogram(binwidth = 5)+ labs(x = "Food Expense", y = "Numer of Households" )
+
+
 
 # Create the Forrest
 
@@ -80,7 +153,7 @@ train.df = cps_fsecurity
 # change at all.)
 
 # fsecurity_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-#                                   education + employed + elderly + disability + hhsize, data = train.df, 
+#                                   education + employed + married + disability + hhsize + urban_c, data = train.df, 
 #                                 ntree = 1000, mtry = 3, importance = T)
 # 
 # 
@@ -114,14 +187,14 @@ train.df = cps_fsecurity
 #   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 # 
 # 
-# # OOB Error Rate is lowest at 2 it seems, so I'll go with 2, I guess?
-# final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-#                               education + employed + elderly + disability + hhsize, data = train.df, 
-#                             ntree = 1000, mtry = 2, importance = T)
 
-#saveRDS(final_forest, "final_forest.RDS")
+# OOB Error Rate is lowest at 2 it seems, so I'll go with 2.
+ final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
+                              education + employed + married + disability + hhsize + urban_c, data = train.df, 
+                             ntree = 1000, mtry = 2, importance = T)
+
+saveRDS(final_forest, "final_forest.RDS")
 final_forest <- readRDS("final_forest.RDS")
-
 
 varImpPlot(final_forest, type = 1)
 
@@ -147,6 +220,22 @@ fsecurity.glm2
 beta_hat <- coef(fsecurity.glm2)
 exp(beta_hat)
 exp(confint(fsecurity.glm2))
+
+# CREATE A POISSON MODEL FOR COMPARISON AND TO DEMONSTRATE NEED FOR ZERO-INFLATED
+
+
+# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET
+
+acs_test.df$pred = predict(final_forest, acs_test.df, type = "class")
+
+table(acs_train.df$pred, acs_train.df$fsecurity)
+
+pi_hat = predict(final_forest, acs_test.df, type = "prob")[1]
+
+rocCurve = roc(response = acs_test.df$fsecurity,
+               predictor = pi_hat,
+               levels = c("0", "1"))
+
 
 # Disability Interpretation (Count Model): With all other variables held constant, the level of food insecurity increases by 
 # exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
@@ -174,23 +263,23 @@ exp(confint(fsecurity.glm2))
 # THIS IS USED TO TEST BETWEEN MODELS
 # THERE'S GOT TO BE A BETTER WAY, THIS WOULD TAKE TOO LONG, WHAT GOES INTO THE LOGIT AREA, 
 # WHAT GOES INTO THE OTHER AREA, I FEEL LIKE I'M FORGETTING SOMETHING.
-vuong(fsecurity.glm, fsecurity.glm3)
+# vuong(fsecurity.glm, fsecurity.glm3), Don't use this, just use AIC values for comparison
 # Vuong, which stands for Vuong's closeness test (I believe), which uses the Kullback - Leibler
 # Information Criterion. 
 
 # COLLECT AIC's INDIVIDUALLY
 
 AIC(fsecurity.glm)
-# AIC = 53419.87
+# AIC = 
 
 AIC(fsecurity.glm2)
-# AIC = 56816.14
+# AIC = 
 
 AIC(fsecurity.glm3)
-# AIC = 56394.28
+# AIC = 
 
 AIC(fsecurity.glm4)
-# AIC = 55793.17
+# AIC = 
 
 # It seems that fsecurity.glm2 is the best
 
@@ -205,30 +294,151 @@ summary(fsecurity.glm3)
 # WORK ON FEXPEND, THAT WILL BE THE NEXT SECTION
 # IF I HAVE TO CREATE A FORREST I THINK ILL TRY TO USE MY GPU's
 # ALONG IN THE PROCESS, THAT MIGHT HELP TIME WISE
+# 
+# fexpend_train.df <- cps_fexpend
+# 
+# fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = 3, importance = TRUE)
+# 
+# keeps = data.frame(m = rep(NA, length(mtry)),
+#                    OOB_Err_Rate = rep(NA, length(mtry)))
+# 
+# for(idx in 1:length(mtry)){
+#   print(paste0("Now testing mtry = ", mtry[idx]))
+#   fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = mtry[idx])
+#   
+#   keeps[idx, "m"] = mtry[idx]
+#   
+#   keeps[idx, "OOB_Err_Rate"] = mean((predict(fexpend_forest) - cps_fexpend$fexpend)^2)
+# }
+# 
+# qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
+#   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
+# 
+# fexpend_final_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = 2, importance = TRUE)
+# 
+# saveRDS(fexpend_final_forest, "fexpend_final_forest.RDS")
+fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
 
-fexpend_train.df <- cps_fexpend
-
-fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = 3, importance = TRUE)
-
-keeps = data.frame(m = rep(NA, length(mtry)),
-                   OOB_Err_Rate = rep(NA, length(mtry)))
-
-for(idx in 1:length(mtry)){
-  print(paste0("Now testing mtry = ", mtry[idx]))
-  fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = mtry[idx])
-  
-  keeps[idx, "m"] = mtry[idx]
-  
-  keeps[idx, "OOB_Err_Rate"] = mean((fexpend_forest - cps_fexpend$fexpend)^2)
-}
-
-qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
-  theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
+varImpPlot(fexpend_final_forest, type = 1)
 
 
+#  CREATE LOGIT LINKED NORMAL DISTRIBUTION, IF TIME PERMITS COMPARE IT TO ZERO ADJUSTED GAMMA - NEED TO 
+# ADD 0.001 TO EVERYTHING AS GAMMA NEEDS DATA BETWEEN 0 AND INFINITY.
 
+ZAGA_Model = gamlss(formula = y~., sigma.formula = y~., nu.formula = y~., data = cps_fexpend, family = ZAGA())
+
+cps_fexpend$fexpend1 <- cps_fexpend$fexpend + 0.0001
+
+fexpend.glm <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "identity"))
+
+fexpend.glm2 <- glm(fexpend1 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = Gamma(link = "log"))
+
+fexpend.glm3 <- glm(fexpend1 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "log"))
+
+fexpend.glm4 <- glm(fexpend1 ~ hhsize + elderly + employed + disability, data = cps_fexpend, family = Gamma(link = "log"))
+
+fexpend.glm5 <- glm(fexpend1 ~ hhsize + elderly + employed, data = cps_fexpend, family = Gamma(link = "log"))
+
+AIC(fexpend.glm)
+
+AIC(fexpend.glm2)
+
+AIC(fexpend.glm3)
+
+AIC(fexpend.glm4)
+
+AIC(fexpend.glm5)
+
+fexpend.glm2
+
+beta_hat1 <- coef(fexpend.glm2)
+exp(beta_hat1)
+exp(confint(fexpend.glm2))
+
+# ANALYSIS FOR FEXPEND
+
+# ANALYSIS OF VARIABLES
+ggplot(data = cps_fexpend, aes (x = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense", y = "Number of Households")
+
+# ANALYSIS OF DISABILITY VARIABLE
+
+ggplot(data = cps_fexpend, aes (x = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Disability Level", y = "Number of Households") 
+
+cps_fexpend_disability <- cps_fexpend %>% group_by(disability) %>% summarise(me = mean(fexpend))
+
+ggplot(aes(x = disability, y = me), data = cps_fexpend_disability) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity")
+
+ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend), data = cps_fexpend)
+
+# ANALYSIS OF ELDERLY VARIABLE
+
+ggplot(data = cps_fexpend, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Elderly In Household", y = "Number of Households")
+
+cps_fexpend_elderly <- cps_fexpend %>% group_by(elderly) %>% summarise(mexp = mean(fexpend))
+
+ggplot(aes(x = elderly, y = mexp), data = cps_fexpend_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household")
+
+ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend), data = cps_fexpend)
+
+# ANALYSIS OF EDUCATION VARIABLE
+
+ggplot(data = cps_fexpend, aes(x = education))+ geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
+  labs(x = "Number of Educated Individuals Within Household", y = "Number of Households")
+
+cps_fexpend_education <- cps_fexpend %>% group_by(education) %>% summarise(med = mean(fexpend))
+
+ggplot(aes(x = education, y = med), data = cps_fexpend_education) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household")
+
+ggplot() + geom_boxplot(aes(group = education, x = education, y = fexpend), data = cps_fexpend)
+
+# ANALYSIS OF EMPLOYED VARIABLE
+
+ggplot(data = cps_fexpend, aes(x = employed))+ geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of employed Individuals Within Household", y = "Number of Households")
+
+cps_fexpend_employed <- cps_fexpend %>% group_by(employed) %>% summarise(memp = mean(fexpend))
+
+ggplot(aes(x = employed, y = memp), data = cps_fexpend_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Employed in Household", y = "Average Amount of Food Expenditure Per Household")
+
+ggplot() + geom_boxplot(aes(group = employed, x = employed, y = fexpend), data = cps_fexpend)
+
+# ANALYSIS OF HHSIZE VARIABLE
+
+ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_histogram(binwidth = 1) + 
+  #geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Family Members Household", y = "Number of Households")
+
+cps_fexpend_employed <- cps_fexpend %>% group_by(hhsize) %>% summarise(memp = mean(fexpend))
+
+ggplot(aes(x = hhsize, y = memp), data = cps_fexpend_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Employed in Household", y = "Average Level of Food Insecurity")
+
+ggplot() + geom_boxplot(aes(group = hhsize, x = disability, y = fexpend), data = cps_fexpend)
+
+
+ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_point()+ labs(x = "Number of Family Members Within Household", y = "Food Expense" )
 
 # FOR LATER
+
+
+# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET
+
+acs_test.df$pred = predict(fexpend_final_forest, acs_test.df, type = "class")
+
+table(acs_train.df$pred, acs_train.df$expend)
+
+pi_hat = predict(fexpend_final_forest, acs_test.df, type = "prob")[1]
+
+rocCurve = roc(response = acs_test.df$fexpend,
+               predictor = pi_hat,
+               levels = c("0", "1"))
+
 
 # CREATE Heatmap, other cluster based visualizations?
 
