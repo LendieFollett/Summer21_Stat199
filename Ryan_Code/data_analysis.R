@@ -224,17 +224,17 @@ exp(confint(fsecurity.glm2))
 # CREATE A POISSON MODEL FOR COMPARISON AND TO DEMONSTRATE NEED FOR ZERO-INFLATED
 
 
-# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET
+# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET ALSO CONFUSION MATRIX 
 
 acs_test.df$pred = predict(final_forest, acs_test.df, type = "class")
 
 table(acs_train.df$pred, acs_train.df$fsecurity)
 
-pi_hat = predict(final_forest, acs_test.df, type = "prob")[1]
+pi_hat = predict(final_forest, acs_test.df, type = "prob")[,]
 
 rocCurve = roc(response = acs_test.df$fsecurity,
                predictor = pi_hat,
-               levels = c("0", "1"))
+               levels = c())
 
 
 # Disability Interpretation (Count Model): With all other variables held constant, the level of food insecurity increases by 
@@ -327,13 +327,17 @@ varImpPlot(fexpend_final_forest, type = 1)
 
 ZAGA_Model = gamlss(formula = y~., sigma.formula = y~., nu.formula = y~., data = cps_fexpend, family = ZAGA())
 
+cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
+
+cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
+
 cps_fexpend$fexpend1 <- cps_fexpend$fexpend + 0.0001
 
 fexpend.glm <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "identity"))
 
-fexpend.glm2 <- glm(fexpend1 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = Gamma(link = "log"))
+fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend_new, family = Gamma(link = "log"))
 
-fexpend.glm3 <- glm(fexpend1 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "log"))
+fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = binomial(link = "log"))
 
 fexpend.glm4 <- glm(fexpend1 ~ hhsize + elderly + employed + disability, data = cps_fexpend, family = Gamma(link = "log"))
 
@@ -351,9 +355,16 @@ AIC(fexpend.glm5)
 
 fexpend.glm2
 
+fexpend.glm3
+
 beta_hat1 <- coef(fexpend.glm2)
 exp(beta_hat1)
 exp(confint(fexpend.glm2))
+
+beta_hat2 <- coef(fexpend.glm3)
+exp(beta_hat2)
+exp(confint(fexpend.glm3))
+
 
 # ANALYSIS FOR FEXPEND
 
@@ -427,7 +438,7 @@ ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_point()+ labs(x = 
 # FOR LATER
 
 
-# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET
+# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET ALSO CONFUSION MATRIX
 
 acs_test.df$pred = predict(fexpend_final_forest, acs_test.df, type = "class")
 
