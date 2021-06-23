@@ -78,15 +78,12 @@ ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 
 # ANALYSIS OF DISABILITY VARIABLE
 
 ggplot(data = cps_fsecurity, aes (x = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
-  labs(x = "Disability Level", y = "Number of Households") 
+  labs(x = "Disabled Individual Living Within Household", y = "Number of Households") 
 
 cps_disability <- cps_fsecurity %>% group_by(disability) %>% summarise(me = mean(fsecurity))
 
 ggplot(aes(x = disability, y = me), data = cps_disability) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity")
-
-ggplot(aes(x = disability, y = fsecurity), data = cps_fsecurity) + geom_boxplot(stat = "Identity") +
-  labs(x = "Number of Disabled Individuals in Household", y = "Level of Food Insecurity")
+  labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity")
 
 ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fsecurity), data = cps_fsecurity)
 
@@ -100,7 +97,7 @@ ggplot(data = cps_fsecurity) +
 # ANALYSIS OF ELDERLY VARIABLE
 
 ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
-  labs(x = "Food Insecure", y = "Number of Households")
+  labs(x = "Number of Elderly in Household", y = "Number of Households")
 
 cps_elderly <- cps_fsecurity %>% group_by(elderly) %>% summarise(meld = mean(fsecurity))
 
@@ -331,8 +328,6 @@ cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
 
 cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
 
-cps_fexpend$fexpend1 <- cps_fexpend$fexpend + 0.0001
-
 fexpend.glm <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = gaussian(link = "identity"))
 
 fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend_new, family = Gamma(link = "log"))
@@ -433,7 +428,7 @@ ggplot(aes(x = hhsize, y = memp), data = cps_fexpend_employed) + geom_bar(stat =
 ggplot() + geom_boxplot(aes(group = hhsize, x = disability, y = fexpend), data = cps_fexpend)
 
 
-ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_point()+ labs(x = "Number of Family Members Within Household", y = "Food Expense" )
+ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x = "Number of Family Members Within Household", y = "Food Expense" )
 
 # FOR LATER
 
