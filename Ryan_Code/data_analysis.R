@@ -224,6 +224,18 @@ exp(confint(fsecurity.glm2))
 # CREATE A POISSON MODEL FOR COMPARISON AND TO DEMONSTRATE NEED FOR ZERO-INFLATED
 
 
+# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET
+
+acs_test.df$pred = predict(final_forest, acs_test.df, type = "class")
+
+table(acs_train.df$pred, acs_train.df$fsecurity)
+
+pi_hat = predict(final_forest, acs_test.df, type = "prob")[1]
+
+rocCurve = roc(response = acs_test.df$fsecurity,
+               predictor = pi_hat,
+               levels = c("0", "1"))
+
 
 # Disability Interpretation (Count Model): With all other variables held constant, the level of food insecurity increases by 
 # exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
@@ -413,6 +425,20 @@ ggplot() + geom_boxplot(aes(group = hhsize, x = disability, y = fexpend), data =
 ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_point()+ labs(x = "Number of Family Members Within Household", y = "Food Expense" )
 
 # FOR LATER
+
+
+# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET
+
+acs_test.df$pred = predict(fexpend_final_forest, acs_test.df, type = "class")
+
+table(acs_train.df$pred, acs_train.df$expend)
+
+pi_hat = predict(fexpend_final_forest, acs_test.df, type = "prob")[1]
+
+rocCurve = roc(response = acs_test.df$fexpend,
+               predictor = pi_hat,
+               levels = c("0", "1"))
+
 
 # CREATE Heatmap, other cluster based visualizations?
 
