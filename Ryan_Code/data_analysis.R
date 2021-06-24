@@ -437,20 +437,6 @@ ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x =
 
 # FOR LATER
 
-
-# CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET ALSO CONFUSION MATRIX
-
-acs_test.df$pred = predict(fexpend_final_forest, acs_test.df, type = "class")
-
-table(acs_train.df$pred, acs_train.df$expend)
-
-pi_hat = predict(fexpend_final_forest, acs_test.df, type = "prob")[1]
-
-rocCurve = roc(response = acs_test.df$fexpend,
-               predictor = pi_hat,
-               levels = c("0", "1"))
-
-
 # CREATE Heatmap, other cluster based visualizations?
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
