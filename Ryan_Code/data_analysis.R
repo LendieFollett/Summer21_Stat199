@@ -77,15 +77,21 @@ ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 
 
 # ANALYSIS OF DISABILITY VARIABLE
 
+cps_fsecurity$disability_cat = ifelse(cps_fsecurity$disability > 0, "Yes", "No")
+cps_fsecurity$disability_cat = as.factor(cps_fsecurity$disability_cat)
+
+cps2$fsecurity_cat = ifelse(cps2$fsecurity > 0, "yes", "no")
+cps2$fsecurity_cat = as.factor(cps2$fsecurity_cat)
+
 ggplot(data = cps_fsecurity, aes (x = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Disabled Individual Living Within Household", y = "Number of Households") 
 
-cps_disability <- cps_fsecurity %>% group_by(disability) %>% summarise(me = mean(fsecurity))
+cps_disability <- cps_fsecurity %>% group_by(disability_cat) %>% summarise(me = mean(fsecurity))
 
-ggplot(aes(x = disability, y = me), data = cps_disability) + geom_bar(stat = "Identity") +
+ggplot(aes(x = disability_cat, y = me), data = cps_disability) + geom_bar(stat = "Identity") +
   labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity")
 
-ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fsecurity), data = cps_fsecurity)
+ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity), data = cps_fsecurity)
 
 ggplot(data = cps_fsecurity) +
   geom_histogram(aes(x = disability, fill = fsecurity_f), position = 'fill', binwidth = 1) +
@@ -234,28 +240,27 @@ rocCurve = roc(response = acs_test.df$fsecurity,
                levels = c())
 
 
-# Disability Interpretation (Count Model): With all other variables held constant, the level of food insecurity increases by 
-# exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
-# living within the house than the expected level of food insecurity would increase by 1.2961011.
+# Disability Interpretation (Count Model): With all other variables held constant,for vulnerable individuals, the level of food insecurity increases by 
+# a factor of exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
+# living within the house than the odds of the household being food insecure increases by about 30%.
 
-# Education Interpretation (Count Model): With all other variables held constant, the level of food insecurity decreases by 
-# exp(-.1114594) = .8945277 for every educated person within the house. 
+# Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by 
+# a factor of exp(-.1114594) = .8945277 for every educated person within the house. 
 
-# Elderly Interpretation (Count Model): With all other variables held constant, the level of food insecurity decreases by
+# Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by a factor of
 # exp(-.1748214) = .8396069 for every educated person within the house. 
 
 # Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
-# "Certain Zero" Group, meaning that they are certain to be food secure is exp(-1.0453348) = 0.3515741. This means that being certain the odds
-# of a house with a disabled person will be food secure is 64.84% less likely than in other households. 
+# "Certain Zero" Group, meaning that they are certain to be food secure is exp(-1.0453348) = 0.3515741. This means that the odds
+# of a house with a disabled person being food secure is 64.84% less likely than in other households. 
 
 # Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
- # "Certain Zero" Group, meaning that they are certain to be food secure is exp(0.7795625) = 2.1805181. This means that the odds of being certain
+ # "Certain Zero" Group, meaning that they are certain to be food secure is exp(0.7795625) = 2.1805181. This means that the odds 
 # that a house is food secure increases by 118% for every person with an associates degree or higher. 
 
 # Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
-# "Certain Zero" Group, meaning that htey are certain to be food secure is exp(6967225) = 2.0071634.  This means that the odds of being certain
-# that a house is food secure increases by 100% for every elderly person within the house. This is odd, and probably is more 
-# indicative of how elderly people eat less, not that we should put an elderly person in each home. 
+# "Certain Zero" Group, meaning that they are certain to be food secure is exp(6967225) = 2.0071634.  This means that the odds
+# that a house is food secure increases by 100% for every elderly person within the house.
 
 # THIS IS USED TO TEST BETWEEN MODELS
 # THERE'S GOT TO BE A BETTER WAY, THIS WOULD TAKE TOO LONG, WHAT GOES INTO THE LOGIT AREA, 
