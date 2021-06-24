@@ -339,9 +339,9 @@ fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + educati
 
 fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = binomial(link = "log"))
 
-fexpend.glm4 <- glm(fexpend1 ~ hhsize + elderly + employed + disability, data = cps_fexpend, family = Gamma(link = "log"))
+fexpend.glm4 <- glm(fexpend ~ hhsize + elderly + employed + disability, data = cps_fexpend_new, family = Gamma(link = "log"))
 
-fexpend.glm5 <- glm(fexpend1 ~ hhsize + elderly + employed, data = cps_fexpend, family = Gamma(link = "log"))
+fexpend.glm5 <- glm(fexpend ~ hhsize + elderly + employed, data = cps_fexpend_new, family = Gamma(link = "log"))
 
 AIC(fexpend.glm)
 
@@ -366,7 +366,49 @@ exp(beta_hat2)
 exp(confint(fexpend.glm3))
 
 
-# ANALYSIS FOR FEXPEND
+# ANALYSIS FOR FEXPEND - Gamma Count Model
+
+# HHSIZE INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the mean amount of money used to
+# buy food for each individual decreases by about 20.4% per person.
+
+# ELDERLY INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals the mean amount of food expenditure
+# changes by a factor of exp(-.04794) = .9531918. This means that for every new elderly person within the household, the mean amount of money in U.S. dollars
+# used to buy food for each individual decreases by about 4.68% per person.
+
+# EMPLOYED INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# changes by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the mean amount of money in U.S. dollars
+# used to buy food for each individual increase by about 6.9% per person.
+
+# DISABILITY INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the mean amount of money in U.S. dollars
+# used to buy food for each individual decreases by about 6.37% per person.
+
+# EDUCATION INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# changes by a factor of exp(0.12464) = 1.1327362.This means that for every new educated individual within the household, the mean amount of money in U.S. dollars
+# used to buy food for each individual increases by about 13.27% per person.
+
+# HHSIZE INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of
+# exp(-0.07890) = .9241349. This means that for every new person within the household, the odds of said household spending $0 on food per person 
+# decreases by about 7.6%. 
+
+# ELDERLY INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of 
+# exp(-0.01478) = .9853277. This means that for every new elderly person within the household, the odds of said household spending $0 on food per person 
+# decreases by about 1.47%. 
+
+# EMPLOYED INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of 
+# exp(-0.30615)= .7362754. This means that for every new employed person within the household, the odds of said household spending $0 on food per person
+# decreases by about 26.37%.
+
+# DISABILITY INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of 
+# exp(0.25147) = 1.2859122. This means that for every new disabled person within the household, the odds of said household spending $0 on food per person
+# increases by about 28.59%.
+
+# EDUCATION INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of 
+# exp(-0.25484) = .7750404. This means that for every new educated person within the household, the odds of said household spending $0 on food per person
+# decreases by about 22.50%.
+
+
 
 # ANALYSIS OF VARIABLES
 ggplot(data = cps_fexpend, aes (x = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense", y = "Number of Households")
