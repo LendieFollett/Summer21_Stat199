@@ -370,23 +370,23 @@ exp(confint(fexpend.glm3))
 
 # ANALYSIS FOR FEXPEND - Gamma Count Model
 
-# HHSIZE INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# HHSIZE INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
 # changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the mean amount of money used to
 # buy food for each individual decreases by about 20.4% per person.
 
-# ELDERLY INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals the mean amount of food expenditure
+# ELDERLY INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
 # changes by a factor of exp(-.04794) = .9531918. This means that for every new elderly person within the household, the mean amount of money in U.S. dollars
 # used to buy food for each individual decreases by about 4.68% per person.
 
-# EMPLOYED INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# EMPLOYED INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
 # changes by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the mean amount of money in U.S. dollars
 # used to buy food for each individual increase by about 6.9% per person.
 
-# DISABILITY INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# DISABILITY INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
 # changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the mean amount of money in U.S. dollars
 # used to buy food for each individual decreases by about 6.37% per person.
 
-# EDUCATION INTERPRETATION (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food expenditure
+# EDUCATION INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
 # changes by a factor of exp(0.12464) = 1.1327362.This means that for every new educated individual within the household, the mean amount of money in U.S. dollars
 # used to buy food for each individual increases by about 13.27% per person.
 
