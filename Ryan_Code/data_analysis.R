@@ -242,13 +242,15 @@ rocCurve = roc(response = acs_test.df$fsecurity,
 
 # Disability Interpretation (Count Model): With all other variables held constant,for vulnerable individuals, the level of food insecurity increases by 
 # a factor of exp(.2593606) = 1.2961011 if there is a disabled person living within the house.This means that if there is a disabled person
-# living within the house than the odds of the household being food insecure increases by about 30%.
+# living within the house, food insecurity of the house decreases from the mean by about 30%.
 
-# Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by 
-# a factor of exp(-.1114594) = .8945277 for every educated person within the house. 
+# Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food insecurity decreases by 
+# a factor of exp(-.1114594) = .8945277 for every educated person within the house. This means that for every new educated individual
+# living within the house, food insecurity of the house decreases from the mean by about 10.55%.
 
 # Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by a factor of
-# exp(-.1748214) = .8396069 for every educated person within the house. 
+# exp(-.1748214) = .8396069 for every educated person within the house. This means that for every new elderly person living within
+# the house, food insecurity of the house decreases from the mean by about 16.04%.
 
 # Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is within the 
 # "Certain Zero" Group, meaning that they are certain to be food secure is exp(-1.0453348) = 0.3515741. This means that the odds
