@@ -371,24 +371,24 @@ exp(confint(fexpend.glm3))
 # ANALYSIS FOR FEXPEND - Gamma Count Model
 
 # HHSIZE INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
-# changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the mean amount of money used to
-# buy food for each individual decreases by about 20.4% per person.
+# changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the amount of money used to
+# buy food for each individual decreases by about 20.4% per person compared to the mean.
 
 # ELDERLY INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
-# changes by a factor of exp(-.04794) = .9531918. This means that for every new elderly person within the household, the mean amount of money in U.S. dollars
-# used to buy food for each individual decreases by about 4.68% per person.
+# changes by a factor of exp(-.04794) = .9531918. This means that for every new elderly person within the household, the amount of money in U.S. dollars
+# used to buy food for each individual decreases by about 4.68% per person compared to the mean.
 
 # EMPLOYED INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
-# changes by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the mean amount of money in U.S. dollars
-# used to buy food for each individual increase by about 6.9% per person.
+# changes by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the amount of money in U.S. dollars
+# used to buy food for each individual increase by about 6.9% per person compared to the mean.
 
 # DISABILITY INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
-# changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the mean amount of money in U.S. dollars
-# used to buy food for each individual decreases by about 6.37% per person.
+# changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the amount of money in U.S. dollars
+# used to buy food for each individual decreases by about 6.37% per person compared to the mean.
 
 # EDUCATION INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure
-# changes by a factor of exp(0.12464) = 1.1327362.This means that for every new educated individual within the household, the mean amount of money in U.S. dollars
-# used to buy food for each individual increases by about 13.27% per person.
+# changes by a factor of exp(0.12464) = 1.1327362.This means that for every new educated individual within the household, the amount of money in U.S. dollars
+# used to buy food for each individual increases by about 13.27% per person compared to the mean.
 
 # HHSIZE INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of
 # exp(-0.07890) = .9241349. This means that for every new person within the household, the odds of said household spending $0 on food per person 
