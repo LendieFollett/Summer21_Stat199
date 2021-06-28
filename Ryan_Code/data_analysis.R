@@ -20,6 +20,7 @@ library(pROC)
 library(randomForest)
 library(pscl)
 library(boot)
+library(reshape2)
 library(RColorBrewer)
 #These are for the zero-inflation model specifically
 #install.packages('pscl')
@@ -90,9 +91,10 @@ ggplot(data = cps_fsecurity, aes (x = disability))+geom_bar() + geom_text(stat =
 cps_disability <- cps_fsecurity %>% group_by(disability_cat) %>% summarise(Average = mean(fsecurity))
 
 ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_disability ) + geom_bar(stat = "Identity") +
-  labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity")
+  labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity", fill = "Average Level")
 
-ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity)
+ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
+  labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity", fill = "If Disabled")
 
 
 ggplot(data = cps_fsecurity) +
@@ -104,13 +106,13 @@ ggplot(data = cps_fsecurity) +
 
 # ANALYSIS OF ELDERLY VARIABLE
 
-ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + scale_fill_brewer(palette = "Blues") + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Number of Elderly in Household", y = "Number of Households")
 
 cps_elderly <- cps_fsecurity %>% group_by(elderly) %>% summarise(meld = mean(fsecurity))
 
-ggplot(aes(x = elderly, y = meld), data = cps_elderly) + geom_bar(stat = "Identity") + 
-  labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity")
+ggplot(aes(x = elderly, y = meld, fill = elderly), data = cps_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity", fill = "Number of Elderly")
 
 ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fsecurity), data = cps_fsecurity)
 
@@ -424,7 +426,9 @@ tags <- c('0','1', '2', '3', '4', '5', '6', '7', '8' ,'9' ,'10', '11', '12')
 cps_fexpend_f$hhsize_f <- cut(cps_fexpend_f$hhsize, breaks = breaks, include.lowest = TRUE, right = FALSE, labels = tags)
 
 # ANALYSIS OF VARIABLES
-ggplot(data = cps_fexpend, aes (x = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense", y = "Number of Households")
+ggplot(data = cps_fexpend, aes (x = fexpend, fill = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense In USD", y = "Number of Households") +
+  scale_x_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "Blues")
+
 
 # ANALYSIS OF DISABILITY VARIABLE
 
