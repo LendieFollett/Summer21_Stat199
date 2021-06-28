@@ -134,15 +134,19 @@ ggplot(data = cps_fsecurity, aes(x = employed))+ geom_bar() + geom_text(stat = '
 
 cps_employed <- cps_fsecurity %>% group_by(employed) %>% summarise(memp = mean(fsecurity))
 
-ggplot(aes(x = employed, y = memp), data = cps_employed) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Employed Individuals Within Household", y = "Average Level of Food Insecurity")
+ggplot(aes(x = employed, y = memp, fill = employed), data = cps_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Employed Individuals Within Household", y = "Average Level of Food Insecurity") 
+
 
 # ANALYSIS OF HHSIZE VARIABLE
 
 ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of Family Members Within Household", y = "Number of Households")
 
-
+# THIS IS A BETTER WAY TO BIN BY ROUNDING THE HHSIZE VARIABLE, INSTEAD OF MAKING BINS MANUALLY, WHICH CAN BE TEDIOUS FOR LARGER 
+# VARIATIONS IN VALUE.
+ggplot(data = cps_fsecurity, aes(x = round(hhsize,0))) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Family Members Within Household", y = "Number of Households")
 
 ggplot(data = cps_fexpend, aes(x = fexpend))+geom_histogram(binwidth = 5)+ labs(x = "Food Expense", y = "Numer of Households" )
 
@@ -485,9 +489,6 @@ ggplot(aes(x = employed, y = Average, fill = Average), data = cps_fexpend_employ
 ggplot() + geom_boxplot(aes(group = employed, x = employed, y = fexpend), data = cps_fexpend)
 
 # ANALYSIS OF HHSIZE VARIABLE
-
-
-
 ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_histogram(binwidth = 1) + 
   #geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of Family Members Household", y = "Number of Households")
