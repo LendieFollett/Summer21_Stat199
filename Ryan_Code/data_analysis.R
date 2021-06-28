@@ -54,7 +54,15 @@ cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
                                  ifelse(cps$urban_c == 4, "Small Metro",
                                         ifelse(cps$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
 
-cps$urban_c[is.na(cps$urban_c)] <- c("Possibly Non-core/Rural")
+cps$urban_c[is.na(cps$urban_c)] <- c("Non-Core/Possibly Rural")
+
+#LRF: order is not what you wanted: turn this into an "ordered factor" then r realizes
+#there is an inherent ordering, and it will respect that in plots, tables, etc...
+#this code should do that: (attribute will follow variable urban_c through to new datasets)
+cps$urban_c <- factor(cps$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+                                              "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
+
+
 
 #LRF: check to see if levels match up.. they seem to 
 table(cps$urban_c, cps$urban)
@@ -518,20 +526,38 @@ ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x =
 
 # CREATE PLOTS FOR urban_c 
 
-ggplot(data = cps_fsecurity, aes(x = urban_c)) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
-  labs(x = "", y =  "")
+ggplot(data = cps_fsecurity, aes(x = urban_c)) + 
+  geom_bar() + 
+  geom_text(stat = 'count', aes(label = ..count..), hjust = -1) +
+  labs(x = "", y =  "Count") +#LRF: add labels 
+  coord_flip() #the x axis is smooshed - thijs helps with that
 
-cps_fsecurity_urban <- cps_fsecurity %>% group_by(urban_c) %>% summarise(Average = mean(fsecurity))
+#LRF: take a look at this - don't have to create all those temporary datasets
+cps_fsecurity %>% 
+  group_by(urban_c) %>% 
+  summarise(Average = mean(fsecurity)) %>%#LRF: pipe the data right into ggplot!
+ggplot(aes(x = urban_c, y = Average, fill = Average)) +
+  geom_bar(stat = "Identity")  +
+  coord_flip()+ #LRF: again, the x axis was smooshed
+  labs(x = "", y = "Proportion of Food Insecure")#LRF: axis labels!
 
-ggplot(aes(x = urban_c, y = Average, fill = Average), data = cps_fsecurity_urban) + geom_bar(stat = "Identity") 
-#  labs(x = "Number of Individuals Within Household", y = "Average Level of Food Insecurity")
+  
+ggplot(data = cps_fexpend, aes(x = urban_c)) + 
+  geom_bar() + 
+  geom_text(stat = 'count', aes(label = ..count..), hjust = -1) +
+  coord_flip()+
+  labs(x = "", y = "Count")
 
-ggplot(data = cps_fexpend, aes(x = urban_c)) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
-  labs()
-
-cps_fsecurity_urban <- cps_fexpend  %>% group_by(urban_c) %>% summarise(Average = mean(fexpend))
-
-ggplot(aes(x = urban_c, y = Average, fill = Average), data = cps_fsecurity_urban) + geom_bar(stat = "Identity") 
+#SEE HOW I'VE CHANGED THIS
+cps_fexpend  %>% 
+  group_by(urban_c) %>% 
+  summarise(Average = mean(fexpend))%>% #LRF piping data right into plot
+ggplot(aes(x = urban_c, y = Average, fill = Average)) + 
+  geom_bar(stat = "Identity") +
+  coord_flip()+ #LRF
+  scale_y_continuous(labels=scales::dollar_format())+#LRF: GOOGLE "ggplot2 scale axis dollar"
+labs(x = "", y = "Average Spent Per Week, Person") + #gLRF: ood labels
+  theme(legend.position = "none") #LRF: legend not necessary here
 #  labs(x = "Number of Individuals Within Household", y = "Average Level of Food Insecurity")
 
 # CREATE Heatmap, other cluster based visualizations?
