@@ -20,6 +20,7 @@ library(pROC)
 library(randomForest)
 library(pscl)
 library(boot)
+library(reshape2)
 library(RColorBrewer)
 #These are for the zero-inflation model specifically
 #install.packages('pscl')
@@ -64,17 +65,11 @@ cps$urban_c <- factor(cps$urban_c, levels = c("Large Central Metro", "Large Frin
 
 
 
-#LRF: check to see if levels match up.. they seem to 
-table(cps$urban_c, cps$urban)
-
-#LRF: you just created urban_c, why are you deleting it? also, that's a capital c not lower case...
-#cps <- subset(cps, select = -c(urban_C))
+cps <- subset(cps, select = -c(urban_C))
 
 cps$fsecurity_f = ifelse(cps$fsecurity > 0, "yes", "no")
 
-#LRF: you run str on a data set.. did you mean str(cps)?
-#str(urban_c)
-
+str(urban_c)
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
 cps_fsecurity <- cps[!is.na(cps$fsecurity),]
@@ -104,27 +99,28 @@ ggplot(data = cps_fsecurity, aes (x = disability))+geom_bar() + geom_text(stat =
 cps_disability <- cps_fsecurity %>% group_by(disability_cat) %>% summarise(Average = mean(fsecurity))
 
 ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_disability ) + geom_bar(stat = "Identity") +
-  labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity")
+  labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity", fill = "Average Level")
 
-ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity)
+ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
+  labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity", fill = "If Disabled")
 
-#LRF: change the x axis to yes/no instead of 0/1. Use the code you used to create fsecurity_f
-ggplot(data = cps_fsecurity) +
-  geom_histogram(aes(x = disability, fill = fsecurity_f), position = 'fill', binwidth = 1) +
-  ggtitle("Food Insecurity as Disabled Individuals Increases") +
-  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity") +
-  scale_fill_brewer("Food Insecure") +
-  theme_bw()
+
+# ggplot(data = cps_fsecurity) +
+#   geom_histogram(aes(x = disability, fill = fsecurity_f), position = 'fill', binwidth = 1) +
+#   ggtitle("Food Insecurity as Disabled Individuals Increases") +
+#   labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity") +
+#   scale_fill_brewer("Food Insecure") +
+#   theme_bw()
 
 # ANALYSIS OF ELDERLY VARIABLE
 
-ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + scale_fill_brewer(palette = "Blues") + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Number of Elderly in Household", y = "Number of Households")
 
 cps_elderly <- cps_fsecurity %>% group_by(elderly) %>% summarise(meld = mean(fsecurity))
 
-ggplot(aes(x = elderly, y = meld), data = cps_elderly) + geom_bar(stat = "Identity") + 
-  labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity")
+ggplot(aes(x = elderly, y = meld, fill = elderly), data = cps_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity", fill = "Number of Elderly")
 
 ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fsecurity), data = cps_fsecurity)
 
@@ -136,8 +132,8 @@ ggplot(data = cps_fsecurity, aes(x = education))+ geom_bar() + geom_text(stat = 
 
 cps_education <- cps_fsecurity %>% group_by(education) %>% summarise(med = mean(fsecurity))
 
-ggplot(aes(x = education, y = med), data = cps_education) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity")
+ggplot(aes(x = education, y = med, fill = education), data = cps_education) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Educated")
 
 # ANALYSIS OF EMPLOYED VARIABLE
 
@@ -152,10 +148,6 @@ ggplot(aes(x = employed, y = memp), data = cps_employed) + geom_bar(stat = "Iden
 # ANALYSIS OF HHSIZE VARIABLE
 
 ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
-  labs(x = "Number of Family Members Within Household", y = "Number of Households")
-
-#LRF: easy way to bin: use the round() function and round it to nearest whole number by specifying 0 digits
-ggplot(data = cps_fsecurity, aes(x = round(hhsize,0))) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of Family Members Within Household", y = "Number of Households")
 
 
@@ -217,8 +209,7 @@ train.df = cps_fsecurity
 #                              education + employed + married + disability + hhsize + urban_c, data = train.df, 
 #                             ntree = 1000, mtry = 2, importance = T)
 
-#LRF: comment out saveRDS. code shold run from top to bottom with no errors
-#saveRDS(final_forest, "final_forest.RDS")
+saveRDS(final_forest, "final_forest.RDS")
 final_forest <- readRDS("final_forest.RDS")
 
 varImpPlot(final_forest, type = 1)
@@ -250,8 +241,6 @@ exp(confint(fsecurity.glm2))
 
 
 # CREATE A ROCCURVE AND PREDICTIONS FOR THE ACS - TEST DATASET ALSO CONFUSION MATRIX 
-
-#LRF: where is acs_test.df? I get an error here
 
 acs_test.df$pred = predict(final_forest, acs_test.df, type = "class")
 
@@ -445,7 +434,9 @@ tags <- c('0','1', '2', '3', '4', '5', '6', '7', '8' ,'9' ,'10', '11', '12')
 cps_fexpend_f$hhsize_f <- cut(cps_fexpend_f$hhsize, breaks = breaks, include.lowest = TRUE, right = FALSE, labels = tags)
 
 # ANALYSIS OF VARIABLES
-ggplot(data = cps_fexpend, aes (x = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense", y = "Number of Households")
+ggplot(data = cps_fexpend, aes (x = fexpend, fill = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense In USD", y = "Number of Households") +
+  scale_x_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "Blues")
+
 
 # ANALYSIS OF DISABILITY VARIABLE
 
