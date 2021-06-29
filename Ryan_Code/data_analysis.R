@@ -453,7 +453,8 @@ ggplot(aes(x = disability, y = me), data = cps_fexpend_disability) + geom_bar(st
   labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity") +
   scale_y_continuous(labels=scales::dollar_format())
 
-ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend), data = cps_fexpend) +
+ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend, fill = disability), data = cps_fexpend_f) +
+  labs(x = "If Disabled Person Lives Within Household", y = "Level of Food Expenditure Within Household", fill = "Disability Level") +
   scale_y_continuous(labels=scales::dollar_format())
 
 # ANALYSIS OF ELDERLY VARIABLE
@@ -464,16 +465,19 @@ ggplot(data = cps_fexpend, aes (x = elderly))+geom_bar() + geom_text(stat = 'cou
 
 cps_fexpend_elderly <- cps_fexpend %>% group_by(elderly) %>% summarise(mexp = mean(fexpend))
 
-ggplot(aes(x = elderly, y = mexp), data = cps_fexpend_elderly) + geom_bar(stat = "Identity") + 
-  labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household") + 
+ggplot(aes(x = elderly, y = mexp, fill = mexp), data = cps_fexpend_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household", fill = "Average Amount in USD") + 
   scale_y_continuous(labels=scales::dollar_format())
 
-ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend), data = cps_fexpend)
+ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend), data = cps_fexpend) +
+  labs(x = "Number of Elderly in Household", y = "Amount of Food Expenditure in Household") +
+  scale_y_continuous(labels=scales::dollar_format())
 
 # ANALYSIS OF EDUCATION VARIABLE
 
 ggplot(data = cps_fexpend, aes(x = education))+ geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
-  labs(x = "Number of Educated Individuals Within Household", y = "Number of Households")
+  labs(x = "Number of Educated Individuals Within Household", y = "Number of Households") +
+  scale_color_brewer(palette = "Blues")
 
 cps_fexpend_education <- cps_fexpend %>% group_by(education) %>% summarise(med = mean(fexpend))
 
