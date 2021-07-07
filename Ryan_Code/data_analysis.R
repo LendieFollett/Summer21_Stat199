@@ -427,6 +427,9 @@ exp(confint(fexpend.glm3))
 # exp(-0.25484) = .7750404. This means that for every new educated person within the household, the odds of said household spending $0 on food per person
 # decreases by about 22.50%.
 
+
+# CREATE IMAGINARY FAMILIES TO DEMONSTRATE DIFFERENCES BETWEEN FAMILY. 
+
 cps_fexpend_f <- cps_fexpend
 
 cps_fexpend_f$disability <- ifelse(cps_fexpend_f$disability > 0, "Yes", "No")
@@ -458,6 +461,8 @@ ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend, fil
   scale_y_continuous(labels=scales::dollar_format())
 
 # ANALYSIS OF ELDERLY VARIABLE
+# ADD scale_y_log10() to see how the 
+
 
 ggplot(data = cps_fexpend, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Elderly In Household", y = "Number of Households") +
@@ -467,17 +472,20 @@ cps_fexpend_elderly <- cps_fexpend %>% group_by(elderly) %>% summarise(mexp = me
 
 ggplot(aes(x = elderly, y = mexp, fill = mexp), data = cps_fexpend_elderly) + geom_bar(stat = "Identity") + 
   labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household", fill = "Average Amount in USD") + 
-  scale_y_continuous(labels=scales::dollar_format())
+  scale_y_continuous(labels=scales::dollar_format()) 
 
-ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend), data = cps_fexpend) +
-  labs(x = "Number of Elderly in Household", y = "Amount of Food Expenditure in Household") +
-  scale_y_continuous(labels=scales::dollar_format())
+ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend, fill = elderly), data = cps_fexpend) +
+  labs(x = "Number of Elderly in Household", y = "Amount of Food Expenditure in Household - log scale", fill = "# of Elderly") +
+  scale_y_continuous(labels=scales::dollar_format()) + scale_y_log10(labels = scales::dollar_format()) + 
+  scale_fill_distiller(palette = "BuGn")
+
+display.brewer.all(colorblindFriendly = T)
 
 # ANALYSIS OF EDUCATION VARIABLE
 
-ggplot(data = cps_fexpend, aes(x = education))+ geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
+ggplot(data = cps_fexpend, aes(x = education))+ geom_bar(aes(fill = education)) + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
   labs(x = "Number of Educated Individuals Within Household", y = "Number of Households") +
-  scale_color_brewer(palette = "Blues")
+  scale_fill_distiller(palette = "Blues")
 
 cps_fexpend_education <- cps_fexpend %>% group_by(education) %>% summarise(med = mean(fexpend))
 
@@ -519,6 +527,8 @@ ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x =
 
 # FOR LATER
 
+
+# ADD Illustrations and add to glm specifically for different presentation
 
 # CREATE PLOTS FOR urban_c 
 
