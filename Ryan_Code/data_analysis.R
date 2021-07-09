@@ -137,7 +137,11 @@ ggplot(data = cps_fsecurity, aes(x = education))+ geom_bar() + geom_text(stat = 
 cps_education <- cps_fsecurity %>% group_by(education) %>% summarise(med = mean(fsecurity))
 
 ggplot(aes(x = education, y = med, fill = education), data = cps_education) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Educated")
+  labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Educated") +
+  scale_fill_distiller(palette = "Blues")
+
+ggplot() + geom_boxplot(aes(group = education, x = education, y = fsecurity, fill = education), data = cps_fsecurity) +
+  scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Individuals With Associates or Higher Within Household", y = "Food Security Level Per Household - log scale", fill = "Number of Educated")
 
 # ANALYSIS OF EMPLOYED VARIABLE
 
