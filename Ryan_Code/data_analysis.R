@@ -151,8 +151,10 @@ ggplot(data = cps_fsecurity, aes(x = employed))+ geom_bar() + geom_text(stat = '
 cps_employed <- cps_fsecurity %>% group_by(employed) %>% summarise(memp = mean(fsecurity))
 
 ggplot(aes(x = employed, y = memp, fill = employed), data = cps_employed) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Employed Individuals Within Household", y = "Average Level of Food Insecurity") 
-
+  labs(x = "Number of Employed Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Employed") + scale_fill_distiller(palette = "Blues")
+  
+ggplot() + geom_boxplot(aes(group = employed, x = employed, y = fsecurity, fill = employed), data = cps_fsecurity) +
+  scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Employed Individuals Within Household", y = "Food Security Level Per Household - log scale", fill = "Number of Employed")
 
 # ANALYSIS OF HHSIZE VARIABLE
 
@@ -474,13 +476,13 @@ ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend, fil
 
 ggplot(data = cps_fexpend, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Elderly In Household", y = "Number of Households") +
-  scale_fill_brewer(palette = "Blues")
+  scale_fill_brewer(palette = "BuGn")
 
 cps_fexpend_elderly <- cps_fexpend %>% group_by(elderly) %>% summarise(mexp = mean(fexpend))
 
 ggplot(aes(x = elderly, y = mexp, fill = mexp), data = cps_fexpend_elderly) + geom_bar(stat = "Identity") + 
   labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household", fill = "Average Amount in USD") + 
-  scale_y_continuous(labels=scales::dollar_format()) 
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
 
 ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend, fill = elderly), data = cps_fexpend) +
   labs(x = "Number of Elderly in Household", y = "Amount of Food Expenditure in Household - log scale", fill = "# of Elderly") +
@@ -529,7 +531,7 @@ cps_fexpend_employed <- cps_fexpend_f %>% group_by(hhsize_f) %>% summarise(Avera
 
 ggplot(aes(x = hhsize_f, y = Average, fill = Average), data = cps_fexpend_employed) + geom_bar(stat = "Identity") +
   labs(x = "Number of Individuals Within Household", y = "Average Level of Food Insecurity") +
-  scale_y_continuous(labels=scales::dollar_format())
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
 
 ggplot() + geom_boxplot(aes(group = hhsize, x = disability, y = fexpend), data = cps_fexpend)
 
