@@ -489,11 +489,12 @@ ggplot(data = cps_fexpend, aes(x = education))+ geom_bar(aes(fill = education)) 
 
 cps_fexpend_education <- cps_fexpend %>% group_by(education) %>% summarise(med = mean(fexpend))
 
-ggplot(aes(x = education, y = med), data = cps_fexpend_education) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household") +
-  scale_y_continuous(labels=scales::dollar_format())
+ggplot(aes(x = education, y = med, fill = med), data = cps_fexpend_education) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Educated in Household", y = "Average Amount of Food Expenditure in Household", fill = "Average Food Expense USD") +
+  scale_y_continuous(labels=scales::dollar_format()) +  scale_fill_distiller(palette = "BuGn", labels=scales::dollar_format())
 
-ggplot() + geom_boxplot(aes(group = education, x = education, y = fexpend), data = cps_fexpend)
+ggplot() + geom_boxplot(aes(group = education, x = education, y = fexpend, fill = education), data = cps_fexpend) +
+  scale_y_log10(labels = scales::dollar_format()) + labs(x = "Number of Educated in Household", y = "Average Amount of Food Expenditure in Househod - log scale", fill = "Number of Educated") + scale_fill_distiller(palette = "BuGn")
 
 # ANALYSIS OF EMPLOYED VARIABLE
 
@@ -565,6 +566,13 @@ ggplot(aes(x = urban_c, y = Average, fill = Average)) +
 labs(x = "", y = "Average Spent Per Week, Person") + #gLRF: ood labels
   theme(legend.position = "none") #LRF: legend not necessary here
 #  labs(x = "Number of Individuals Within Household", y = "Average Level of Food Insecurity")
+
+
+# CREATE GLM WITH URBANICITY INCLUDED FOR BOTH FOOD SECURITY AND EXPENDITURE
+
+urbanicity.glm <- zeroinfl(fsecurity ~ disability + education + elderly + urban_c| disability + education + elderly + urban_c, data = cps_fsecurity)
+
+urbanicity.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend_new, family = Gamma(link = "log"))
 
 # CREATE Heatmap, other cluster based visualizations?
 

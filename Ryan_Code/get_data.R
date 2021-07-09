@@ -116,8 +116,3 @@ write.csv(cps, "Ryan_data/cps(clean).csv")
 # THE NA's are around 15007 out of 49259
 
 table(cps$fexpend > 0)
-
-# I think I got this all to work? I might need to work on the acs file in order to get it to match up more with the
-# cps file, not certain though. If not I can begin creating categorical variables and 
-# data visualizations and then begin to create randomForest, ROCCurve,
-# etc. 
