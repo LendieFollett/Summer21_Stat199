@@ -93,7 +93,7 @@ cps_fsecurity$disability_cat = as.factor(cps_fsecurity$disability_cat)
 cps_fsecurity$fsecurity_cat = ifelse(cps_fsecurity$fsecurity > 0, "yes", "no")
 cps_fsecurity$fsecurity_cat = as.factor(cps_fsecurity$fsecurity_cat)
 
-ggplot(data = cps_fsecurity, aes(x = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+ggplot(data = cps_fsecurity, aes(x = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Disabled Individual Living Within Household", y = "Number of Households") 
 
 cps_disability <- cps_fsecurity %>% group_by(disability_cat) %>% summarise(Average = mean(fsecurity))
