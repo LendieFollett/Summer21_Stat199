@@ -104,7 +104,7 @@ ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_disabili
 
 ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
   labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity", fill = "If Disabled") + 
-  scale_fill_distiller(palette = "Blues")
+  scale_fill_brewer(palette = "Blues")
 
 
 # ggplot(data = cps_fsecurity) +
@@ -463,12 +463,12 @@ ggplot(data = cps_fexpend_f, aes (x = disability))+geom_bar() + geom_text(stat =
 cps_fexpend_disability <- cps_fexpend_f %>% group_by(disability) %>% summarise(me = mean(fexpend))
 
 ggplot(aes(x = disability, y = me, fill = me), data = cps_fexpend_disability) + geom_bar(stat = "Identity") +
-  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity") +
+  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity", fill = "Average Amount in USD") +
   scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
 
 ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend, fill = disability), data = cps_fexpend_f) +
   labs(x = "If Disabled Person Lives Within Household", y = "Level of Food Expenditure Within Household", fill = "Disability Level") +
-  scale_y_continuous(labels=scales::dollar_format())
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "BuGn")
 
 # ANALYSIS OF ELDERLY VARIABLE
 # ADD scale_y_log10() to see how the 
