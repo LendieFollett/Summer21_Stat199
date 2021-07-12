@@ -28,7 +28,7 @@ Row {data-height=400}
 ### Distribution of Petal Length by Species
 
 ```{r, fig.width = 15}
- ggplot(data = iris) +
+ ggplot(data = iris) + #iris is pre-loaded into R. With other data sets, you'll have to load them as usual.
       geom_density(aes(x = Petal.Length, fill = Species)) +
   facet_wrap(~Species, nrow = 1)+
   scale_fill_viridis_d() +
