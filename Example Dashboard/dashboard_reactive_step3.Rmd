@@ -185,15 +185,16 @@ Row
 
 ```{r }
 
-renderValueBox({
-  new.df <- data.frame(Sepal.Length = input$Sepal.Length.input, #<-- calling the reactive input!
+new.df <- reactive({data.frame(Sepal.Length = input$Sepal.Length.input, #<-- calling the reactive input!
                      Sepal.Width = input$Sepal.Width.input,
                      Petal.Length = input$Petal.Length.input,
-                     Petal.Width = input$Petal.Width.input)
+                     Petal.Width = input$Petal.Width.input)})
 
-prediction_class <- predict(myforest, new.df, type = "class") #based on user-supplied input!
+prediction_class <- reactive({predict(myforest, new.df(), type = "class")}) #based on user-supplied input!
 
-valueBox(prediction_class, 
+renderValueBox({
+
+valueBox(prediction_class(), 
            icon = "chart-line",
            color = "blue") 
   
