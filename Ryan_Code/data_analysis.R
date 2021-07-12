@@ -595,6 +595,8 @@ AIC(urbanicity.glm)
 
 # CREATE Heatmap, other cluster based visualizations?
 
+acs = read.csv("Ryan_Data/acs(clean).csv")
+
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 
 
