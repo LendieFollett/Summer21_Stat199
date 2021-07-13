@@ -93,8 +93,8 @@ cps_fsecurity$disability_cat = as.factor(cps_fsecurity$disability_cat)
 cps_fsecurity$fsecurity_cat = ifelse(cps_fsecurity$fsecurity > 0, "yes", "no")
 cps_fsecurity$fsecurity_cat = as.factor(cps_fsecurity$fsecurity_cat)
 
-ggplot(data = cps_fsecurity, aes(x = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
-  labs(x = "Disabled Individual Living Within Household", y = "Number of Households") 
+ggplot(data = cps_fsecurity, aes(x = disability_cat, fill = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Disabled Individual Living Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "Blues")
 
 cps_disability <- cps_fsecurity %>% group_by(disability_cat) %>% summarise(Average = mean(fsecurity))
 
@@ -116,8 +116,8 @@ ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsec
 
 # ANALYSIS OF ELDERLY VARIABLE
 
-ggplot(data = cps_fsecurity, aes (x = elderly))+geom_bar() + scale_fill_brewer(palette = "Blues") + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
-  labs(x = "Number of Elderly in Household", y = "Number of Households")
+ggplot(data = cps_fsecurity, aes(x = elderly, fill = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Number of Elderly in Household", y = "Number of Households") + scale_fill_fermenter(palette = "Blues") 
 
 cps_elderly <- cps_fsecurity %>% group_by(elderly) %>% summarise(meld = mean(fsecurity))
 
@@ -457,8 +457,8 @@ ggplot(data = cps_fexpend, aes (x = fexpend, fill = fexpend))+geom_histogram(bin
 
 # ANALYSIS OF DISABILITY VARIABLE
 
-ggplot(data = cps_fexpend_f, aes (x = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
-  labs(x = "If Disabled Individual Within Household", y = "Number of Households") 
+ggplot(data = cps_fexpend_f, aes (x = disability, fill = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "If Disabled Individual Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "BuGn")
 
 cps_fexpend_disability <- cps_fexpend_f %>% group_by(disability) %>% summarise(me = mean(fexpend))
 
@@ -607,7 +607,7 @@ county_list = unique(counties("Iowa")$NAME)
 county_list = county_list[order(county_list)]
 all_counties = block_groups(state = 'IA', county = county_list)
 
-is_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
+ia_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
   rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
 
 
