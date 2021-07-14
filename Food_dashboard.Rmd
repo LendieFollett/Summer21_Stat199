@@ -1,0 +1,77 @@
+---
+title: "Food Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    runtime: shiny
+  orientation: rows
+---
+```{r setup, include=FALSE}
+#multiple pages within one dashboard
+#https://rmarkdown.rstudio.com/flexdashboard/layouts.html#multiple_pages
+library(flexdashboard)
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+library(reshape2)
+#NOTE: "-----------------------------------------------------------------------" is the section delimiter
+#NOTE: "===================================== " is the PAGE delimiter
+
+```
+Data Overview
+===
+
+Row {data-height=200}
+-----------------------------------------------------------------------
+
+### Goal of Research:
+
+The goal of this analysis is to find determinants of food insecurity. The reason for doing so is humanitarian in nature as the
+increase in efficacy of food distribution centers by determining higher risk areas should decrease the level of food 
+
+
+### 
+
+
+
+Important Variables
+===
+
+
+Row {data-height=400}
+---
+
+
+### Disability Analysis
+
+
+```{r, fig.width = 15}
+ggplot(data = cps_fsecurity, aes(x = disability_cat, fill = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Disabled Individual Living Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "Blues")
+```
+
+
+
+Row {data-height=400}
+
+
+Predictive Model
+===
+
+
+
+
+
+Descriptive Model
+===
+
+
+
+
+Heat Map & Prediction
+===
+
+
+
+
+
+
