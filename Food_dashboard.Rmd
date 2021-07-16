@@ -1,0 +1,106 @@
+---
+title: "Food Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    runtime: shiny
+  orientation: rows
+---
+```{r setup, include=FALSE}
+#multiple pages within one dashboard
+#https://rmarkdown.rstudio.com/flexdashboard/layouts.html#multiple_pages
+library(flexdashboard)
+library(ggplot2)
+library(dplyr)
+library(RColorBrewer)
+library
+
+
+cps = read.csv("Ryan_Data/cps(clean).csv")
+cps$urban_c <- cps$urban
+cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
+                          ifelse(cps$urban_c == 2, "Large Fringe Metro",
+                            ifelse(cps$urban_c == 3, "Medium Metro", 
+                                 ifelse(cps$urban_c == 4, "Small Metro",
+                                        ifelse(cps$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
+
+cps$urban_c[is.na(cps$urban_c)] <- c("Non-Core/Possibly Rural")
+cps$urban_c <- factor(cps$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+                                              "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
+cps$fsecurity_f = ifelse(cps$fsecurity > 0, "yes", "no")
+
+cps_fsecurity <- cps[!is.na(cps$fsecurity),]
+cps_fexpend <- cps[!is.na(cps$fexpend),]
+
+cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
+
+cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
+
+ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecure", y = "Number of Households")
+
+# ANALYSIS OF DISABILITY VARIABLE
+
+cps_fsecurity$disability_cat = ifelse(cps_fsecurity$disability > 0, "Yes", "No")
+cps_fsecurity$disability_cat = as.factor(cps_fsecurity$disability_cat)
+
+cps_fsecurity$fsecurity_cat = ifelse(cps_fsecurity$fsecurity > 0, "yes", "no")
+cps_fsecurity$fsecurity_cat = as.factor(cps_fsecurity$fsecurity_cat)
+#NOTE: "-----------------------------------------------------------------------" is the section delimiter
+#NOTE: "===================================== " is the PAGE delimiter
+
+```
+Data Overview
+===
+
+Row {data-height=200}
+-----------------------------------------------------------------------
+
+### Goal of Research:
+
+The goal of this analysis is to find determinants of food insecurity. The reason for doing so is humanitarian in nature as the
+increase in efficacy of food distribution centers by determining higher risk areas should decrease the level of food 
+
+
+### 
+
+
+
+Important Variables
+===
+
+
+Row {data-height=500}
+---
+
+
+### Disability Analysis
+
+
+```{r, fig.width = 15}
+ggplot(data = cps_fsecurity, aes(x = disability_cat, fill = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Disabled Individual Living Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "Blues")
+```
+
+
+
+
+Predictive Model
+===
+
+
+
+
+
+Descriptive Model
+===
+
+
+
+
+Heat Map & Prediction
+===
+
+
+
+
+
+

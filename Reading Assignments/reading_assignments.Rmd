@@ -71,6 +71,8 @@ One suggestion I can commit to implementing is the use of a metadata file in ord
 
 ## Aspects of statistical consulting not taught by academia
 
+
+
 ## Last Reading Assignment 
 Create and turn in a new .Rmd / pdf for short essay.
 
