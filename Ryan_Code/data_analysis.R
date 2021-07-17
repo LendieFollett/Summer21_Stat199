@@ -533,7 +533,7 @@ ggplot(aes(x = hhsize_f, y = Average, fill = Average), data = cps_fexpend_employ
   labs(x = "Number of Individuals Within Household", y = "Average Level of Food Insecurity") +
   scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
 
-ggplot() + geom_boxplot(aes(group = hhsize, x = disability, y = fexpend), data = cps_fexpend)
+ggplot() + geom_boxplot(aes(group = round(hhsize,0), x = round(hhsize,0), y = fexpend), data = cps_fexpend)
 
 
 ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x = "Number of Family Members Within Household", y = "Food Expense" ) +
@@ -595,6 +595,11 @@ AIC(urbanicity.glm)
 
 # CREATE Heatmap, other cluster based visualizations?
 
+
+# I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
+
+
+
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
@@ -633,3 +638,8 @@ leaflet(ia_shp_join, height = 500, width = 1000) %>%
     opacity = 0.7, title = "Iowa Elderly",
     position = "bottomright"
   )
+
+
+
+
+cps_raw = read.csv("Ryan_Data/cps(raw).csv")

@@ -1,8 +1,8 @@
 ---
 title: "Food Dashboard"
+runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
-    runtime: shiny
   orientation: rows
 ---
 ```{r setup, include=FALSE}
@@ -12,8 +12,16 @@ library(flexdashboard)
 library(ggplot2)
 library(dplyr)
 library(RColorBrewer)
-library
-
+library(reshape2)
+library(skimr)
+library(randomForest)
+library(caret)
+library(e1071)
+library(corrplot)
+library(MASS)
+library(gt)
+library(Metrics)
+library(gridExtra)
 
 cps = read.csv("Ryan_Data/cps(clean).csv")
 cps$urban_c <- cps$urban
@@ -64,43 +72,314 @@ increase in efficacy of food distribution centers by determining higher risk are
 
 
 
-Important Variables
+Important Variables - Food Security {data-navmenu="Important Variables"}
 ===
 
-
-Row {data-height=500}
+Column {.tabset}
 ---
-
-
-### Disability Analysis
-
-
-```{r, fig.width = 15}
-ggplot(data = cps_fsecurity, aes(x = disability_cat, fill = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+### Disability Analysis 
+```{r, fig.width = 20, fig.height = 12}
+p1 <- ggplot(data = cps_fsecurity, aes(x = disability_cat, fill = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Disabled Individual Living Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "Blues")
+
+cps_disability <- cps_fsecurity %>% group_by(disability_cat) %>% summarise(Average = mean(fsecurity))
+
+p2 <- ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_disability ) + geom_bar(stat = "Identity") +
+  labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity", fill = "Average Level") +
+  scale_fill_distiller(palette = "Blues")
+
+p3 <- ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
+  labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity - log scale", fill = "If Disabled") + 
+  scale_fill_brewer(palette = "Blues") + scale_y_log10()
+
+grid.arrange(p1, p2, p3, nrow = 1)
+```
+
+### Elderly Analysis
+```{r, fig.width = 20, fig.height = 12}
+g1 <- ggplot(data = cps_fsecurity, aes(x = elderly, fill = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Number of Elderly in Household", y = "Number of Households") + scale_fill_fermenter(palette = "Blues") 
+
+cps_elderly <- cps_fsecurity %>% group_by(elderly) %>% summarise(meld = mean(fsecurity))
+
+g2 <- ggplot(aes(x = elderly, y = meld, fill = elderly), data = cps_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity", fill = "Number of Elderly") +
+  scale_fill_distiller(palette = "Blues")
+
+g3 <- ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fsecurity, fill = elderly), data = cps_fsecurity) + 
+  scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Elderly Within Household", y = "Food Security Level Per Household - Log Scale", fill = "Number of Elderly")
+
+
+grid.arrange(g1, g2, g3, nrow = 1)
+```
+
+### Education Analysis
+```{r, fig.width = 20, fig.height = 12}
+q1 <- ggplot(data = cps_fsecurity, aes(x = education))+ geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
+  labs(x = "Number of Educated Individuals Within Household", y = "Number of Households")
+
+cps_education <- cps_fsecurity %>% group_by(education) %>% summarise(med = mean(fsecurity))
+
+q2 <- ggplot(aes(x = education, y = med, fill = education), data = cps_education) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Educated") +
+  scale_fill_distiller(palette = "Blues")
+
+q3 <- ggplot() + geom_boxplot(aes(group = education, x = education, y = fsecurity, fill = education), data = cps_fsecurity) +
+  scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Individuals With Associates or Higher Within Household", y = "Food Security Level Per Household - log scale", fill = "Number of Educated")
+
+
+grid.arrange(q1, q2, q3, nrow = 1)
+```
+
+### Employed Analysis
+```{r, fig.width = 20, fig.height = 12}
+p1 <- ggplot(data = cps_fsecurity, aes(x = employed))+ geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Employed Individuals Within Household", y = "Number of Households")
+
+cps_employed <- cps_fsecurity %>% group_by(employed) %>% summarise(memp = mean(fsecurity))
+
+p2 <- ggplot(aes(x = employed, y = memp, fill = employed), data = cps_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Employed Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Employed") + scale_fill_distiller(palette = "Blues")
+  
+p3 <- ggplot() + geom_boxplot(aes(group = employed, x = employed, y = fsecurity, fill = employed), data = cps_fsecurity) +
+  scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Employed Individuals Within Household", y = "Food Security Level Per Household - log scale", fill = "Number of Employed")
+
+grid.arrange(p1, p2, p3, nrow = 1)
+```
+
+### Household Size Analysis
+```{r, fig.width = 20, fig.height = 12}
+k1 <- ggplot(data = cps_fsecurity, aes(x = round(hhsize,0))) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Family Members Within Household", y = "Number of Households")
+
+k2 <- ggplot(data = cps_fexpend, aes(x = fexpend))+geom_histogram(binwidth = 5)+ labs(x = "Food Expense", y = "Numer of Households" )
+
+grid.arrange(k1, k2, nrow = 1)
 ```
 
 
+Important Variables - Food Expenditure {data-navmenu="Important Variables"}
+===
+Column {.tabset}
+---
+```{r, warning=FALSE, show=FALSE}
+cps_fexpend_f <- cps_fexpend
+
+cps_fexpend_f$disability <- ifelse(cps_fexpend_f$disability > 0, "Yes", "No")
+
+breaks <- c(0, 1, 2, 3, 4, 5, 6, 7, 8 ,9 ,10, 11, 12, 13)
+
+tags <- c('0','1', '2', '3', '4', '5', '6', '7', '8' ,'9' ,'10', '11', '12')
+
+cps_fexpend_f$hhsize_f <- cut(cps_fexpend_f$hhsize, breaks = breaks, include.lowest = TRUE, right = FALSE, labels = tags)
+
+```
 
 
-Predictive Model
+### Disability Analysis
+```{r, fig.width = 20, fig.height = 12}
+f1 <- ggplot(data = cps_fexpend_f, aes (x = disability, fill = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "If Disabled Individual Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "BuGn")
+
+cps_fexpend_disability <- cps_fexpend_f %>% group_by(disability) %>% summarise(me = mean(fexpend))
+
+f2 <- ggplot(aes(x = disability, y = me, fill = me), data = cps_fexpend_disability) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity", fill = "Average Amount in USD") +
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
+
+f3 <- ggplot() + geom_boxplot(aes(group = disability, x = disability, y = fexpend, fill = disability), data = cps_fexpend_f) +
+  labs(x = "If Disabled Person Lives Within Household", y = "Level of Food Expenditure Within Household", fill = "Disability Level") +
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "BuGn")
+
+grid.arrange(f1, f2, f3, nrow = 1)
+```
+
+
+### Elderly Analysis
+```{r, fig.width = 20, fig.height = 12}
+d1 <- ggplot(data = cps_fexpend, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
+  labs(x = "Elderly In Household", y = "Number of Households") +
+  scale_fill_brewer(palette = "BuGn")
+
+cps_fexpend_elderly <- cps_fexpend %>% group_by(elderly) %>% summarise(mexp = mean(fexpend))
+
+d2 <- ggplot(aes(x = elderly, y = mexp, fill = mexp), data = cps_fexpend_elderly) + geom_bar(stat = "Identity") + 
+  labs(x = "Number of Elderly in Household", y = "Average Amount of Food Expenditure in Household", fill = "Average Amount in USD") + 
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
+
+d3 <- ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fexpend, fill = elderly), data = cps_fexpend) +
+  labs(x = "Number of Elderly in Household", y = "Amount of Food Expenditure in Household - log scale", fill = "# of Elderly") +
+  scale_y_continuous(labels=scales::dollar_format()) + scale_y_log10(labels = scales::dollar_format()) + 
+  scale_fill_distiller(palette = "BuGn")
+
+grid.arrange(d1, d2, d3, nrow = 1)
+```
+
+### Education Analysis
+```{r, fig.width = 20, fig.height = 12}
+z1 <- ggplot(data = cps_fexpend, aes(x = education))+ geom_bar(aes(fill = education)) + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
+  labs(x = "Number of Educated Individuals Within Household", y = "Number of Households") +
+  scale_fill_distiller(palette = "BuGn")
+
+cps_fexpend_education <- cps_fexpend %>% group_by(education) %>% summarise(med = mean(fexpend))
+
+z2 <- ggplot(aes(x = education, y = med, fill = med), data = cps_fexpend_education) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Educated in Household", y = "Average Amount of Food Expenditure in Household", fill = "Average Food Expense USD") +
+  scale_y_continuous(labels=scales::dollar_format()) +  scale_fill_distiller(palette = "BuGn", labels=scales::dollar_format())
+
+z3 <- ggplot() + geom_boxplot(aes(group = education, x = education, y = fexpend, fill = education), data = cps_fexpend) +
+  scale_y_log10(labels = scales::dollar_format()) + labs(x = "Number of Educated in Household", y = "Average Amount of Food Expenditure in Househod - log scale", fill = "Number of Educated") + scale_fill_distiller(palette = "BuGn")
+
+grid.arrange(z1, z2, z3, nrow = 1)
+```
+
+
+### Employed Analysis
+```{r, fig.width = 20, fig.height = 12}
+j1 <- ggplot(data = cps_fexpend, aes(x = employed))+ geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of employed Individuals Within Household", y = "Number of Households")
+
+cps_fexpend_employed <- cps_fexpend %>% group_by(employed) %>% summarise( Average = mean(fexpend))
+
+j2 <- ggplot(aes(x = employed, y = Average, fill = Average), data = cps_fexpend_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Employed in Household", y = "Average Amount of Food Expenditure Per Household", fill = "Average Amount in USD") +
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
+
+j3 <- ggplot() + geom_boxplot(aes(group = employed, x = employed, y = fexpend, fill = employed), data = cps_fexpend) + 
+  labs(x = "Number of Employed Within Household - log scale", y = "Food Expenditure Per Household", fill = "Number of Employed") +
+  scale_y_log10(labels = scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
+
+grid.arrange(j1, j2, j3, nrow = 1)
+```
+
+
+### Household Size Analysis
+```{r, fig.width = 20, fig.height = 12}
+s1 <- ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_histogram(binwidth = 1) + 
+  #geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Family Members Household", y = "Number of Households")
+
+cps_fexpend_employed <- cps_fexpend_f %>% group_by(hhsize_f) %>% summarise(Average = mean(fexpend))
+
+s2 <- ggplot(aes(x = hhsize_f, y = Average, fill = Average), data = cps_fexpend_employed) + geom_bar(stat = "Identity") +
+  labs(x = "Number of Individuals Within Household", y = "Average Level of Food Insecurity") +
+  scale_y_continuous(labels=scales::dollar_format()) + scale_fill_distiller(palette = "BuGn")
+
+s3 <- ggplot() + geom_boxplot(aes(group = round(hhsize,0), x = round(hhsize,0), y = fexpend, fill = round(hhsize,0)), data = cps_fexpend) +
+  labs(x = "Number of Individuals Within Household", y = "Food Expenditure Per Household", fill = "Number of Individuals") +
+  scale_fill_distiller(palette = "BuGn") + scale_y_continuous(labels=scales::dollar_format())
+
+
+s4 <- ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x = "Number of Family Members Within Household", y = "Food Expense" ) +
+  scale_y_continuous(labels=scales::dollar_format())
+
+grid.arrange(s1, s2, s3, s4, nrow = 2)
+```
+
+
+Predictive Model - Food Security {data-navmenu="Predictive Models"}
+===
+```{}
+final_forest <- readRDS("final_forest.RDS")
+
+varImpPlot(final_forest, type = 1)
+```
+
+Predictive Model - Food Expenditure {data-navmenu="Predictive Models"}
+===
+
+```{}
+fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
+
+varImpPlot(fexpend_final_forest, type = 1)
+```
+
+
+Descriptive Model - Food Security {data-navmenu="Descriptive Models"}
 ===
 
 
+### Descriptive Model - Food Security
+```{r, fig.width = 15. fig.height = 12}
+fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c| disability + education + elderly + urban_c, data = cps_fsecurity)
+h1 <- fsecurity.glm2
+h2 <- beta_hat <- coef(fsecurity.glm2)
+h3 <- exp(beta_hat)
+h4 <- exp(confint(fsecurity.glm2))
 
+grid.arrange(h1, h2, h3, h4, nrow = 2)
+```
 
-
-Descriptive Model
+Descriptive Model - Food Expenditure {data-navmenu="Descriptive Models"}
 ===
 
+### Descriptive Model - Food Expenditure
+```{r, fig.width = 15, fig.height = 12}
+cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
+
+cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
+
+fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend_new, family = Gamma(link = "log"))
+fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend, family = binomial(link = "log"))
+
+fexpend.glm2
+
+fexpend.glm3
+
+beta_hat1 <- coef(fexpend.glm2)
+exp(beta_hat1)
+exp(confint(fexpend.glm2))
+
+beta_hat2 <- coef(fexpend.glm3)
+exp(beta_hat2)
+exp(confint(fexpend.glm3))
+
+grid.arrange()
+```
 
 
 
 Heat Map & Prediction
 ===
 
+```{r, fig.height = , fig.width = }
+acs = read.csv("Ryan_Data/acs(clean).csv")
+
+acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 
 
+ia_shp = block_groups(state = "IA")
 
+county_list = unique(counties("Iowa")$NAME)
+county_list = county_list[order(county_list)]
+all_counties = block_groups(state = 'IA', county = county_list)
+
+ia_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
+  rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
+
+
+pal_bin = colorBin(
+  palette = "YlOrRd", domain = ia_shp_join$elderly,
+  bins = seq(0, max(ia_shp_join$elderly, na.rm = TRUE), length.out = 9)
+)
+
+leaflet(ia_shp_join, height = 500, width = 1000) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor =~ pal_bin(elderly),
+    color = "white",
+    stroke = FALSE,
+    fillOpacity = 0.6,
+    highlight = highlightOptions(
+      color = "black",
+      bringToFront = TRUE
+    )
+  )%>%
+  leaflet::addLegend(
+    pal = pal_bin, values=~elderly,
+    opacity = 0.7, title = "Iowa Elderly",
+    position = "bottomright"
+  )
+```
 
 
