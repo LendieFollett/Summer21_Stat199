@@ -22,6 +22,11 @@ library(MASS)
 library(gt)
 library(Metrics)
 library(gridExtra)
+library(pscl)
+library(boot)
+library(rpart)
+library(rpart.plot)
+
 
 cps = read.csv("Ryan_Data/cps(clean).csv")
 cps$urban_c <- cps$urban
@@ -279,7 +284,7 @@ grid.arrange(s1, s2, s3, s4, nrow = 2)
 
 Predictive Model - Food Security {data-navmenu="Predictive Models"}
 ===
-```{}
+```{r, fig.width = 15, fig.height = 12}
 final_forest <- readRDS("final_forest.RDS")
 
 varImpPlot(final_forest, type = 1)
@@ -288,7 +293,7 @@ varImpPlot(final_forest, type = 1)
 Predictive Model - Food Expenditure {data-navmenu="Predictive Models"}
 ===
 
-```{}
+```{r, fig.width = 15, fig.height = 12}
 fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
 
 varImpPlot(fexpend_final_forest, type = 1)
@@ -299,22 +304,39 @@ Descriptive Model - Food Security {data-navmenu="Descriptive Models"}
 ===
 
 
-### Descriptive Model - Food Security
-```{r, fig.width = 15. fig.height = 12}
-fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c| disability + education + elderly + urban_c, data = cps_fsecurity)
-h1 <- fsecurity.glm2
-h2 <- beta_hat <- coef(fsecurity.glm2)
-h3 <- exp(beta_hat)
-h4 <- exp(confint(fsecurity.glm2))
 
-grid.arrange(h1, h2, h3, h4, nrow = 2)
+
+Column{.tabset}
+---
+
+### Zero Inflation Poisson Model
+<font size="3"> 
+Summary 
+</font> 
+```{r, attr.output='style="max-height: 400px;"'}
+fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c| disability + education + elderly + urban_c, data = cps_fsecurity)
+
+summary(fsecurity.glm2)
+```
+
+### Exponentiated Coefficients and Confidence Intervals
+```{r,  attr.output='style="max-height: 400px;"'}
+exp(coef(fsecurity.glm2))
+exp(confint(fsecurity.glm2))
+
 ```
 
 Descriptive Model - Food Expenditure {data-navmenu="Descriptive Models"}
 ===
 
-### Descriptive Model - Food Expenditure
-```{r, fig.width = 15, fig.height = 12}
+Column{.tabset}
+---
+
+### Zero Adjusted Gamma Model
+<font size="3"> 
+Summary 
+</font> 
+```{r, attr.output='style="max-height: 200px;"'}
 cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
 
 cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
@@ -322,19 +344,16 @@ cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
 fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend_new, family = Gamma(link = "log"))
 fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend, family = binomial(link = "log"))
 
-fexpend.glm2
+summary(fexpend.glm2)
 
-fexpend.glm3
+summary(fexpend.glm3)
 
-beta_hat1 <- coef(fexpend.glm2)
-exp(beta_hat1)
+exp(coef(fexpend.glm2))
 exp(confint(fexpend.glm2))
 
-beta_hat2 <- coef(fexpend.glm3)
-exp(beta_hat2)
+exp(coef(fexpend.glm3))
 exp(confint(fexpend.glm3))
 
-grid.arrange()
 ```
 
 
@@ -342,7 +361,7 @@ grid.arrange()
 Heat Map & Prediction
 ===
 
-```{r, fig.height = , fig.width = }
+```
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))

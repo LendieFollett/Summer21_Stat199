@@ -597,10 +597,11 @@ AIC(urbanicity.glm)
 
 
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
-
-
-
 acs = read.csv("Ryan_Data/acs(clean).csv")
+
+acs$fsecurity_predictions <- predict(final_forest, acs, type = "class")
+
+acs$fexpend_predictions <- predict(fexpend_final_forest, acs, type = "class")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 
