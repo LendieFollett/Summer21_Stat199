@@ -105,7 +105,17 @@ county_codes$county_name <- tolower(county_codes$county_name)
 acs_new = merge(x = acs_new, y = county_codes, by = "county_name", all.x = TRUE)
 
 # THE MERGE ISN'T WORKING PROPERLY, MUST BE SOMETHING WRONG WITH acs_new SINCE THAT 
-# IS WHAT I'M MERGING BY 
+# IS WHAT I'M MERGING BY.
+
+# IT'S a problem with states, I need to fix county_codes, acs is an easy fix just need to 
+# not remove that ,STATE
+
+# 1: do an ifelse statement to change abbreviations to statenames, 
+# 2: use paste to combine the state_name with the county_name to get one column 
+# 3: merge the new column with the acs_new column with the state added to prevent
+# cross merging between states with similar county names 
+
+county_codes$county_name <- ifelse(State.Abr.)
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
