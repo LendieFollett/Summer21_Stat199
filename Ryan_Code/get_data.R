@@ -68,6 +68,8 @@ write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filep
 
 # COMBINE ACS AND COUNTY_CODES DATASETS
 
+acs = subset(acs, select = -c(county_name))
+
 county_codes = rename(county_codes, "county_name" = "County.name")
 
 acs = rename(acs, "location" = "X")
@@ -88,13 +90,11 @@ acs$county = gsub("  ", "", acs$county)
 
 acs = rename(acs, "county_name" = "county") 
 
-county_codes = rename(county_codes, "county_name" = "county") 
+county_codes$county_name = as.character(county_codes$county_name)
+
+acs$county_name = as.character(acs$county_name)
 
 acs_new = acs
-
-county_codes$county_name = as.factor(county_codes$county_name)
-
-acs$county_name = as.factor(acs$county_name)
 
 acs_new$county_name <- tolower(acs_new$county_name)
 
@@ -103,6 +103,9 @@ county_codes$county_name <- tolower(county_codes$county_name)
 
 
 acs_new = merge(x = acs_new, y = county_codes, by = "county_name", all.x = TRUE)
+
+# THE MERGE ISN'T WORKING PROPERLY, MUST BE SOMETHING WRONG WITH acs_new SINCE THAT 
+# IS WHAT I'M MERGING BY 
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
