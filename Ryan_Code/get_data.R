@@ -84,7 +84,25 @@ acs$county = gsub("Census Tract .,", "", acs$county)
 
 acs$county = gsub("(.*),.*", "\\1", acs$county)
 
+acs$county = gsub("  ", "", acs$county)
 
+acs = rename(acs, "county_name" = "county") 
+
+county_codes = rename(county_codes, "county_name" = "county") 
+
+acs_new = acs
+
+county_codes$county_name = as.factor(county_codes$county_name)
+
+acs$county_name = as.factor(acs$county_name)
+
+acs_new$county_name <- tolower(acs_new$county_name)
+
+county_codes$county_name <- tolower(county_codes$county_name)
+
+
+
+acs_new = merge(x = acs_new, y = county_codes, by = "county_name", all.x = TRUE)
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
