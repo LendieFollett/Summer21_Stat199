@@ -223,7 +223,7 @@ train.df = cps_fsecurity
 #                              education + employed + married + disability + hhsize + urban_c, data = train.df, 
 #                             ntree = 1000, mtry = 2, importance = T)
 
-saveRDS(final_forest, "final_forest.RDS")
+#saveRDS(final_forest, "final_forest.RDS")
 final_forest <- readRDS("final_forest.RDS")
 
 varImpPlot(final_forest, type = 1)
@@ -598,6 +598,8 @@ AIC(urbanicity.glm)
 
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
 acs = read.csv("Ryan_Data/acs(clean).csv")
+
+
 
 acs$fsecurity_predictions <- predict(final_forest, acs, type = "class")
 

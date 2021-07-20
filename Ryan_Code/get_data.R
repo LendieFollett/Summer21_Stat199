@@ -66,6 +66,26 @@ colnames(acs) <- c("GEOID","population", "female", "avg_hhsize","hispanic","blac
 acs$households <- acs$population/acs$avg_hhsize
 write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filepaths - this should work if you use a project
 
+# COMBINE ACS AND COUNTY_CODES DATASETS
+
+county_codes = rename(county_codes, "county_name" = "County.name")
+
+acs = rename(acs, "location" = "X")
+
+acs$county = acs$location
+
+acs$county = gsub("[[:digit:]]", "", acs$county)
+
+acs$county = gsub("Block Group ,", "", acs$county)
+
+acs$county = gsub("Census Tract ,", "", acs$county)
+
+acs$county = gsub("Census Tract .,", "", acs$county)
+
+acs$county = gsub("(.*),.*", "\\1", acs$county)
+
+
+
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
 
