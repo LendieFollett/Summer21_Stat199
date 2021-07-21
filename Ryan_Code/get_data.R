@@ -170,7 +170,7 @@ county_codes$state_name <- ifelse(county_codes$state_name == "AL", "Alabama",
 
 county_codes = county_codes[-c(324),]
 
-
+county_codes$state_and_county <- paste(county_codes$state_name,",",county_codes$county_name)
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
