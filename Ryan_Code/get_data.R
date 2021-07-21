@@ -174,14 +174,21 @@ county_codes$state_and_county <- paste(county_codes$county_name,",",county_codes
 
 county_codes$state_and_county <- gsub(" ,", ",", county_codes$state_and_county)
 
+# BEFORE THIS'LL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
+# TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
+
+
+
 acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = TRUE)
 
 # IT WORKS!! NOW I NEED TO REMOVE EVERYTHING I DON'T NEED AND KEEP THE 2013 CODE
 
-acs_new <- acs_new[ ,c("location","hispanic","elderly","black","kids","education","employed","married","disability","households",
+acs_new1 <- acs_new[, c("location","hispanic","elderly","black","kids","education","employed","married","disability","households",
                        "X2013.code")]
 
-acs_new = rename(acs_new, "urban_code" = "X2013.code")
+acs_new1 = rename(acs_new1, "urban_code" = "X2013.code")
+
+
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")

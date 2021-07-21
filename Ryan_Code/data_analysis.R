@@ -599,6 +599,21 @@ AIC(urbanicity.glm)
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
+acs_new1$urban_c <- acs_new1$urban
+
+# BEFORE THIS'LL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
+# TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
+
+
+
+acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+                                              "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
+
+# BEFORE I MAKE PREDICTIONS I NEED TO DIVIDE EVERYTHING BY HOUSEHOLDS, THIS WILL
+# GIVE ME THE NUMBER OF EVERYTHING PER HOUSEHOLD IN EACH BLOCK, WHICH IS WHAT 
+# I WANT WHEN MAKING PREDICTIONS USING A FOREST DERIVED FROM THE CPS PER HOUSEHOLD
+# DATASET.
+
 
 
 acs$fsecurity_predictions <- predict(final_forest, acs, type = "class")
