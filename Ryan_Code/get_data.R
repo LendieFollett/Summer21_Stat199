@@ -84,25 +84,25 @@ acs$county = gsub("Census Tract ,", "", acs$county)
 
 acs$county = gsub("Census Tract .,", "", acs$county)
 
-acs$county = gsub("(.*),.*", "\\1", acs$county)
+#acs$county = gsub("(.*),.*", "\\1", acs$county)
 
 acs$county = gsub("  ", "", acs$county)
 
-acs = rename(acs, "county_name" = "county") 
+acs = rename(acs, "state_and_county" = "county") 
 
-county_codes$county_name = as.character(county_codes$county_name)
+county_codes$state_and_county = as.character(county_codes$state_and_county)
 
-acs$county_name = as.character(acs$county_name)
+acs$state_and_county = as.character(acs$state_and_county)
 
 acs_new = acs
 
-acs_new$county_name <- tolower(acs_new$county_name)
+acs_new$state_and_county <- tolower(acs_new$state_and_county)
 
-county_codes$county_name <- tolower(county_codes$county_name)
+county_codes$state_and_county <- tolower(county_codes$state_and_county)
 
 
 
-acs_new = merge(x = acs_new, y = county_codes, by = "county_name", all.x = TRUE)
+acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = TRUE)
 
 # THE MERGE ISN'T WORKING PROPERLY, MUST BE SOMETHING WRONG WITH acs_new SINCE THAT 
 # IS WHAT I'M MERGING BY.
@@ -170,7 +170,15 @@ county_codes$state_name <- ifelse(county_codes$state_name == "AL", "Alabama",
 
 county_codes = county_codes[-c(324),]
 
-county_codes$state_and_county <- paste(county_codes$state_name,",",county_codes$county_name)
+county_codes$state_and_county <- paste(county_codes$county_name,",",county_codes$state_name)
+
+county_codes$state_and_county <- gsub(" ,", ",", county_codes$state_and_county)
+
+acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = TRUE)
+
+# IT WORKS!! NOW I NEED TO REMOVE EVERYTHING I DON'T NEED AND KEEP THE 2013 CODE
+
+acs_new <- acs_new[ ,c("ï..FIPS.code",)]
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
