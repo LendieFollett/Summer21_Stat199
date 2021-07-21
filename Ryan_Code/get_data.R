@@ -178,7 +178,10 @@ acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = 
 
 # IT WORKS!! NOW I NEED TO REMOVE EVERYTHING I DON'T NEED AND KEEP THE 2013 CODE
 
-acs_new <- acs_new[ ,c("ï..FIPS.code",)]
+acs_new <- acs_new[ ,c("location","hispanic","elderly","black","kids","education","employed","married","disability","households",
+                       "X2013.code")]
+
+acs_new = rename(acs_new, "urban_code" = "X2013.code")
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
