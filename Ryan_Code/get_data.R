@@ -115,7 +115,62 @@ acs_new = merge(x = acs_new, y = county_codes, by = "county_name", all.x = TRUE)
 # 3: merge the new column with the acs_new column with the state added to prevent
 # cross merging between states with similar county names 
 
-county_codes$county_name <- ifelse(State.Abr.)
+county_codes$state_name = county_codes$State.Abr.
+
+county_codes$state_name <- ifelse(county_codes$state_name == "AL", "Alabama",
+                            ifelse(county_codes$state_name == "AK", "Alaska",
+                            ifelse(county_codes$state_name == "AZ", "Arizona",
+                            ifelse(county_codes$state_name == "AR", "Arkansas",
+                            ifelse(county_codes$state_name == "CA", "California",
+                            ifelse(county_codes$state_name == "CO", "Colorado",
+                            ifelse(county_codes$state_name == "CT", "Connecticut",
+                            ifelse(county_codes$state_name == "DE", "Delaware",
+                            ifelse(county_codes$state_name == "FL", "Florida",
+                            ifelse(county_codes$state_name == "GA", "Georgia",
+                            ifelse(county_codes$state_name == "HI", "Hawaii",
+                            ifelse(county_codes$state_name == "ID", "Idaho",
+                            ifelse(county_codes$state_name == "IL", "Illinois",
+                            ifelse(county_codes$state_name == "IN", "Indiana",
+                            ifelse(county_codes$state_name == "IA", "Iowa",
+                            ifelse(county_codes$state_name == "KS", "Kansas",
+                            ifelse(county_codes$state_name == "KY", "Kentucky",
+                            ifelse(county_codes$state_name == "LA", "Louisiana",
+                            ifelse(county_codes$state_name == "ME", "Maine",
+                            ifelse(county_codes$state_name == "MD", "Maryland",
+                            ifelse(county_codes$state_name == "MA", "Massachusetts",
+                            ifelse(county_codes$state_name == "MI", "Michigan",
+                            ifelse(county_codes$state_name == "MN", "Minnesota",
+                            ifelse(county_codes$state_name == "MS", "Mississippi",
+                            ifelse(county_codes$state_name == "MO", "Missouri",
+                            ifelse(county_codes$state_name == "MT", "Montana",
+                            ifelse(county_codes$state_name == "NE", "Nebraska",
+                            ifelse(county_codes$state_name == "NV", "Nevada",
+                            ifelse(county_codes$state_name == "NH", "New Hampshire",
+                            ifelse(county_codes$state_name == "NJ", "New Jersey",
+                            ifelse(county_codes$state_name == "NM", "New Mexico",
+                            ifelse(county_codes$state_name == "NY", "New York",
+                            ifelse(county_codes$state_name == "NC", "North Carolina",
+                            ifelse(county_codes$state_name == "ND", "North Dakota",
+                            ifelse(county_codes$state_name == "OH", "Ohio",
+                            ifelse(county_codes$state_name == "OK", "Oklahoma",
+                            ifelse(county_codes$state_name == "OR", "Oregon",
+                            ifelse(county_codes$state_name == "PA", "Pennsylvania",
+                            ifelse(county_codes$state_name == "RI", "Rhode Island",
+                            ifelse(county_codes$state_name == "SC", "South Carolina",
+                            ifelse(county_codes$state_name == "SD", "South Dakota",
+                            ifelse(county_codes$state_name == "TN", "Tennessee",
+                            ifelse(county_codes$state_name == "TX", "Texas",
+                            ifelse(county_codes$state_name == "UT", "Utah",
+                            ifelse(county_codes$state_name == "VT", "Vermont",
+                            ifelse(county_codes$state_name == "VA", "Virginia",
+                            ifelse(county_codes$state_name == "WA", "Washington",
+                            ifelse(county_codes$state_name == "WV", "West Virginia",
+                            ifelse(county_codes$state_name == "WI", "Wisconsin", 
+                            ifelse(county_codes$state_name == "WY", "Wyoming", "NA"))))))))))))))))))))))))))))))))))))))))))))))))))
+
+county_codes = county_codes[-c(324),]
+
+
 
 # Get CPS data & The FIPS codes for each county
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
