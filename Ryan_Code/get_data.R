@@ -68,6 +68,10 @@ write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filep
 
 # COMBINE ACS AND COUNTY_CODES DATASETS
 
+county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
+
+acs = read.csv("Ryan_data/acs(clean).csv")
+
 acs = subset(acs, select = -c(county_name))
 
 county_codes = rename(county_codes, "county_name" = "County.name")
@@ -89,20 +93,6 @@ acs$county = gsub("Census Tract .,", "", acs$county)
 acs$county = gsub("  ", "", acs$county)
 
 acs = rename(acs, "state_and_county" = "county") 
-
-county_codes$state_and_county = as.character(county_codes$state_and_county)
-
-acs$state_and_county = as.character(acs$state_and_county)
-
-acs_new = acs
-
-acs_new$state_and_county <- tolower(acs_new$state_and_county)
-
-county_codes$state_and_county <- tolower(county_codes$state_and_county)
-
-
-
-acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = TRUE)
 
 # THE MERGE ISN'T WORKING PROPERLY, MUST BE SOMETHING WRONG WITH acs_new SINCE THAT 
 # IS WHAT I'M MERGING BY.
@@ -174,17 +164,31 @@ county_codes$state_and_county <- paste(county_codes$county_name,",",county_codes
 
 county_codes$state_and_county <- gsub(" ,", ",", county_codes$state_and_county)
 
-# BEFORE THIS'LL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
+county_codes$state_and_county = as.factor(county_codes$state_and_county)
+
+acs$state_and_county = as.factor(acs$state_and_county)
+
+acs_new = acs
+
+acs_new$state_and_county <- tolower(acs_new$state_and_county)
+
+county_codes$state_and_county <- tolower(county_codes$state_and_county)
+
+# BEFORE THIS WILL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
 # TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
 
+acs_new$state_and_county <- gsub("lasalle county, illinois", "la salle county, illinois", acs_new$state_and_county)
 
+acs_new$state_and_county <- gsub("doã±a ana county, new mexico", "dona ana county, new mexico", acs_new$state_and_county)
+
+acs_new$state_and_county <- gsub("petersburg borough, alaska", "petersburg census area, alaska", acs_new$state_and_county)
 
 acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = TRUE)
 
 # IT WORKS!! NOW I NEED TO REMOVE EVERYTHING I DON'T NEED AND KEEP THE 2013 CODE
 
-acs_new1 <- acs_new[, c("location","hispanic","elderly","black","kids","education","employed","married","disability","households",
-                       "X2013.code")]
+acs_new1 <- acs_new[, c("location","avg_hhsize", "hispanic","elderly","black","kids","education","employed","married","disability","households",
+                       "X2013.code", "female" )]
 
 acs_new1 = rename(acs_new1, "urban_code" = "X2013.code")
 

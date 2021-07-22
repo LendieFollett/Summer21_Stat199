@@ -77,7 +77,7 @@ increase in efficacy of food distribution centers by determining higher risk are
 
 
 
-Important Variables - Food Security {data-navmenu="Important Variables"}
+Exploratory Analysis - Food Security {data-navmenu="Exploratory Analysis"}
 ===
 
 Column {.tabset}
@@ -93,7 +93,7 @@ p2 <- ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_di
   labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity", fill = "Average Level") +
   scale_fill_distiller(palette = "Blues")
 
-p3 <- ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
+p3 <- ggplot() + geom_violin(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
   labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity - log scale", fill = "If Disabled") + 
   scale_fill_brewer(palette = "Blues") + scale_y_log10()
 
@@ -163,7 +163,7 @@ grid.arrange(k1, k2, nrow = 1)
 ```
 
 
-Important Variables - Food Expenditure {data-navmenu="Important Variables"}
+Exploratory Analysis - Food Expenditure {data-navmenu="Exploratory Analysis"}
 ===
 Column {.tabset}
 ---
@@ -342,7 +342,7 @@ cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
 cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
 
 fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend_new, family = Gamma(link = "log"))
-fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend, family = binomial(link = "log"))
+fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend, family = binomial(link = "logit"))
 
 summary(fexpend.glm2)
 
@@ -401,4 +401,5 @@ leaflet(ia_shp_join, height = 500, width = 1000) %>%
   )
 ```
 
+# SHOULD MENTION ECONOMIES OF SCALE IN THE HOUSEHOLD SIZE ANALYSIS
 

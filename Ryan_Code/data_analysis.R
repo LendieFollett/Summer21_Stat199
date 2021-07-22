@@ -102,7 +102,7 @@ ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_disabili
   labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity", fill = "Average Level") +
   scale_fill_distiller(palette = "Blues")
 
-ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
+ggplot() + geom_violin(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
   labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity", fill = "If Disabled") + 
   scale_fill_brewer(palette = "Blues")
 
@@ -125,7 +125,7 @@ ggplot(aes(x = elderly, y = meld, fill = elderly), data = cps_elderly) + geom_ba
   labs(x = "Number of Elderly in Household", y = "Average Level Of Food Insecurity", fill = "Number of Elderly") +
   scale_fill_distiller(palette = "Blues")
 
-ggplot() + geom_boxplot(aes(group = elderly, x = elderly, y = fsecurity, fill = elderly), data = cps_fsecurity) + 
+ggplot() + geom_violin(aes(group = elderly, x = elderly, y = fsecurity, fill = elderly), data = cps_fsecurity) + 
   scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Elderly Within Household", y = "Food Security Level Per Household - Log Scale", fill = "Number of Elderly")
 
 
@@ -140,7 +140,7 @@ ggplot(aes(x = education, y = med, fill = education), data = cps_education) + ge
   labs(x = "Number of Educated Individuals Within Household", y = "Average Level of Food Insecurity", fill = "Number of Educated") +
   scale_fill_distiller(palette = "Blues")
 
-ggplot() + geom_boxplot(aes(group = education, x = education, y = fsecurity, fill = education), data = cps_fsecurity) +
+ggplot() + geom_violin(aes(group = education, x = education, y = fsecurity, fill = education), data = cps_fsecurity) +
   scale_y_log10() + scale_fill_distiller(palette = "Blues") + labs(x = "Number of Individuals With Associates or Higher Within Household", y = "Food Security Level Per Household - log scale", fill = "Number of Educated")
 
 # ANALYSIS OF EMPLOYED VARIABLE
@@ -366,7 +366,7 @@ fexpend.glm <- glm(fexpend ~ hhsize + elderly + employed + disability + educatio
 
 fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education, data = cps_fexpend_new, family = Gamma(link = "log"))
 
-fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = binomial(link = "log"))
+fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education, data = cps_fexpend, family = binomial(link = "logit"))
 
 fexpend.glm4 <- glm(fexpend ~ hhsize + elderly + employed + disability, data = cps_fexpend_new, family = Gamma(link = "log"))
 
@@ -599,11 +599,16 @@ AIC(urbanicity.glm)
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
-acs_new1$urban_c <- acs_new1$urban
+acs_new1$urban_c <- acs_new1$urban_code
 
 # BEFORE THIS'LL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
 # TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
 
+acs_new1$urban_c <- ifelse(acs_new1$urban_c == 1, "Large Central Metro",
+                      ifelse(acs_new1$urban_c == 2, "Large Fringe Metro",
+                             ifelse(acs_new1$urban_c == 3, "Medium Metro", 
+                                    ifelse(acs_new1$urban_c == 4, "Small Metro",
+                                           ifelse(acs_new1$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
 
 
 acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
@@ -614,11 +619,33 @@ acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "
 # I WANT WHEN MAKING PREDICTIONS USING A FOREST DERIVED FROM THE CPS PER HOUSEHOLD
 # DATASET.
 
+acs_new1$hispanic <- round(acs_new1$hispanic/acs_new1$households, digits = 3)
 
+acs_new1$elderly <- round(acs_new1$elderly/acs_new1$households, digits = 3)
 
-acs$fsecurity_predictions <- predict(final_forest, acs, type = "class")
+acs_new1$black <- round(acs_new1$black/acs_new1$households, digits = 3)
 
-acs$fexpend_predictions <- predict(fexpend_final_forest, acs, type = "class")
+acs_new1$kids <- round(acs_new1$kids/acs_new1$households, digits = 3)
+
+acs_new1$education <- round(acs_new1$education/acs_new1$households, digits = 3)
+
+acs_new1$employed <- round(acs_new1$employed/acs_new1$households, digits = 3)
+
+acs_new1$married <- round(acs_new1$married/acs_new1$households, digits = 3)
+
+acs_new1$disability <- round(acs_new1$disability/acs_new1$households, digits = 3)
+
+acs_new1$female <- round(acs_new1$female/acs_new1$households, digits = 3)
+
+acs_new1 = rename(acs_new1, "hhsize" = "avg_hhsize")
+
+acs_new1 = subset(acs_new1, select = -c(urban_code))
+
+acs_new2 = subset(acs_new1, select = -c(location, households))
+
+acs_new2$fsecurity_predictions <- predict(final_forest, acs_new2, type = "class")
+
+acs_new2$fexpend_predictions <- predict(fexpend_final_forest, acs_new2, type = "class")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 
@@ -661,3 +688,8 @@ leaflet(ia_shp_join, height = 500, width = 1000) %>%
 
 
 cps_raw = read.csv("Ryan_Data/cps(raw).csv")
+
+# REPLACE BOXPLOTS WITH THIS
+geom_jitter(aes(x = your_x, y = your_numeric_y)) + geom_violin(aes(x = your_x, y = your_numeric_y), alpha = I(0.5))
+
+
