@@ -599,7 +599,7 @@ AIC(urbanicity.glm)
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
-# acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+#acs$urban_c <- factor(acs$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
 #                                               "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
 # BEFORE I MAKE PREDICTIONS I NEED TO DIVIDE EVERYTHING BY HOUSEHOLDS, THIS WILL
@@ -607,15 +607,15 @@ acs = read.csv("Ryan_Data/acs(clean).csv")
 # I WANT WHEN MAKING PREDICTIONS USING A FOREST DERIVED FROM THE CPS PER HOUSEHOLD
 # DATASET.
 
-#acs_new2 = na.omit
-
-levels(acs_new1$urban_c) <- levels(cps_fsecurity$urban_c)
+levels(acs$urban_c) <- levels(cps_fsecurity$urban_c)
 
 acs.df = acs
 
-acs_new1$fsecurity_predictions <- predict(final_forest, acs.df, type = "response")
+acs$urban_c = as.factor(acs$urban_c)
 
-acs_new1$fexpend_predictions <- predict(fexpend_final_forest, acs.df, type = "response")
+acs$fsecurity_predictions <- predict(final_forest, acs.df, type = "class")
+
+acs$fexpend_predictions <- predict(fexpend_final_forest, acs.df, type = "response")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 

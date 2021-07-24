@@ -181,7 +181,7 @@ acs = merge(x = acs, y = county_codes, by = "state_and_county", all.x = TRUE)
 acs <- acs[, c("location","avg_hhsize", "hispanic","elderly","black","kids","education","employed","married","disability","households",
                        "X2013.code", "female" )]
 
-acs = rename(acc, "urban_code" = "X2013.code")
+acs = rename(acs, "urban_code" = "X2013.code")
 
 acs$urban_c <- acs$urban_code
 
@@ -196,6 +196,9 @@ acs$urban_c <- ifelse(acs$urban_c == 1, "Large Central Metro",
 #                                                        "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
 # THESE ARE CAUSING ISSUES, I NEED TO ONLY DIVIDE WHERE THERE ARE ACTUAL VALUES
+
+acs = na.omit(acs)
+
 acs$hispanic <- round(acs$hispanic/acs$households, digits = 3)
 
 acs$elderly <- round(acs$elderly/acs$households, digits = 3)
