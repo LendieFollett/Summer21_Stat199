@@ -599,7 +599,7 @@ AIC(urbanicity.glm)
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
-acs_new1$urban_c <- acs_new1$urban_code
+acs$urban_c <- acs$urban_code
 
 # BEFORE THIS'LL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
 # TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
@@ -611,8 +611,8 @@ acs_new1$urban_c <- ifelse(acs_new1$urban_c == 1, "Large Central Metro",
                                            ifelse(acs_new1$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
 
 
-acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
-                                              "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
+# acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+#                                               "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
 # BEFORE I MAKE PREDICTIONS I NEED TO DIVIDE EVERYTHING BY HOUSEHOLDS, THIS WILL
 # GIVE ME THE NUMBER OF EVERYTHING PER HOUSEHOLD IN EACH BLOCK, WHICH IS WHAT 
@@ -643,11 +643,16 @@ acs_new1 = subset(acs_new1, select = -c(urban_code))
 
 acs_new2 = subset(acs_new1, select = -c(location, households))
 
-acs_new2$fsecurity_predictions <- predict(final_forest, acs_new2, type = "class")
+#acs_new2 = na.omit
 
-acs_new2$fexpend_predictions <- predict(fexpend_final_forest, acs_new2, type = "class")
+acs.df = acs
+
+acs_new1$fsecurity_predictions <- predict(final_forest, acs.df, type = "response")
+
+acs_new1$fexpend_predictions <- predict(fexpend_final_forest, acs.df, type = "response")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
+
 
 
 #this is block groups w/in tracts

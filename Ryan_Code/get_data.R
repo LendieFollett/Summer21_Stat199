@@ -66,6 +66,10 @@ colnames(acs) <- c("GEOID","population", "female", "avg_hhsize","hispanic","blac
 acs$households <- acs$population/acs$avg_hhsize
 write.csv(acs, "Ryan_data/acs(clean).csv") #Ryan: note the use of relative filepaths - this should work if you use a project
 
+
+
+
+
 # COMBINE ACS AND COUNTY_CODES DATASETS
 
 county_codes = read.csv("Ryan_Data/NCHSURCodes2013.csv")
@@ -93,17 +97,6 @@ acs$county = gsub("Census Tract .,", "", acs$county)
 acs$county = gsub("  ", "", acs$county)
 
 acs = rename(acs, "state_and_county" = "county") 
-
-# THE MERGE ISN'T WORKING PROPERLY, MUST BE SOMETHING WRONG WITH acs_new SINCE THAT 
-# IS WHAT I'M MERGING BY.
-
-# IT'S a problem with states, I need to fix county_codes, acs is an easy fix just need to 
-# not remove that ,STATE
-
-# 1: do an ifelse statement to change abbreviations to statenames, 
-# 2: use paste to combine the state_name with the county_name to get one column 
-# 3: merge the new column with the acs_new column with the state added to prevent
-# cross merging between states with similar county names 
 
 county_codes$state_name = county_codes$State.Abr.
 
@@ -168,29 +161,63 @@ county_codes$state_and_county = as.factor(county_codes$state_and_county)
 
 acs$state_and_county = as.factor(acs$state_and_county)
 
-acs_new = acs
-
-acs_new$state_and_county <- tolower(acs_new$state_and_county)
+acs$state_and_county <- tolower(acs$state_and_county)
 
 county_codes$state_and_county <- tolower(county_codes$state_and_county)
 
 # BEFORE THIS WILL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
 # TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
 
-acs_new$state_and_county <- gsub("lasalle county, illinois", "la salle county, illinois", acs_new$state_and_county)
+acs$state_and_county <- gsub("lasalle county, illinois", "la salle county, illinois", acs$state_and_county)
 
-acs_new$state_and_county <- gsub("doã±a ana county, new mexico", "dona ana county, new mexico", acs_new$state_and_county)
+acs$state_and_county <- gsub("doã±a ana county, new mexico", "dona ana county, new mexico", acs$state_and_county)
 
-acs_new$state_and_county <- gsub("petersburg borough, alaska", "petersburg census area, alaska", acs_new$state_and_county)
+acs$state_and_county <- gsub("petersburg borough, alaska", "petersburg census area, alaska", acs$state_and_county)
 
-acs_new = merge(x = acs_new, y = county_codes, by = "state_and_county", all.x = TRUE)
+acs = merge(x = acs, y = county_codes, by = "state_and_county", all.x = TRUE)
 
 # IT WORKS!! NOW I NEED TO REMOVE EVERYTHING I DON'T NEED AND KEEP THE 2013 CODE
 
-acs_new1 <- acs_new[, c("location","avg_hhsize", "hispanic","elderly","black","kids","education","employed","married","disability","households",
+acs <- acs[, c("location","avg_hhsize", "hispanic","elderly","black","kids","education","employed","married","disability","households",
                        "X2013.code", "female" )]
 
-acs_new1 = rename(acs_new1, "urban_code" = "X2013.code")
+acs = rename(acc, "urban_code" = "X2013.code")
+
+acs$urban_c <- acs$urban_code
+
+cs_new1$urban_c <- ifelse(acs_new1$urban_c == 1, "Large Central Metro",
+                          ifelse(acs_new1$urban_c == 2, "Large Fringe Metro",
+                                 ifelse(acs_new1$urban_c == 3, "Medium Metro", 
+                                        ifelse(acs_new1$urban_c == 4, "Small Metro",
+                                               ifelse(acs_new1$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
+
+
+#acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+#                                                        "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
+acs$hispanic <- round(acs$hispanic/acs$households, digits = 3)
+
+acs$elderly <- round(acs$elderly/acs$households, digits = 3)
+
+acs$black <- round(acs$black/acs$households, digits = 3)
+
+acs$kids <- round(acs$kids/acs$households, digits = 3)
+
+acs$education <- round(acs$education/acs$households, digits = 3)
+
+acs$employed <- round(acs$employed/acs$households, digits = 3)
+
+acs$married <- round(acs$married/acs$households, digits = 3)
+
+acs$disability <- round(acs$disability/acs$households, digits = 3)
+
+acs$female <- round(acs$female/acs$households, digits = 3)
+
+acs = rename(acs, "hhsize" = "avg_hhsize")
+
+acs = subset(acs, select = -c(urban_code))
+
+acs = subset(acs, select = -c(location, households))
+
 
 
 
