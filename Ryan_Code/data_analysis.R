@@ -599,18 +599,6 @@ AIC(urbanicity.glm)
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
 acs = read.csv("Ryan_Data/acs(clean).csv")
 
-acs$urban_c <- acs$urban_code
-
-# BEFORE THIS'LL WORK I NEED TO CHANGE LASALLE ILLINOIS INTO LA SALLE IN THE ACS DATABASE, I NEED TO CHANGE DONA ANA IN THE ACS DATABASE
-# TO DONA ANA, AND I NEED TO CHANGE PETERSBURG BOROUGH INTO PETERSBURG CENSUS AREA OR JUST CHANGE IT TO 6.
-
-acs_new1$urban_c <- ifelse(acs_new1$urban_c == 1, "Large Central Metro",
-                      ifelse(acs_new1$urban_c == 2, "Large Fringe Metro",
-                             ifelse(acs_new1$urban_c == 3, "Medium Metro", 
-                                    ifelse(acs_new1$urban_c == 4, "Small Metro",
-                                           ifelse(acs_new1$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
-
-
 # acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
 #                                               "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
@@ -619,31 +607,9 @@ acs_new1$urban_c <- ifelse(acs_new1$urban_c == 1, "Large Central Metro",
 # I WANT WHEN MAKING PREDICTIONS USING A FOREST DERIVED FROM THE CPS PER HOUSEHOLD
 # DATASET.
 
-acs_new1$hispanic <- round(acs_new1$hispanic/acs_new1$households, digits = 3)
-
-acs_new1$elderly <- round(acs_new1$elderly/acs_new1$households, digits = 3)
-
-acs_new1$black <- round(acs_new1$black/acs_new1$households, digits = 3)
-
-acs_new1$kids <- round(acs_new1$kids/acs_new1$households, digits = 3)
-
-acs_new1$education <- round(acs_new1$education/acs_new1$households, digits = 3)
-
-acs_new1$employed <- round(acs_new1$employed/acs_new1$households, digits = 3)
-
-acs_new1$married <- round(acs_new1$married/acs_new1$households, digits = 3)
-
-acs_new1$disability <- round(acs_new1$disability/acs_new1$households, digits = 3)
-
-acs_new1$female <- round(acs_new1$female/acs_new1$households, digits = 3)
-
-acs_new1 = rename(acs_new1, "hhsize" = "avg_hhsize")
-
-acs_new1 = subset(acs_new1, select = -c(urban_code))
-
-acs_new2 = subset(acs_new1, select = -c(location, households))
-
 #acs_new2 = na.omit
+
+levels(acs_new1$urban_c) <- levels(cps_fsecurity$urban_c)
 
 acs.df = acs
 

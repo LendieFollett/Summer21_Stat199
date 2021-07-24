@@ -185,15 +185,17 @@ acs = rename(acc, "urban_code" = "X2013.code")
 
 acs$urban_c <- acs$urban_code
 
-cs_new1$urban_c <- ifelse(acs_new1$urban_c == 1, "Large Central Metro",
-                          ifelse(acs_new1$urban_c == 2, "Large Fringe Metro",
-                                 ifelse(acs_new1$urban_c == 3, "Medium Metro", 
-                                        ifelse(acs_new1$urban_c == 4, "Small Metro",
-                                               ifelse(acs_new1$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
+acs$urban_c <- ifelse(acs$urban_c == 1, "Large Central Metro",
+                          ifelse(acs$urban_c == 2, "Large Fringe Metro",
+                                 ifelse(acs$urban_c == 3, "Medium Metro", 
+                                        ifelse(acs$urban_c == 4, "Small Metro",
+                                               ifelse(acs$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
 
 
-#acs_new1$urban_c <- factor(acs_new1$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
+#acs$urban_c <- factor(acs$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
 #                                                        "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
+
+# THESE ARE CAUSING ISSUES, I NEED TO ONLY DIVIDE WHERE THERE ARE ACTUAL VALUES
 acs$hispanic <- round(acs$hispanic/acs$households, digits = 3)
 
 acs$elderly <- round(acs$elderly/acs$households, digits = 3)
@@ -215,9 +217,6 @@ acs$female <- round(acs$female/acs$households, digits = 3)
 acs = rename(acs, "hhsize" = "avg_hhsize")
 
 acs = subset(acs, select = -c(urban_code))
-
-acs = subset(acs, select = -c(location, households))
-
 
 
 
