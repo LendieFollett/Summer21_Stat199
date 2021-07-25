@@ -8,6 +8,11 @@ output:
 ```{r setup, include=FALSE}
 #multiple pages within one dashboard
 #https://rmarkdown.rstudio.com/flexdashboard/layouts.html#multiple_pages
+
+# Always start with a fresh environment
+rm(list = ls())
+
+
 library(flexdashboard)
 library(ggplot2)
 library(dplyr)

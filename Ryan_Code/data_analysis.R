@@ -613,7 +613,17 @@ acs$urban_c = as.factor(acs$urban_c)
 
 acs.df = acs
 
-acs$fsecurity_predictions <- predict(final_forest, acs.df, type = "class")
+acs_new = subset(acs, select = c(hhsize, female, kids, elderly, black, hispanic, education, employed, married, disability, urban_c))
+
+acs_new.df = acs_new
+
+cps_test = cps_fsecurity
+
+cps_test.df = cps_test
+
+cps_test$fsecurity_prediction <- predict(final_forest, train.df, type = "response")
+
+acs_new$fsecurity_predictions <- predict(final_forest, acs_new.df, type = "response")
 
 acs$fexpend_predictions <- predict(fexpend_final_forest, acs.df, type = "response")
 
