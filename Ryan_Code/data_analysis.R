@@ -609,9 +609,9 @@ acs = read.csv("Ryan_Data/acs(clean).csv")
 
 levels(acs$urban_c) <- levels(cps_fsecurity$urban_c)
 
-acs.df = acs
-
 acs$urban_c = as.factor(acs$urban_c)
+
+acs.df = acs
 
 acs$fsecurity_predictions <- predict(final_forest, acs.df, type = "class")
 
@@ -663,4 +663,5 @@ cps_raw = read.csv("Ryan_Data/cps(raw).csv")
 # REPLACE BOXPLOTS WITH THIS
 geom_jitter(aes(x = your_x, y = your_numeric_y)) + geom_violin(aes(x = your_x, y = your_numeric_y), alpha = I(0.5))
 
+# SHOULD MENTION ECONOMIES OF SCALE IN THE HOUSEHOLD SIZE ANALYSIS
 

@@ -73,7 +73,7 @@ The goal of this analysis is to find determinants of food insecurity. The reason
 increase in efficacy of food distribution centers by determining higher risk areas should decrease the level of food 
 
 
-### 
+### Process:
 
 
 
@@ -304,17 +304,25 @@ Descriptive Model - Food Security {data-navmenu="Descriptive Models"}
 ===
 
 
+Row {data-height=200}
+---------------------------------------------
+### Description:
+<font size="3">
+This model will not be used for the final prediction, however, it will be used as a representation of what the relationships between
+the response variable and explanatory variables are. A Zero Inflation Poisson Model is a regular poisson model except that it accounts for a significant amount of zeroes within the response variable. This is necessary because a majority of houses within the U.S. will have stated that they are not food insecure and therefore be a zero.</font>
 
 
 Column{.tabset}
 ---
+
+
 
 ### Zero Inflation Poisson Model
 <font size="3"> 
 Summary 
 </font> 
 ```{r, attr.output='style="max-height: 400px;"'}
-fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c| disability + education + elderly + urban_c, data = cps_fsecurity)
+fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c | disability + education + elderly + urban_c, data = cps_fsecurity)
 
 summary(fsecurity.glm2)
 ```
@@ -347,7 +355,11 @@ fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + educa
 summary(fexpend.glm2)
 
 summary(fexpend.glm3)
+```
 
+
+### Exponential Coefficients and Confidence Intervals
+``` {r, attr.output='sytle="max-height: 200px;"'}
 exp(coef(fexpend.glm2))
 exp(confint(fexpend.glm2))
 
@@ -400,6 +412,4 @@ leaflet(ia_shp_join, height = 500, width = 1000) %>%
     position = "bottomright"
   )
 ```
-
-# SHOULD MENTION ECONOMIES OF SCALE IN THE HOUSEHOLD SIZE ANALYSIS
 

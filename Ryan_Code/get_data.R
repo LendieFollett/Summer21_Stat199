@@ -197,25 +197,25 @@ acs$urban_c <- ifelse(acs$urban_c == 1, "Large Central Metro",
 
 # THESE ARE CAUSING ISSUES, I NEED TO ONLY DIVIDE WHERE THERE ARE ACTUAL VALUES
 
-acs = na.omit(acs)
-
-acs$hispanic <- round(acs$hispanic/acs$households, digits = 3)
-
-acs$elderly <- round(acs$elderly/acs$households, digits = 3)
-
-acs$black <- round(acs$black/acs$households, digits = 3)
-
-acs$kids <- round(acs$kids/acs$households, digits = 3)
-
-acs$education <- round(acs$education/acs$households, digits = 3)
-
-acs$employed <- round(acs$employed/acs$households, digits = 3)
-
-acs$married <- round(acs$married/acs$households, digits = 3)
-
-acs$disability <- round(acs$disability/acs$households, digits = 3)
-
-acs$female <- round(acs$female/acs$households, digits = 3)
+# acs = na.omit(acs)
+# 
+# acs$hispanic <- round(acs$hispanic/acs$households, digits = 3)
+# 
+# acs$elderly <- round(acs$elderly/acs$households, digits = 3)
+# 
+# acs$black <- round(acs$black/acs$households, digits = 3)
+# 
+# acs$kids <- round(acs$kids/acs$households, digits = 3)
+# 
+# acs$education <- round(acs$education/acs$households, digits = 3)
+# 
+# acs$employed <- round(acs$employed/acs$households, digits = 3)
+# 
+# acs$married <- round(acs$married/acs$households, digits = 3)
+# 
+# acs$disability <- round(acs$disability/acs$households, digits = 3)
+# 
+# acs$female <- round(acs$female/acs$households, digits = 3)
 
 acs = rename(acs, "hhsize" = "avg_hhsize")
 
