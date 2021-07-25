@@ -61,20 +61,22 @@ cps_fsecurity$fsecurity_cat = as.factor(cps_fsecurity$fsecurity_cat)
 #NOTE: "===================================== " is the PAGE delimiter
 
 ```
-Data Overview
+Data Overview{data-icon="fa-signal"}
 ===
 
 Row {data-height=200}
 -----------------------------------------------------------------------
 
 ### Goal of Research:
-
+<font size = 2>
 The goal of this analysis is to find determinants of food insecurity. The reason for doing so is humanitarian in nature as the
-increase in efficacy of food distribution centers by determining higher risk areas should decrease the level of food 
+increase in efficacy of food distribution centers by determining higher risk areas should decrease the level of food. </font>
 
 
 ### Process:
+<font size = 2>
 
+</font>
 
 
 Exploratory Analysis - Food Security {data-navmenu="Exploratory Analysis"}
@@ -93,9 +95,9 @@ p2 <- ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_di
   labs(x = "Disabled Individual Living Within Household", y = "Average Level of Food Insecurity", fill = "Average Level") +
   scale_fill_distiller(palette = "Blues")
 
-p3 <- ggplot() + geom_violin(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
+p3 <- ggplot() + geom_boxplot(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
   labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity - log scale", fill = "If Disabled") + 
-  scale_fill_brewer(palette = "Blues") + scale_y_log10()
+  scale_fill_brewer(palette = "Blues") + scale_y_log10() 
 
 grid.arrange(p1, p2, p3, nrow = 1)
 ```
@@ -304,19 +306,15 @@ Descriptive Model - Food Security {data-navmenu="Descriptive Models"}
 ===
 
 
-Row {data-height=100}
+Row {.tabset}
 ---------------------------------------------
 ### Description:
 <font size="3">
 This model will not be used for the final prediction, however, it will be used as a representation of what the relationships between
 the response variable and explanatory variables are. A Zero Inflation Poisson Model is a regular poisson model except that it accounts for a significant amount of zeroes within the response variable. This is necessary because a majority of houses within the U.S. will have stated that they are not food insecure and therefore be a zero.</font>
 
-
-Column{.tabset}
+Row {.tabset}
 ---
-
-
-
 ### Zero Inflation Poisson Model
 <font size="3"> 
 Summary 
@@ -328,7 +326,7 @@ summary(fsecurity.glm2)
 ```
 
 ### Exponentiated Coefficients and Confidence Intervals
-```{r,  attr.output='style="max-height: 500px;"'}
+```{r, attr.output='style="max-height: 500px;"'}
 exp(coef(fsecurity.glm2))
 exp(confint(fsecurity.glm2))
 
@@ -337,7 +335,7 @@ exp(confint(fsecurity.glm2))
 Descriptive Model - Food Expenditure {data-navmenu="Descriptive Models"}
 ===
 
-Column{.tabset}
+Row{.tabset}
 ---
 
 ### Zero Adjusted Gamma Model
