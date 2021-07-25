@@ -304,7 +304,7 @@ Descriptive Model - Food Security {data-navmenu="Descriptive Models"}
 ===
 
 
-Row {data-height=200}
+Row {data-height=100}
 ---------------------------------------------
 ### Description:
 <font size="3">
@@ -321,14 +321,14 @@ Column{.tabset}
 <font size="3"> 
 Summary 
 </font> 
-```{r, attr.output='style="max-height: 400px;"'}
+```{r, attr.output='style="max-height: 500px;"'}
 fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c | disability + education + elderly + urban_c, data = cps_fsecurity)
 
 summary(fsecurity.glm2)
 ```
 
 ### Exponentiated Coefficients and Confidence Intervals
-```{r,  attr.output='style="max-height: 400px;"'}
+```{r,  attr.output='style="max-height: 500px;"'}
 exp(coef(fsecurity.glm2))
 exp(confint(fsecurity.glm2))
 
