@@ -369,30 +369,11 @@ final_fexpend_forest = readRDS("fexpend_final_forest.RDS")
 # I WANT WHEN MAKING PREDICTIONS USING A FOREST DERIVED FROM THE CPS PER HOUSEHOLD
 # DATASET.
 
-levels(acs_new$urban_c) <- levels(cps_fsecurity$urban_c)
-
-acs$urban_c = as.factor(acs$urban_c)
-
-acs.df = acs
-
-acs_new = subset(acs, select = c(hhsize, female, kids, elderly, black, hispanic, education, employed, married, disability, urban_c))
-
-acs_new.df = acs_new
-
-cps_test = cps_fsecurity
-
-cps_test.df = cps_test
-
-cps_fexpend_test = cps_fexpend
-
-cps_test$fsecurity_prediction <- predict(final_forest, as.matrix(cps_test), type = "response")
-
-acs$fsecurity_predictions <- predict(final_forest, acs, type = "response")
+levels(acs$urban_c) <- levels(cps$urban_c)
 
 acs$fexpend_predictions <- predict(fexpend_final_forest, acs, type = "response")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
-
 
 
 #this is block groups w/in tracts
@@ -428,11 +409,6 @@ leaflet(ia_shp_join, height = 500, width = 1000) %>%
     opacity = 0.7, title = "Iowa Elderly",
     position = "bottomright"
   )
-
-
-
-
-cps_raw = read.csv("Ryan_Data/cps(raw).csv")
 
 # REPLACE BOXPLOTS WITH THIS
 geom_jitter(aes(x = your_x, y = your_numeric_y)) + geom_violin(aes(x = your_x, y = your_numeric_y), alpha = I(0.5))

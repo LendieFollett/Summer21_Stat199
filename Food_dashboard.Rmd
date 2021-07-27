@@ -308,18 +308,16 @@ varImpPlot(fexpend_final_forest, type = 1)
 
 
 Descriptive Model - Food Security {data-navmenu="Descriptive Models"}
-===
-
-
-Row {.tabset}
+=============================================
+Row{data-height=200}
 ---------------------------------------------
 ### Description:
 <font size="3">
 This model will not be used for the final prediction, however, it will be used as a representation of what the relationships between
 the response variable and explanatory variables are. A Zero Inflation Poisson Model is a regular poisson model except that it accounts for a significant amount of zeroes within the response variable. This is necessary because a majority of houses within the U.S. will have stated that they are not food insecure and therefore be a zero.</font>
 
-Row {.tabset}
----
+Column {.tabset}
+---------------------------------------------
 ### Zero Inflation Poisson Model
 <font size="3"> 
 Summary 
