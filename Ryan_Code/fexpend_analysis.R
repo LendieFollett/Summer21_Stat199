@@ -5,6 +5,8 @@
 
 rm(list = ls())
 
+source("Ryan_Code/data_cleaning.R")
+
 # These are all of the libraries needed for creating a heatmap of areas in danger of food insecurity.
 library(ggplot2)
 library(dplyr)
@@ -26,8 +28,6 @@ library(RColorBrewer)
 #install.packages('pscl')
 library(gamlss.dist)
 
-cps = read.csv("Ryan_Data/cps(clean).csv")
-
 # ADD STATE AS A CATEGORICAL VARIABLE
 # ADD REGION
 
@@ -47,27 +47,12 @@ cps = read.csv("Ryan_Data/cps(clean).csv")
 
 # This just cleans up the urbanicity variable and removes the NA's from the list while also
 # making it a factorized variable not a numeric variable. 
-cps$urban_c <- cps$urban
 
-cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
-                          ifelse(cps$urban_c == 2, "Large Fringe Metro",
-                            ifelse(cps$urban_c == 3, "Medium Metro", 
-                                 ifelse(cps$urban_c == 4, "Small Metro",
-                                        ifelse(cps$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
-
-cps$urban_c[is.na(cps$urban_c)] <- c("Non-Core/Possibly Rural")
-
-#LRF: order is not what you wanted: turn this into an "ordered factor" then r realizes
+#LRF: order is not what you wanted: turn this intoa n "ordered factor" then r realizes
 #there is an inherent ordering, and it will respect that in plots, tables, etc...
 #this code should do that: (attribute will follow variable urban_c through to new datasets)
-cps$urban_c <- factor(cps$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
-                                              "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
-
-
-cps$fsecurity_f = ifelse(cps$fsecurity > 0, "yes", "no")
-
-str(urban_c)
+#cps$fsecurity_f = ifelse(cps$fsecurity > 0, "yes", "no")
 # CREATE SUB-DATASETS OF CPS FOR FEXPEND AND FSECURITY
 
 cps_fexpend <- cps[!is.na(cps$fexpend),]
@@ -84,7 +69,7 @@ cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
 # IF I HAVE TO CREATE A FORREST I THINK ILL TRY TO USE MY GPU's
 # ALONG IN THE PROCESS, THAT MIGHT HELP TIME WISE
 # 
-# fexpend_train.df <- cps_fexpend
+fexpend_train.df <- cps_fexpend
 # 
 # fexpend_forest = randomForest(fexpend ~., data = fexpend_train.df, ntree = 1000, mtry = 3, importance = TRUE)
 # 
@@ -103,10 +88,10 @@ cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
 # qplot(m, OOB_Err_Rate, geom = c("line", "point"), data = keeps) +
 #   theme_bw() + labs(x = "m (mtry) value", y = "OOB Error Rate")
 # 
-fexpend_final_forest = randomForest(fexpend ~ hhsize + urban_c + female + kids + elderly + black + hispanic + education
-                                    + employed + married + disability, data = fexpend_train.df, ntree = 1000, mtry = 2, importance = TRUE)
+# fexpend_final_forest = randomForest(fexpend ~ hhsize + urban_c + female + kids + elderly + black + hispanic + education
+#                                     + employed + married + disability, data = fexpend_train.df, ntree = 1000, mtry = 2, importance = TRUE)
 # 
-# saveRDS(fexpend_final_forest, "fexpend_final_forest.RDS")
+#saveRDS(fexpend_final_forest, "fexpend_final_forest.RDS")
 fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
 
 varImpPlot(fexpend_final_forest, type = 1)
@@ -115,7 +100,7 @@ varImpPlot(fexpend_final_forest, type = 1)
 #  CREATE LOGIT LINKED NORMAL DISTRIBUTION, IF TIME PERMITS COMPARE IT TO ZERO ADJUSTED GAMMA - NEED TO 
 # ADD 0.001 TO EVERYTHING AS GAMMA NEEDS DATA BETWEEN 0 AND INFINITY.
 
-ZAGA_Model = gamlss(formula = y~., sigma.formula = y~., nu.formula = y~., data = cps_fexpend, family = ZAGA())
+#ZAGA_Model = gamlss(formula = y~., sigma.formula = y~., nu.formula = y~., data = cps_fexpend, family = ZAGA())
 
 cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
 
@@ -356,22 +341,17 @@ AIC(urbanicity.glm)
 
 
 # I NEED TO GET MY PREDICTIONS ONTO ACS THEN I CAN MAKE A MAP OF THE PREDICTIONS 
-acs = read.csv("Ryan_Data/acs(clean).csv")
-
-final_forest = readRDS("final_forest.RDS")
-
 final_fexpend_forest = readRDS("fexpend_final_forest.RDS")
-#acs$urban_c <- factor(acs$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
-#                                               "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
 # BEFORE I MAKE PREDICTIONS I NEED TO DIVIDE EVERYTHING BY HOUSEHOLDS, THIS WILL
 # GIVE ME THE NUMBER OF EVERYTHING PER HOUSEHOLD IN EACH BLOCK, WHICH IS WHAT 
 # I WANT WHEN MAKING PREDICTIONS USING A FOREST DERIVED FROM THE CPS PER HOUSEHOLD
 # DATASET.
-
-levels(acs$urban_c) <- levels(cps$urban_c)
-
 acs$fexpend_predictions <- predict(fexpend_final_forest, acs, type = "response")
+
+write.csv(acs, "Ryan_Data/final_acs_fexpend.csv")
+
+acs_test1 = read.csv("Ryan_Data/final_acs_fexpend.csv")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 

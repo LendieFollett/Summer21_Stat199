@@ -33,6 +33,7 @@ cps$urban_c <- ifelse(cps$urban_c == 1, "Large Central Metro",
 
 cps$urban_c[is.na(cps$urban_c)] <- c("Non-Core/Possibly Rural")
 
+count(cps, var = urban)
 #LRF: order is not what you wanted: turn this into an "ordered factor" then r realizes
 #there is an inherent ordering, and it will respect that in plots, tables, etc...
 #this code should do that: (attribute will follow variable urban_c through to new datasets)
@@ -146,7 +147,7 @@ acs = merge(x = acs, y = county_codes, by = "state_and_county", all.x = TRUE)
 
 # IT WORKS!! NOW I NEED TO REMOVE EVERYTHING I DON'T NEED AND KEEP THE 2013 CODE
 
-acs <- acs[, c("location","avg_hhsize", "hispanic","elderly","black","kids","education","employed","married","disability","households",
+acs <- acs[, c("GEOID","location","avg_hhsize", "hispanic","elderly","black","kids","education","employed","married","disability","households",
                "X2013.code", "female" )]
 
 acs = rename(acs, "urban_code" = "X2013.code")
@@ -159,14 +160,18 @@ acs$urban_c <- ifelse(acs$urban_c == 1, "Large Central Metro",
                                     ifelse(acs$urban_c == 4, "Small Metro",
                                            ifelse(acs$urban_c == 5, "Micropolitan", "Non-Core/Possibly Rural")))))
 
-#acs$urban_c[is.na(acs$urban_c)] <- c("Non-Core/Possibly Rural")
+count(acs, var = urban_code)
+
+acs$urban_c[is.na(acs$urban_c)] <- c("Non-Core/Possibly Rural")
 
 acs$urban_c <- factor(acs$urban_c, levels = c("Large Central Metro", "Large Fringe Metro",  "Medium Metro",
                                               "Small Metro","Micropolitan", "Non-Core/Possibly Rural" ))
 
 # THESE ARE CAUSING ISSUES, I NEED TO ONLY DIVIDE WHERE THERE ARE ACTUAL VALUES
 
-acs = na.omit(acs)
+#acs = na.omit(acs)
+
+acs = subset(acs, households != 0)
 
 # I COULD USE MUTATE_AT IN ORDER TO ROUND ALL OF THE VALUES, BUT THIS WORKS FOR NOW, ALBEIT BEING REPETITIVE 
 
@@ -190,5 +195,5 @@ acs$female <- round(acs$female/acs$households, digits = 3)
 
 acs = rename(acs, "hhsize" = "avg_hhsize")
 
-acs = subset(acs, select = -c(urban_code))
+#acs = subset(acs, select = -c(urban_code))
 

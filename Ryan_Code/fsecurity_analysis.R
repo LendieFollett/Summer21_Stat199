@@ -4,6 +4,9 @@
 
 rm(list = ls())
 
+# THIS ALLOWS YOU TO RUN THE CODE SIMILAR TO A CLASS IN OTHER IDE's
+source("Ryan_Code/data_cleaning.R")
+
 # These are all of the libraries needed for creating a heatmap of areas in danger of food insecurity.
 library(ggplot2)
 library(dplyr)
@@ -52,14 +55,6 @@ ggplot(aes(x = disability_cat, y = Average, fill = Average), data = cps_disabili
 ggplot() + geom_violin(aes(group = disability_cat, x = disability_cat, y = fsecurity, fill = disability_cat), data = cps_fsecurity) +
   labs(x = "Disabled Individual Living Within Household", y = "Level of Food Insecurity", fill = "If Disabled") + 
   scale_fill_brewer(palette = "Blues")
-
-
-# ggplot(data = cps_fsecurity) +
-#   geom_histogram(aes(x = disability, fill = fsecurity_f), position = 'fill', binwidth = 1) +
-#   ggtitle("Food Insecurity as Disabled Individuals Increases") +
-#   labs(x = "Number of Disabled Individuals in Household", y = "Average Level of Food Insecurity") +
-#   scale_fill_brewer("Food Insecure") +
-#   theme_bw()
 
 # ANALYSIS OF ELDERLY VARIABLE
 
@@ -164,9 +159,9 @@ train.df = cps_fsecurity
 # 
 #
 # OOB Error Rate is lowest at 2 it seems, so I'll go with 2.
-final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
-                              education + employed + married + disability + hhsize + urban_c, data = train.df,
-                            ntree = 1000, mtry = 2, importance = T)
+# final_forest = randomForest(fsecurity ~ female + kids + elderly + black + hispanic +
+#                               education + employed + married + disability + hhsize + urban_c, data = train.df,
+#                             ntree = 1000, mtry = 2, importance = T)
 
 #saveRDS(final_forest, "final_forest.RDS")
 final_forest <- readRDS("final_forest.RDS")
@@ -250,5 +245,13 @@ summary(fsecurity.glm)
 
 summary(fsecurity.glm3)
 
+final_forest = readRDS("final_forest.RDS")
 
 acs$fsecurity_predictions <- predict(final_forest, acs, type = "response")
+
+write.csv(acs, "Ryan_Data/final_acs_fsecurity.csv")
+
+# BRING THIS INTO DASHBOARD AS IS, DONT FORGET TO RE-FACTORIZE THE URBANICITY METRIC
+acs_test = read.csv("Ryan_Data/final_acs_fsecurity.csv")
+
+
