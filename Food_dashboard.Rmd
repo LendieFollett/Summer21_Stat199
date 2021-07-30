@@ -374,43 +374,31 @@ exp(confint(fexpend.glm3))
 Heat Map & Prediction
 ===
 
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+```{r, echo=FALSE}
+state = 
+  
+selectInput("State", label = "Select State:", choices = unique(state)[order(unique(state))], selected = NULL)
+
+shp_file <- block_groups(state = state.abb["State"])
+
+shp_join <- left_join(shp_file, acs, by="GEOID" ) %>%
+  rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE)
+
+
 ```
-acs = read.csv("Ryan_Data/acs(clean).csv")
-
-acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 
 
-ia_shp = block_groups(state = "IA")
-
-county_list = unique(counties("Iowa")$NAME)
-county_list = county_list[order(county_list)]
-all_counties = block_groups(state = 'IA', county = county_list)
-
-ia_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
-  rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
+{r, echo=FALSE}
+selectInput("county", label = "Select County:", choices = unique(ia_shp_join$COUNTYNAME)[order(unique(ia_shp_join$COUNTYNAME))], selected = "Polk County")
 
 
-pal_bin = colorBin(
-  palette = "YlOrRd", domain = ia_shp_join$elderly,
-  bins = seq(0, max(ia_shp_join$elderly, na.rm = TRUE), length.out = 9)
-)
+```
+observe({
+  
+  
 
-leaflet(ia_shp_join, height = 500, width = 1000) %>%
-  addTiles() %>%
-  addPolygons(
-    fillColor =~ pal_bin(elderly),
-    color = "white",
-    stroke = FALSE,
-    fillOpacity = 0.6,
-    highlight = highlightOptions(
-      color = "black",
-      bringToFront = TRUE
-    )
-  )%>%
-  leaflet::addLegend(
-    pal = pal_bin, values=~elderly,
-    opacity = 0.7, title = "Iowa Elderly",
-    position = "bottomright"
-  )
+})
 ```
 
