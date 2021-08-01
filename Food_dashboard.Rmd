@@ -377,11 +377,11 @@ Heat Map & Prediction
 Inputs {.sidebar}
 -----------------------------------------------------------------------
 ```{r, echo=FALSE}
-state = data.frame(state.abb, state.name)
+State_stuff = data.frame(state.abb, state.name)
   
-selectInput("State", label = "Select State:", choices = unique(state.abb)[order(unique(state.abb))], selected = NULL)
+selectInput("State", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
 
-shp_file <- block_groups(state = state.abb["State"])
+shp_file <- block_groups(state = State_stuff$state.abb[State_stuff$state.name == input$State])
 
 shp_join <- left_join(shp_file, acs, by="GEOID" ) %>%
   rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE)
@@ -394,9 +394,9 @@ shp_join$labels <- paste0(
   "<strong> GEOID: </strong> ",
   shp_join$GEOID, "<br/> ",
   "<strong> Food Expenditure: </strong> $",
-  shp_join$lasso_pred, "<br/> ",
+  shp_join$fexpend_predictions, "<br/> ",
   "<strong> Food Insecurity: </strong> ",
-  shp_join$lasso_bin_pred, "<br/> "
+  shp_join$fsecurity_predictions, "<br/> "
 ) %>%
   lapply(htmltools::HTML)
 

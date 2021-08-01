@@ -395,3 +395,5 @@ geom_jitter(aes(x = your_x, y = your_numeric_y)) + geom_violin(aes(x = your_x, y
 
 # SHOULD MENTION ECONOMIES OF SCALE IN THE HOUSEHOLD SIZE ANALYSIS
 
+
+# CREATE A LIST OF ALL OF THE STATE NAMES AND THEN ALLOW A PERSON TO SELECT THE STATE 
