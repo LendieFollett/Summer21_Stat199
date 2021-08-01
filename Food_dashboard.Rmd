@@ -386,7 +386,7 @@ shp_file <- block_groups(state = State_stuff$state.abb[State_stuff$state.name ==
 shp_join <- left_join(shp_file, acs, by="GEOID" ) %>%
   rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE)
 
-shp_join$COUNTYNAME <- convert_fips_to_names(ia_shp_join$COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY")
+shp_join$COUNTYNAME <- convert_fips_to_names(shp_join$COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY")
 
 shp_join$labels <- paste0(
   "<strong> County: </strong> ",
@@ -400,6 +400,70 @@ shp_join$labels <- paste0(
 ) %>%
   lapply(htmltools::HTML)
 
+#for color scale
+limit <- c(min(acs$fexpend_predictions,na.rm=TRUE), max(acs$fexpend_predictions,na.rm=TRUE))
+limit_bin <- c(min(acs$fsecurity_predictions,na.rm=TRUE), max(acs$fsecurity_predictions,na.rm=TRUE))
+pal_bin <- colorBin(
+  palette = "YlOrRd", domain = ia_shp_join$fsecurity_predictions,
+  bins = seq(0, max(ia_shp_join$fsecurity_predictions, na.rm = TRUE) + .01, by = .05)
+)
+pal <- colorBin(
+  palette = "YlOrRd", domain = ia_shp_join$fexpend_predictions,
+  reverse=TRUE,
+  bins = seq(floor(min(ia_shp_join$fexpend_predictions, na.rm = TRUE)), floor(max(ia_shp_join$fexpend_predictions, na.rm = TRUE)) + .1, by = 5)
+)
+
+cnty_shp_join <- reactive({
+  subset(shp_join, COUNTYNAME == input$county) 
+  #block_groups(state = 'IA', county = input$county)
+  })
+
+renderLeaflet({
+leaflet(cnty_shp_join(),height=500, width=1000) %>%
+  addTiles() %>%
+  #setView(lng = 0, lat = 30, zoom = 2) %>%
+  addPolygons(
+    fillColor = ~ pal_bin(fsecurity_predictions),
+    color = "white",
+        stroke=FALSE,
+    fillOpacity = 0.6,
+    label = ~labels,
+    highlight = highlightOptions(
+      color = "black",
+      bringToFront = TRUE
+    )
+  )%>%
+  leaflet::addLegend(
+    pal = pal_bin, values = ~fsecurity_predictions,
+    opacity = 0.7, title = "Proportion of\nFood Insecure\nHouseholds",
+    position = "topright"
+  )
+})
+
+cnty_shp_join2 <- reactive({
+  subset(ia_shp_join, COUNTYNAME == input$county2) 
+  })
+renderLeaflet({
+leaflet(cnty_shp_join2(),height=500, width=1000) %>%
+  addTiles() %>%
+  #setView(lng = 0, lat = 30, zoom = 2) %>%
+  addPolygons(
+    fillColor = ~ pal(fexpend_predictions),
+    stroke=FALSE,
+    color = "white",
+    fillOpacity = 0.6,
+    label = ~labels,
+    highlight = highlightOptions(
+      color = "black",
+      bringToFront = TRUE
+    )
+  )%>%
+  leaflet::addLegend(
+    pal = pal, values = ~fexpend_predictions,
+    opacity = 0.7, title = "Weekly Average\nFood Expenditure\nPer Person",
+    position = "topright"
+  )
+})
 
 ```
 
