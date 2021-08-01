@@ -412,7 +412,12 @@ pal <- colorBin(
   reverse=TRUE,
   bins = seq(floor(min(ia_shp_join$fexpend_predictions, na.rm = TRUE)), floor(max(ia_shp_join$fexpend_predictions, na.rm = TRUE)) + .1, by = 5)
 )
+```
 
+
+Row
+----
+```{r}
 cnty_shp_join <- reactive({
   subset(shp_join, COUNTYNAME == input$county) 
   #block_groups(state = 'IA', county = input$county)
@@ -483,6 +488,12 @@ pal <- colorBin(
   reverse=TRUE,
   bins = seq(floor(min(ia_shp_join$fexpend_predictions, na.rm = TRUE)), floor(max(ia_shp_join$fexpend_predictions, na.rm = TRUE)) + .1, by = 5)
 )
+```
+
+
+Row
+----
+```{r}
 cnty_shp_join2 <- reactive({
   subset(ia_shp_join, COUNTYNAME == input$county2) 
   })
