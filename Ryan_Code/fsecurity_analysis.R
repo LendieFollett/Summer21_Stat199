@@ -2,7 +2,7 @@
 # PUT FEXPEND IN THE ORIGINAL DATA ANALYSIS
 
 
-rm(list = ls())
+#rm(list = ls())
 
 # THIS ALLOWS YOU TO RUN THE CODE SIMILAR TO A CLASS IN OTHER IDE's
 source("Ryan_Code/data_cleaning.R")
@@ -108,8 +108,22 @@ ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_bar() + geom_text(stat = 'c
 ggplot(data = cps_fsecurity, aes(x = round(hhsize,0))) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of Family Members Within Household", y = "Number of Households")
 
-ggplot(data = cps_fexpend, aes(x = fexpend))+geom_histogram(binwidth = 5)+ labs(x = "Food Expense", y = "Numer of Households" )
 
+ggplot(data = cps_fsecurity, aes(x = urban_c)) + 
+  geom_bar() + 
+  geom_text(stat = 'count', aes(label = ..count..), hjust = -1) +
+  labs(x = "", y =  "Count") +#LRF: add labels 
+  coord_flip() #the x axis is smooshed - thijs helps with that
+
+
+#LRF: take a look at this - don't have to create all those temporary datasets
+cps_fsecurity %>% 
+  group_by(urban_c) %>% 
+  summarise(Average = mean(fsecurity)) %>%#LRF: pipe the data right into ggplot!
+  ggplot(aes(x = urban_c, y = Average, fill = Average)) +
+  geom_bar(stat = "Identity")  +
+  coord_flip()+ #LRF: again, the x axis was smooshed
+  labs(x = "", y = "Proportion of Food Insecure")#LRF: axis labels!
 
 
 # Create the Forrest
@@ -252,6 +266,6 @@ acs$fsecurity_predictions <- predict(final_forest, acs, type = "response")
 write.csv(acs, "Ryan_Data/final_acs_fsecurity.csv")
 
 # BRING THIS INTO DASHBOARD AS IS, DONT FORGET TO RE-FACTORIZE THE URBANICITY METRIC
-acs_test = read.csv("Ryan_Data/final_acs_fsecurity.csv")
+# acs_test = read.csv("Ryan_Data/final_acs_fsecurity.csv")
 
 
