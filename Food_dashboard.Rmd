@@ -76,6 +76,13 @@ In order to accomplish said goal we will begin by performing an exploratory anal
 </font>
 
 
+Row {data-height = 400}
+---
+### Key Variables
+<font size = 2>
+Variables used in order to predict levels of food insecurity and amount of USD used to buy food for one person in each household for a week are household size, number of elderly within household, number of hispanics within houshold, number of blacks within household, number of kids within household, number of individuals with an associates or higher within a household, number of employed within a household, number of married within a household, and number of disabled within a household. 
+</font>
+
 Exploratory Analysis - Food Security {data-navmenu="Exploratory Analysis"}
 ===
 
