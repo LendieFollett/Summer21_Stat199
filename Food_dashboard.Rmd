@@ -467,7 +467,7 @@ Row
 
 ```{r, echo = FALSE}
 
-shp_file <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
+shp_file2 <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
     left_join(final_combined, by="GEOID" ) %>%
     rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE) %>%
     #     mutate(COUNTYNAME = convert_fips_to_names(COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY"))
@@ -497,7 +497,7 @@ pal <- colorBin(
 )
 
 renderLeaflet({
-  leaflet(shp_file(),height=500, width=1000) %>%
+  leaflet(shp_file2(),height=500, width=1000) %>%
     addTiles() %>%
     #setView(lng = 0, lat = 30, zoom = 2) %>%
     addPolygons(
