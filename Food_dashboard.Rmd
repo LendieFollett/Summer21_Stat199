@@ -388,11 +388,13 @@ final_fsecurity <- read.csv("Ryan_Data/final_acs_fsecurity.csv")
 
 State_stuff = data.frame(state.abb, state.name)
 
-final_fsecurity$GEOID = as.character(paste0(final_fsecurity$GEOID, substr(final_fsecurity, 13, 13)))
+final_fsecurity$GEOID = as.character(paste0(final_fsecurity$GEOID, substr(final_fsecurity$location, 13, 13)))
 
-final_fexpend$GEOID = as.character(paste0(final_fexpend$GEOID, substr(final_fexpend, 13, 13)))
+final_fexpend$GEOID = as.character(paste0(final_fexpend$GEOID, substr(final_fexpend$location, 13, 13)))
 
 final_combined <- left_join(final_fexpend, final_fsecurity, by = "GEOID")
+
+final_combined$GEOID <- ifelse(nchar(final_combined$GEOID) == 12, final_combined$GEOID, paste0("0",final_combined$GEOID))
 
 selectInput("State", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
 
@@ -403,7 +405,7 @@ Row
 ----
 ```{r, echo = FALSE}
 
-shp_file <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
+shp_file <- reactive({ block_groups(state =  State_stuff$state.abb[State_stuff$state.name == input$State]) %>%
     left_join(final_combined, by="GEOID" ) %>%
     rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE) %>%
     #     mutate(COUNTYNAME = convert_fips_to_names(COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY"))
@@ -460,18 +462,6 @@ Inputs {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r, echo = FALSE}
-final_fexpend <- read.csv("Ryan_Data/final_acs_fexpend.csv")
-
-final_fsecurity <- read.csv("Ryan_Data/final_acs_fsecurity.csv")
-
-State_stuff = data.frame(state.abb, state.name)
-
-final_fsecurity$GEOID = as.character(paste0(final_fsecurity$GEOID, substr(final_fsecurity, 13, 13)))
-
-final_fexpend$GEOID = as.character(paste0(final_fexpend$GEOID, substr(final_fexpend, 13, 13)))
-
-final_combined <- left_join(final_fexpend, final_fsecurity, by = "GEOID")
-
 selectInput("State2", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
 ```
 
@@ -481,7 +471,7 @@ Row
 
 ```{r, echo = FALSE}
 
-shp_file2 <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
+shp_file2 <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == input$State2]) %>%
     left_join(final_combined, by="GEOID" ) %>%
     rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE) %>%
     #     mutate(COUNTYNAME = convert_fips_to_names(COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY"))
