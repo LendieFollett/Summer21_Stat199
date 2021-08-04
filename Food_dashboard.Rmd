@@ -418,6 +418,7 @@ limit <- c(min(final_combined$fexpend_predictions,na.rm=TRUE), max(final_combine
 limit_bin <- c(min(final_combined$fsecurity_predictions,na.rm=TRUE), max(final_combined$fsecurity_predictions,na.rm=TRUE))
 pal_bin <- colorBin(
   palette = "YlOrRd", domain = final_combined$fsecurity_predictions,
+  reverse = TRUE,
   bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .05)
 )
 
