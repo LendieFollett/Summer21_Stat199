@@ -338,8 +338,14 @@ Descriptive Model - Food Expenditure {data-navmenu="Descriptive Models"}
 ===
 
 Row{.tabset}
----
+--------------
+### Description:
+<font size = "3">
+This model will not be used for the final prediction, however, it will be used as a representation of what the relationships between
+the response variable and explanatory variables are. A Zero Adjusted Gamma Model is a regular gamma model except that it accounts for a significant amount of zeroes within the response variable. This is necessary because a majority of houses within the U.S. have said that they have spent $0 this week per person within the household. Suspected reasons for this would either be people who are getting food from food banks, families that buy food in bulk, or they could be dependants, although this is unlikely since it is an average of a block. 
+</font>
 
+Column {.tabset}
 ### Zero Adjusted Gamma Model
 <font size="3"> 
 Summary 
@@ -439,7 +445,7 @@ renderLeaflet({
     )%>%
     leaflet::addLegend(
       pal = pal_bin, values = ~fsecurity_predictions,
-      opacity = 0.7, title = "Weekly Average\nFood Expenditure\nPer Person",
+      opacity = 0.7, title = "Proportion of\nFood Insecure\nHouseholds",
       position = "topright"
     )
 })
@@ -454,7 +460,7 @@ Inputs {.sidebar}
 -----------------------------------------------------------------------
 
 ```{r, echo = FALSE}
-final_fexpend <- read.csv( "Ryan_Data/final_acs_fexpend.csv")
+final_fexpend <- read.csv("Ryan_Data/final_acs_fexpend.csv")
 
 final_fsecurity <- read.csv("Ryan_Data/final_acs_fsecurity.csv")
 
