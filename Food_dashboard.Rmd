@@ -427,7 +427,7 @@ renderLeaflet({
     addTiles() %>%
     #setView(lng = 0, lat = 30, zoom = 2) %>%
     addPolygons(
-      fillColor = ~ pal(fsecurity_predictions),
+      fillColor = ~ pal_bin(fsecurity_predictions),
       stroke=FALSE,
       color = "white",
       fillOpacity = 0.6,
@@ -438,7 +438,7 @@ renderLeaflet({
       )
     )%>%
     leaflet::addLegend(
-      pal = pal, values = ~fsecurity_predictions,
+      pal = pal_bin, values = ~fsecurity_predictions,
       opacity = 0.7, title = "Weekly Average\nFood Expenditure\nPer Person",
       position = "topright"
     )
