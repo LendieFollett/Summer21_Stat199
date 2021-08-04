@@ -12,8 +12,8 @@ output:
 # Always start with a fresh environment
 rm(list = ls())
 
-source("Ryan_Code/fexpend_analysis.R")
-source("Ryan_Code/fsecurity_analysis.R")
+source("Ryan_Code/data_cleaning.R")
+
 
 library(flexdashboard)
 library(ggplot2)
@@ -35,6 +35,15 @@ library(rpart)
 library(rpart.plot)
 library(rgeos)
 library(tigris)
+
+cps_fexpend <- cps[!is.na(cps$fexpend),]
+
+cps_fexpend = subset(cps_fexpend, select = -c(id, weight, fsecurity))
+
+cps_fsecurity <- cps[!is.na(cps$fsecurity),]
+
+cps_fsecurity = subset(cps_fsecurity, select = -c(id, weight, fexpend))
+
 
 ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecure", y = "Number of Households")
 
@@ -359,91 +368,10 @@ Food Security{data-navmenu="Heat Map Of Predictions"}
 
 Inputs {.sidebar}
 -----------------------------------------------------------------------
-```
-State_stuff = data.frame(state.abb, state.name)
-  
-selectInput("State", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
-
-shp_file <- block_groups(state = State_stuff$state.abb[State_stuff$state.name == input$State])
-
-shp_join <- left_join(shp_file, acs, by="GEOID" ) %>%
-  rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE)
-
-shp_join$COUNTYNAME <- convert_fips_to_names(shp_join$COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY")
-
-shp_join$labels <- paste0(
-  "<strong> County: </strong> ",
-  shp_join$COUNTYNAME, "<br/> ",
-  "<strong> GEOID: </strong> ",
-  shp_join$GEOID, "<br/> ",
-  "<strong> Food Expenditure: </strong> $",
-  shp_join$fexpend_predictions, "<br/> ",
-  "<strong> Food Insecurity: </strong> ",
-  shp_join$fsecurity_predictions, "<br/> "
-) %>%
-  lapply(htmltools::HTML)
-
-#for color scale
-limit <- c(min(acs$fexpend_predictions,na.rm=TRUE), max(acs$fexpend_predictions,na.rm=TRUE))
-limit_bin <- c(min(acs$fsecurity_predictions,na.rm=TRUE), max(acs$fsecurity_predictions,na.rm=TRUE))
-pal_bin <- colorBin(
-  palette = "YlOrRd", domain = ia_shp_join$fsecurity_predictions,
-  bins = seq(0, max(ia_shp_join$fsecurity_predictions, na.rm = TRUE) + .01, by = .05)
-)
-pal <- colorBin(
-  palette = "YlOrRd", domain = ia_shp_join$fexpend_predictions,
-  reverse=TRUE,
-  bins = seq(floor(min(ia_shp_join$fexpend_predictions, na.rm = TRUE)), floor(max(ia_shp_join$fexpend_predictions, na.rm = TRUE)) + .1, by = 5)
-)
-```
-
-
-Row
-----
-```
-cnty_shp_join <- reactive({
-  subset(shp_join, STATENAME == input$State) 
-  #block_groups(state = 'IA', county = input$county)
-  })
-
-renderLeaflet({
-leaflet(cnty_shp_join(),height=500, width=1000) %>%
-  addTiles() %>%
-  #setView(lng = 0, lat = 30, zoom = 2) %>%
-  addPolygons(
-    fillColor = ~ pal_bin(fsecurity_predictions),
-    color = "white",
-        stroke=FALSE,
-    fillOpacity = 0.6,
-    label = ~labels,
-    highlight = highlightOptions(
-      color = "black",
-      bringToFront = TRUE
-    )
-  )%>%
-  leaflet::addLegend(
-    pal = pal_bin, values = ~fsecurity_predictions,
-    opacity = 0.7, title = "Proportion of\nFood Insecure\nHouseholds",
-    position = "topright"
-  )
-})
-```
-
-
-Food Expenditure{data-navmenu="Heat Map Of Predictions"}
-===
-
-Inputs {.sidebar}
------------------------------------------------------------------------
-```{r, echo=FALSE}
-source("Ryan_Code/fexpend_analysis.R")
-source("Ryan_Code/fsecurity_analysis.R")
-
+```{r, echo = FALSE}
 final_fexpend <- read.csv( "Ryan_Data/final_acs_fexpend.csv")
 
 final_fsecurity <- read.csv("Ryan_Data/final_acs_fsecurity.csv")
-
-final_combined <- left_join(final_fexpend, final_fsecurity, by = "GEOID")
 
 State_stuff = data.frame(state.abb, state.name)
 
@@ -451,7 +379,10 @@ final_fsecurity$GEOID = as.character(paste0(final_fsecurity$GEOID, substr(final_
 
 final_fexpend$GEOID = as.character(paste0(final_fexpend$GEOID, substr(final_fexpend, 13, 13)))
 
-selectInput("State2", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
+final_combined <- left_join(final_fexpend, final_fsecurity, by = "GEOID")
+
+selectInput("State", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
+
 ```
 
 
@@ -459,7 +390,7 @@ Row
 ----
 ```{r, echo = FALSE}
 
-shp_file <- block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
+shp_file <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
     left_join(final_combined, by="GEOID" ) %>%
     rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE) %>%
     #     mutate(COUNTYNAME = convert_fips_to_names(COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY"))
@@ -472,7 +403,84 @@ shp_file <- block_groups(state = State_stuff$state.abb[State_stuff$state.name ==
       fsecurity_predictions, "<br/> "
     ) %>%
       lapply(htmltools::HTML))
+})
 
+
+#for color scale
+limit <- c(min(final_combined$fexpend_predictions,na.rm=TRUE), max(final_combined$fexpend_predictions,na.rm=TRUE))
+limit_bin <- c(min(final_combined$fsecurity_predictions,na.rm=TRUE), max(final_combined$fsecurity_predictions,na.rm=TRUE))
+pal_bin <- colorBin(
+  palette = "YlOrRd", domain = final_combined$fsecurity_predictions,
+  bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .05)
+)
+
+renderLeaflet({
+  leaflet(shp_file(),height=500, width=1000) %>%
+    addTiles() %>%
+    #setView(lng = 0, lat = 30, zoom = 2) %>%
+    addPolygons(
+      fillColor = ~ pal(fsecurity_predictions),
+      stroke=FALSE,
+      color = "white",
+      fillOpacity = 0.6,
+      label = ~labels,
+      highlight = highlightOptions(
+        color = "black",
+        bringToFront = TRUE
+      )
+    )%>%
+    leaflet::addLegend(
+      pal = pal, values = ~fsecurity_predictions,
+      opacity = 0.7, title = "Weekly Average\nFood Expenditure\nPer Person",
+      position = "topright"
+    )
+})
+
+```
+
+
+Food Expenditure{data-navmenu="Heat Map Of Predictions"}
+===
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+```{r, echo = FALSE}
+final_fexpend <- read.csv( "Ryan_Data/final_acs_fexpend.csv")
+
+final_fsecurity <- read.csv("Ryan_Data/final_acs_fsecurity.csv")
+
+State_stuff = data.frame(state.abb, state.name)
+
+final_fsecurity$GEOID = as.character(paste0(final_fsecurity$GEOID, substr(final_fsecurity, 13, 13)))
+
+final_fexpend$GEOID = as.character(paste0(final_fexpend$GEOID, substr(final_fexpend, 13, 13)))
+
+final_combined <- left_join(final_fexpend, final_fsecurity, by = "GEOID")
+
+selectInput("State2", label = "Select State:", choices = unique(State_stuff$state.name)[order(unique(State_stuff$state.name))], selected = NULL)
+```
+
+
+Row
+----
+
+```{r, echo = FALSE}
+
+shp_file <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$state.name == "Iowa"]) %>%
+    left_join(final_combined, by="GEOID" ) %>%
+    rmapshaper::ms_simplify( keep = 0.01, keep_shapes = TRUE) %>%
+    #     mutate(COUNTYNAME = convert_fips_to_names(COUNTYFP, states = rep("State", nrow(shp_join)), geo_header="COUNTY"))
+    mutate(labels = paste0(
+      "<strong> County: </strong> ",
+      GEOID, "<br/> ",
+      "<strong> Food Expenditure: </strong> $",
+      fexpend_predictions, "<br/> ",
+      "<strong> Food Insecurity: </strong> ",
+      fsecurity_predictions, "<br/> "
+    ) %>%
+      lapply(htmltools::HTML))
+})
 
 
 #for color scale
@@ -512,17 +520,3 @@ renderLeaflet({
 
 
 ```
-
-
-{r, echo=FALSE}
-selectInput("county", label = "Select County:", choices = unique(ia_shp_join$COUNTYNAME)[order(unique(ia_shp_join$COUNTYNAME))], selected = "Polk County")
-
-
-```
-observe({
-  
-  
-
-})
-```
-
