@@ -447,13 +447,33 @@ renderLeaflet({
     )%>%
     leaflet::addLegend(
       pal = pal_bin, values = ~fsecurity_predictions,
-      opacity = 0.7, title = "Proportion of\nFood Insecure\nHouseholds",
+      opacity = 0.7, title = "Average Level of\nFood Insecurity per\nHousehold",
       position = "topright"
     )
 })
 
 ```
 
+Row
+--------------------
+
+### Predictions
+```{r, echo=FALSE}
+temp1 <- ia_shp_join %>% as.data.frame%>%dplyr::select(c("GEOID","COUNTYNAME","lasso_bin_pred", "female", "hispanic",
+                                  "black", "kids", "elderly", "education", "employed",
+                                  "married", "disability"))%>%
+                  rename( 
+                         `Predicted Probability` = lasso_bin_pred)
+temp1[,c("female", "hispanic", "black", "kids", "elderly", "education", "employed","married", "disability")] <-t(apply(temp1[,c("female",  "hispanic",
+                                  "black", "kids", "elderly", "education", "employed","married", "disability")], 1, function(x){x*lasso_bin_coefdf[c("female", "hispanic",
+                                  "black", "kids", "elderly", "education", "employed", "married", "disability"),"coef"]
+}))
+renderDataTable({
+rbind(temp1[which(ia_shp_join$COUNTYNAME == input$county),],
+      temp1[which(ia_shp_join$COUNTYNAME != input$county),])
+  
+})
+```
 
 Food Expenditure{data-navmenu="Heat Map Of Predictions"}
 ===
@@ -522,5 +542,25 @@ renderLeaflet({
     )
 })
 
+
+```
+
+Row
+--------------------
+
+### Predictions
+```{r, echo=FALSE}
+temp2 <- shp_join %>%as.data.frame%>% dplyr::select(c("GEOID","COUNTYNAME", "lasso_pred","female", "avg_hhsize", "hispanic",
+                                  "black", "kids", "elderly", "education", "employed",
+                                  "married", "disability"))%>%
+                  rename(
+                         `Predicted Expenditure` = lasso_pred)
+temp2[,c("female", "hispanic", "black", "kids", "elderly", "education", "employed","married", "disability")] <-t(apply(temp2[,c("female",  "hispanic",
+                                  "black", "kids", "elderly", "education", "employed","married", "disability")], 1, function(x){x*lasso_coefdf[c("female", "hispanic",
+                                  "black", "kids", "elderly", "education", "employed", "married", "disability"),"coef"]
+}))
+renderDataTable({
+rbind(temp2[which(ia_shp_join$COUNTYNAME == input$county2),],
+      temp2[which(ia_shp_join$COUNTYNAME != input$county2),])
 
 ```
