@@ -425,9 +425,9 @@ shp_file <- reactive({ block_groups(state =  State_stuff$state.abb[State_stuff$s
 limit <- c(min(final_combined$fexpend_predictions,na.rm=TRUE), max(final_combined$fexpend_predictions,na.rm=TRUE))
 limit_bin <- c(min(final_combined$fsecurity_predictions,na.rm=TRUE), max(final_combined$fsecurity_predictions,na.rm=TRUE))
 pal_bin <- colorBin(
-  palette = "YlOrRd", domain = final_combined$fsecurity_predictions,
-  reverse = TRUE,
-  bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .05)
+  palette = "RdBu", domain = final_combined$fsecurity_predictions,
+  reverse = FALSE,
+  bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .20)
 )
 
 renderLeaflet({
@@ -458,21 +458,14 @@ Row
 --------------------
 
 ### Predictions
-```{r, echo=FALSE}
-temp1 <- shp_file %>% as.data.frame%>%dplyr::select(c("GEOID","COUNTYNAME","fsecurity_predictions", "female", "hispanic",
-                                  "black", "kids", "elderly", "education", "employed",
-                                  "married", "disability"))%>%
-                  rename( 
-                         `Predicted Average` = fsecurity_predictions)
-temp1[,c("female", "hispanic", "black", "kids", "elderly", "education", "employed","married", "disability")] <-t(apply(temp1[,c("female",  "hispanic",
-                                  "black", "kids", "elderly", "education", "employed","married", "disability")], 1, function(x){x*lasso_bin_coefdf[c("female", "hispanic",
-                                  "black", "kids", "elderly", "education", "employed", "married", "disability"),"coef"]
-}))
-renderDataTable({
-rbind(temp1[which(shp_file$COUNTYNAME == input$State),],
-      temp1[which(shp_file$COUNTYNAME != input$State),])
-  
+```{r, echo = FALSE, attr.output='style="max-height: 200px;"'}
+temp1 <- reactive({ shp_file() %>% as.data.frame%>%dplyr::select(c("GEOID","location.y","fsecurity_predictions", "female.y", "hispanic.y",
+                                  "black.y", "kids.y", "elderly.y", "education.y", "employed.y",
+                                  "married.y", "disability.y", "urban_c.y"))%>%
+                  rename(`Predicted Average` = fsecurity_predictions)
+
 })
+renderDataTable({temp1()})
 ```
 
 Food Expenditure{data-navmenu="Heat Map Of Predictions"}
@@ -511,13 +504,13 @@ shp_file2 <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$s
 limit <- c(min(final_combined$fexpend_predictions,na.rm=TRUE), max(final_combined$fexpend_predictions,na.rm=TRUE))
 limit_bin <- c(min(final_combined$fsecurity_predictions,na.rm=TRUE), max(final_combined$fsecurity_predictions,na.rm=TRUE))
 pal_bin <- colorBin(
-  palette = "YlOrRd", domain = final_combined$fsecurity_predictions,
-  bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .05)
+  palette = "RdBu", domain = final_combined$fsecurity_predictions,
+  bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .20)
 )
 pal <- colorBin(
-  palette = "YlOrRd", domain = final_combined$fexpend_predictions,
-  reverse=TRUE,
-  bins = seq(floor(min(final_combined$fexpend_predictions, na.rm = TRUE)), floor(max(final_combined$fexpend_predictions, na.rm = TRUE)) + .1, by = 5)
+  palette = "RdBu", domain = final_combined$fexpend_predictions,
+  reverse=FALSE,
+  bins = seq(floor(min(final_combined$fexpend_predictions, na.rm = TRUE)), floor(max(final_combined$fexpend_predictions, na.rm = TRUE)) + .1, by = 20)
 )
 
 renderLeaflet({
@@ -549,18 +542,10 @@ Row
 --------------------
 
 ### Predictions
-```{r, echo=FALSE}
-temp2 <- shp_file2 %>%as.data.frame%>% dplyr::select(c("GEOID","COUNTYNAME", "fexpend_predictions","female", "hhsize", "hispanic",
-                                  "black", "kids", "elderly", "education", "employed",
-                                  "married", "disability"))%>%
-                  rename(
-                         `Predicted Expenditure` = lasso_pred)
-temp2[,c("female", "hispanic", "black", "kids", "elderly", "education", "employed","married", "disability")] <-t(apply(temp2[,c("female",  "hispanic",
-                                  "black", "kids", "elderly", "education", "employed","married", "disability")], 1, function(x){x*lasso_coefdf[c("female", "hispanic",
-                                  "black", "kids", "elderly", "education", "employed", "married", "disability"),"coef"]
-}))
-renderDataTable({
-rbind(temp2[which(shp_file2$COUNTYNAME == input$State2),],
-      temp2[which(shp_file2$COUNTYNAME != input$State2),])
+```{r, echo = FALSE, attr.output='style="max-height: 200px;"'}
+temp2 <- reactive({shp_file2() %>%as.data.frame%>% dplyr::select(c("GEOID","location.y", "fexpend_predictions","female.y", "hhsize.y", "hispanic.y","black.y", "kids.y", "elderly.y", "education.y", "employed.y","married.y", "disability.y", "urban_c.y"))%>%
+                  rename(`Predicted Expenditure` = fexpend_predictions)
+})
 
+renderDataTable({temp2()})
 ```
