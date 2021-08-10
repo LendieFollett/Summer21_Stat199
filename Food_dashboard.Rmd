@@ -4,6 +4,7 @@ runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
+    vertical_layout: scroll
 ---
 ```{r setup, include=FALSE}
 #multiple pages within one dashboard
@@ -328,7 +329,7 @@ summary(fsecurity.glm2)
 ```
 
 ### Exponentiated Coefficients and Confidence Intervals
-```{r, attr.output='style="max-height: 500px;"'}
+```{r}
 exp(coef(fsecurity.glm2))
 exp(confint(fsecurity.glm2))
 
@@ -507,10 +508,11 @@ pal_bin <- colorBin(
   palette = "RdBu", domain = final_combined$fsecurity_predictions,
   bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .20)
 )
+log_scale = seq(min(log(final_combined$fexpend_predictions), na.rm = TRUE), max(log(final_combined$fexpend_predictions), na.rm = TRUE), length.out = 11)
 pal <- colorBin(
   palette = "RdBu", domain = final_combined$fexpend_predictions,
   reverse=FALSE,
-  bins = seq(floor(min(final_combined$fexpend_predictions, na.rm = TRUE)), floor(max(final_combined$fexpend_predictions, na.rm = TRUE)) + .1, by = 20)
+  bins = exp(log_scale)
 )
 
 renderLeaflet({
@@ -542,7 +544,7 @@ Row
 --------------------
 
 ### Predictions
-```{r, echo = FALSE, attr.output='style="max-height: 200px;"'}
+```{r, echo = FALSE}
 temp2 <- reactive({shp_file2() %>%as.data.frame%>% dplyr::select(c("GEOID","location.y", "fexpend_predictions","female.y", "hhsize.y", "hispanic.y","black.y", "kids.y", "elderly.y", "education.y", "employed.y","married.y", "disability.y", "urban_c.y"))%>%
                   rename(`Predicted Expenditure` = fexpend_predictions)
 })
