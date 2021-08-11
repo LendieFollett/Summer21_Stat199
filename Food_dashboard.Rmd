@@ -291,6 +291,16 @@ grid.arrange(s1, s2, s3, s4, nrow = 2)
 
 Predictive Model - Food Security {data-navmenu="Predictive Models"}
 ===
+
+Row
+--------------
+### Desciption:
+<font size = "3">
+This plot was created from the randomforest for food security, and it lists the variables in their importance in food security determinance.
+</font>
+
+Row
+--------------
 ```{r, fig.width = 15, fig.height = 12}
 final_forest <- readRDS("final_forest.RDS")
 
@@ -300,6 +310,15 @@ varImpPlot(final_forest, type = 1)
 Predictive Model - Food Expenditure {data-navmenu="Predictive Models"}
 ===
 
+Row
+--------------
+### Desciption:
+<font size = "3">
+This plot was created from the randomforest for food expenditure per individual for one week, and it lists the variables in their importance in food expenditure determinance.
+</font>
+
+Row
+--------------
 ```{r, fig.width = 15, fig.height = 12}
 fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
 
@@ -322,23 +341,28 @@ Column {.tabset}
 <font size="3"> 
 Summary 
 </font> 
-```{r, attr.output='style="max-height: 500px;"'}
+```{r, attr.output='style="max-height: 400px;"'}
 fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c | disability + education + elderly + urban_c, data = cps_fsecurity)
 
 summary(fsecurity.glm2)
 ```
 
 ### Exponentiated Coefficients and Confidence Intervals
-```{r}
+```{r, attr.output='style="max-height: 200px;"'}
 exp(coef(fsecurity.glm2))
 exp(confint(fsecurity.glm2))
 
 ```
 
+### Interpretations and Findings
+<font size = "3">
+When looking at the exponentiated coefficients it you can see that 
+</font>
+
 Descriptive Model - Food Expenditure {data-navmenu="Descriptive Models"}
 ===
 
-Row{.tabset}
+Row{data-height=200}
 --------------
 ### Description:
 <font size = "3">
@@ -347,6 +371,7 @@ the response variable and explanatory variables are. A Zero Adjusted Gamma Model
 </font>
 
 Column {.tabset}
+-------------
 ### Zero Adjusted Gamma Model
 <font size="3"> 
 Summary 
@@ -365,17 +390,22 @@ summary(fexpend.glm3)
 ```
 
 
-### Exponential Coefficients and Confidence Intervals
+### Exponential Coefficients
 ``` {r, attr.output='sytle="max-height: 200px;"'}
 exp(coef(fexpend.glm2))
-exp(confint(fexpend.glm2))
-
 exp(coef(fexpend.glm3))
-exp(confint(fexpend.glm3))
-
 ```
 
+### Confidence Intervals 
+```{r, attr.output='sytle="max-height: 200px;"'}
+exp(confint(fexpend.glm2))
+exp(confint(fexpend.glm3))
+```
 
+### Interpretations and Findings
+<font size = "3">
+
+</font>
 
 Food Security{data-navmenu="Heat Map Of Predictions"}
 ===
