@@ -357,14 +357,17 @@ exp(coef(fsecurity.glm2))
 exp(confint(fsecurity.glm2))
 ```
 
-### Interpretations and Findings
+### Interpretations for Count Model
 <font size = "3">
 Disability Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity increases by a factor of exp(.2593606) = 1.2961011 if there is a disabled person living within the house. This means that if there is a disabled person living within the house, food insecurity of the house increases from the mean by about 30%.
 
 Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food insecurity decreases by a factor of exp(-.1114594) = .8945277 for every educated person within the house. This means that for every new educated individual living within the house, food insecurity of the house decreases from the mean by about 10.55%.
 
-Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by a factor of exp(-.1748214) = .8396069 for every educated person within the house. This means that for every new elderly person living within the house, food insecurity of the house decreases from the mean by about 16.04%.
+Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by a factor of exp(-.1748214) = .8396069 for every educated person within the house. This means that for every new elderly person living within the house, food insecurity of the house decreases from the mean by about 16.04%. </font>
 
+
+### Interpretations for Zero-Inflation Model
+<font size = "3">
 Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds a house is food secure is exp(-1.0453348) = 0.3515741. This means that if there is a disabled person living within the household, the odds of a house having a food insecurity level of 0 or greater increases by 64.84%.
 
 Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is food secure is exp(0.7795625) = 2.1805181. This means that for every person within the house with an associates degree or higher, the odds of a house having a food insecurity level of 0 or greater decreases by 118%.
@@ -415,7 +418,7 @@ exp(confint(fexpend.glm2))
 exp(confint(fexpend.glm3))
 ```
 
-### Interpretations and Findings
+### Interpretations for Count Model
 <font size = "3">
 HHSIZE INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the amount of money used to  buy food for each individual decreases by about 20.4% per person compared to the mean.
 
@@ -425,8 +428,10 @@ EMPLOYED INTERPRETATION (Count Model): With all other variables held constant, f
 
 DISABILITY INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the amount of money in U.S. dollars used to buy food for each individual decreases by about 6.37% per person compared to the mean.
 
-EDUCATION INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(0.12464) = 1.1327362.This means that for every new educated individual within the household, the amount of money in U.S. dollars used to buy food for each individual increases by about 13.27% per person compared to the mean.
+EDUCATION INTERPRETATION (Count Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(0.12464) = 1.1327362.This means that for every new educated individual within the household, the amount of money in U.S. dollars used to buy food for each individual increases by about 13.27% per person compared to the mean. </font>
 
+### Interpretations for Zero Inflation Model
+<font size = "3">
 HHSIZE INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.07890) = .9241349. This means that for every new person within the household, the odds of said household spending $0 on food per person decreases by about 7.6%.
 
 ELDERLY INTERPRETATION (Zero-Inflation Model(Binary)): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.01478) = .9853277. This means that for every new elderly person within the household, the odds of said household spending $0 on food per person decreases by about 1.47%. 
