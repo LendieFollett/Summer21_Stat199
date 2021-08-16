@@ -67,30 +67,50 @@ Row {data-height=200}
 
 ### Goal of Research:
 <font size = 2>
-The goal of this analysis is to find determinants of food insecurity. The reason for doing so is humanitarian in nature as the
-increase in efficacy of food distribution centers by determining higher risk areas should decrease the level of food. </font>
-
+The goal of this analysis was to determine the affects certain variables have on food insecurity and food expenditure. The goal of creating predictions for food insecurity and food expenditure on a block level for the U.S. was also a goal.
+</font>
 
 ### Process:
 <font size = 2>
-In order to accomplish said goal we will begin by performing an exploratory analysis of all of the most important variables as determined by the variable importance plot. We will then proceed to demonstrate the effects of said variables on the response variables food security and food expenditure using regression analysis. From there we will use a random forest, which is a form of prediction via machine learning, to create predictions for both response variables for national block groups.
+In order to accomplish said goal we will begin by performing an exploratory analysis on all of the most important variables as determined by the variable importance plot. We will then proceed to demonstrate the effects of said variables on the response variables food security and food expenditure using regression analysis. From there we will use a random forest, which is a form of prediction via machine learning, to create predictions for both response variables for national block groups.
 </font>
 
-
-Row {data-height = 400}
----
+Row
+--------------
 ### Key Variables
 <font size = 2>
-Variables used in order to predict levels of food insecurity and amount of USD used to buy food for one person in each household for a week are household size, number of elderly within household, number of hispanics within houshold, number of blacks within household, number of kids within household, number of individuals with an associates or higher within a household, number of employed within a household, number of married within a household, and number of disabled within a household. 
+Variables used in order to predict levels of food insecurity and amount of USD used to buy food for one person in each household for a week are household size, number of elderly within household, number of hispanics within household, number of blacks within household, number of kids within household, number of individuals with an associates or higher within a household, number of employed within a household, number of married within a household, and number of disabled within a household. 
 </font>
 
+Row
+-----------------------
+### Analysis of Response variables
+```{r, fig.width = 15, fig.height = 8}
+
+a1 <- ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecurity Level", y = "Number of Households")
+
+a2 <- ggplot(data = cps_fexpend, aes (x = fexpend, fill = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense In USD", y = "Number of Households") + scale_x_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "BuGn")
+
+grid.arrange(a1, a2, nrow = 1)
+```
+
+
+
+
 Exploratory Analysis - Food Security {data-navmenu="Exploratory Analysis"}
-===
+===============
+
+Row
+--------------------
+### Description:
+<font size = 3>
+These plots give a physical representation of the connections between individual important variables and the response variable food security.
+</font>
 
 Column {.tabset}
----
+---------------
 ### Disability Analysis 
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 p1 <- ggplot(data = cps_fsecurity, aes(x = disability_cat, fill = disability_cat))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Disabled Individual Living Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "Blues")
 
@@ -108,7 +128,7 @@ grid.arrange(p1, p2, p3, nrow = 1)
 ```
 
 ### Elderly Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 g1 <- ggplot(data = cps_fsecurity, aes(x = elderly, fill = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Number of Elderly in Household", y = "Number of Households") + scale_fill_fermenter(palette = "Blues") 
 
@@ -126,7 +146,7 @@ grid.arrange(g1, g2, g3, nrow = 1)
 ```
 
 ### Education Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 q1 <- ggplot(data = cps_fsecurity, aes(x = education))+ geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
   labs(x = "Number of Educated Individuals Within Household", y = "Number of Households")
 
@@ -144,7 +164,7 @@ grid.arrange(q1, q2, q3, nrow = 1)
 ```
 
 ### Employed Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 p1 <- ggplot(data = cps_fsecurity, aes(x = employed))+ geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of Employed Individuals Within Household", y = "Number of Households")
 
@@ -160,20 +180,26 @@ grid.arrange(p1, p2, p3, nrow = 1)
 ```
 
 ### Household Size Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 k1 <- ggplot(data = cps_fsecurity, aes(x = round(hhsize,0))) + geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of Family Members Within Household", y = "Number of Households")
 
-k2 <- ggplot(data = cps_fexpend, aes(x = fexpend))+geom_histogram(binwidth = 5)+ labs(x = "Food Expense", y = "Numer of Households" )
-
-grid.arrange(k1, k2, nrow = 1)
+grid.arrange(k1, nrow = 1)
 ```
 
 
 Exploratory Analysis - Food Expenditure {data-navmenu="Exploratory Analysis"}
-===
+==================
+
+Row
+--------------------
+### Description:
+<font size = 3>
+These plots give a physical representation of the connections between individual important variables and the response variable food expenditure.
+</font>
+
 Column {.tabset}
----
+----------------------
 ```{r, warning=FALSE, show=FALSE}
 cps_fexpend_f <- cps_fexpend
 
@@ -189,7 +215,7 @@ cps_fexpend_f$hhsize_f <- cut(cps_fexpend_f$hhsize, breaks = breaks, include.low
 
 
 ### Disability Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 f1 <- ggplot(data = cps_fexpend_f, aes (x = disability, fill = disability))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "If Disabled Individual Within Household", y = "Number of Households", fill = "If Disabled") + scale_fill_brewer(palette = "BuGn")
 
@@ -208,7 +234,7 @@ grid.arrange(f1, f2, f3, nrow = 1)
 
 
 ### Elderly Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 d1 <- ggplot(data = cps_fexpend, aes (x = elderly))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + 
   labs(x = "Elderly In Household", y = "Number of Households") +
   scale_fill_brewer(palette = "BuGn")
@@ -228,7 +254,7 @@ grid.arrange(d1, d2, d3, nrow = 1)
 ```
 
 ### Education Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 z1 <- ggplot(data = cps_fexpend, aes(x = education))+ geom_bar(aes(fill = education)) + geom_text(stat = 'count',aes(label=..count..), vjust = -1) +
   labs(x = "Number of Educated Individuals Within Household", y = "Number of Households") +
   scale_fill_distiller(palette = "BuGn")
@@ -247,7 +273,7 @@ grid.arrange(z1, z2, z3, nrow = 1)
 
 
 ### Employed Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 j1 <- ggplot(data = cps_fexpend, aes(x = employed))+ geom_bar() + geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
   labs(x = "Number of employed Individuals Within Household", y = "Number of Households")
 
@@ -266,10 +292,10 @@ grid.arrange(j1, j2, j3, nrow = 1)
 
 
 ### Household Size Analysis
-```{r, fig.width = 20, fig.height = 12}
+```{r, fig.width = 20, fig.height = 10}
 s1 <- ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_histogram(binwidth = 1) + 
   #geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
-  labs(x = "Number of Family Members Household", y = "Number of Households")
+  labs(x = "Number of Individuals Within Household", y = "Number of Households")
 
 cps_fexpend_employed <- cps_fexpend_f %>% group_by(hhsize_f) %>% summarise(Average = mean(fexpend))
 
@@ -294,14 +320,14 @@ Predictive Model - Food Security {data-navmenu="Predictive Models"}
 
 Row
 --------------
-### Desciption:
+### Description:
 <font size = "3">
-This plot was created from the randomforest for food security, and it lists the variables in their importance in food security determinance.
+This plot was created from the final random forest for food security, and it lists the variables in their importance in food security level prediction. A random forest is a collection of classification trees used to have a more accurate statistical model.
 </font>
 
 Row
 --------------
-```{r, fig.width = 15, fig.height = 12}
+```{r, fig.width = 11, fig.height = 8}
 final_forest <- readRDS("final_forest.RDS")
 
 varImpPlot(final_forest, type = 1)
@@ -312,14 +338,14 @@ Predictive Model - Food Expenditure {data-navmenu="Predictive Models"}
 
 Row
 --------------
-### Desciption:
+### Description:
 <font size = "3">
-This plot was created from the randomforest for food expenditure per individual for one week, and it lists the variables in their importance in food expenditure determinance.
+This plot was created from the final random forest for food expenditure per individual for one week, and it lists the variables in their importance in food expenditure amount prediction. A random forest is a collection of classification trees used to have a more accurate statistical model.
 </font>
 
 Row
 --------------
-```{r, fig.width = 15, fig.height = 12}
+```{r, fig.width = 11, fig.height = 8}
 fexpend_final_forest <- readRDS("fexpend_final_forest.RDS")
 
 varImpPlot(fexpend_final_forest, type = 1)
@@ -347,13 +373,13 @@ fsecurity.glm2 = zeroinfl(fsecurity ~ disability + education + elderly + urban_c
 summary(fsecurity.glm2)
 ```
 
-### Exponentiated Coefficients and Confidence Intervals
-```{r, attr.output='style="max-height: 200px;"'}
+### Exponentiated Coefficients
+```{r, attr.output='style="max-height: 300px;"'}
 exp(coef(fsecurity.glm2))
 ```
 
 ### Confidence Intervals
-```{r, attr.output='style="max-height: 200px;"'}
+```{r, attr.output='style="max-height: 300px;"'}
 exp(confint(fsecurity.glm2))
 ```
 
@@ -388,23 +414,27 @@ the response variable and explanatory variables are. A Zero Adjusted Gamma Model
 
 Column {.tabset}
 -------------
-### Zero Adjusted Gamma Model
+### Zero Adjusted Gamma Model - Count Model Aspect
 <font size="3"> 
 Summary 
 </font> 
-```{r, attr.output='style="max-height: 200px;"'}
+```{r, attr.output='style="max-height: 400px;"'}
 cps_fexpend$fexpend_0 <- ifelse(cps_fexpend$fexpend == 0, 1, 0)
 
 cps_fexpend_new <- subset(cps_fexpend, fexpend != 0)
 
 fexpend.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend_new, family = Gamma(link = "log"))
-fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend, family = binomial(link = "logit"))
 
 summary(fexpend.glm2)
+```
+
+### Zero Adjusted Gamma Model - Zero Adjusted Aspect
+```{r, attr.output='style="max-height: 400px;"'}
+
+fexpend.glm3 <- glm(fexpend_0 ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend, family = binomial(link = "logit"))
 
 summary(fexpend.glm3)
 ```
-
 
 ### Exponential Coefficients
 ``` {r, attr.output='sytle="max-height: 200px;"'}
@@ -493,7 +523,7 @@ limit <- c(min(final_combined$fexpend_predictions,na.rm=TRUE), max(final_combine
 limit_bin <- c(min(final_combined$fsecurity_predictions,na.rm=TRUE), max(final_combined$fsecurity_predictions,na.rm=TRUE))
 pal_bin <- colorBin(
   palette = "RdBu", domain = final_combined$fsecurity_predictions,
-  reverse = FALSE,
+  reverse = TRUE,
   bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .20)
 )
 
@@ -529,7 +559,10 @@ Row
 temp1 <- reactive({ shp_file() %>% as.data.frame%>%dplyr::select(c("GEOID","location.y","fsecurity_predictions", "female.y", "hispanic.y",
                                   "black.y", "kids.y", "elderly.y", "education.y", "employed.y",
                                   "married.y", "disability.y", "urban_c.y"))%>%
-                  rename(`Predicted Average` = fsecurity_predictions)
+                  rename(`Predicted Average` = fsecurity_predictions, `Location` = location.y, `Females per Household` = female.y,
+                         `Hispanics per Household` = hispanic.y, `Blacks per Household` = black.y, `Kids per Household` = kids.y, 
+                         `Elderly per Household` = elderly.y, `Educated per Household` = education.y, `Employed per Household` = employed.y,
+                         `Married per Household` = married.y, `If Disabled in Household` = disability.y, `Urban level` = urban_c.y)
 
 })
 renderDataTable({temp1()})
@@ -571,7 +604,8 @@ shp_file2 <- reactive({ block_groups(state = State_stuff$state.abb[State_stuff$s
 limit <- c(min(final_combined$fexpend_predictions,na.rm=TRUE), max(final_combined$fexpend_predictions,na.rm=TRUE))
 limit_bin <- c(min(final_combined$fsecurity_predictions,na.rm=TRUE), max(final_combined$fsecurity_predictions,na.rm=TRUE))
 pal_bin <- colorBin(
-  palette = "RdBu", domain = final_combined$fsecurity_predictions,
+  palette = "RdBu", domain = final_combined$fsecurity_predictions, 
+  reverse = TRUE,
   bins = seq(0, max(final_combined$fsecurity_predictions, na.rm = TRUE) + .01, by = .20)
 )
 log_scale = seq(min(log(final_combined$fexpend_predictions), na.rm = TRUE), max(log(final_combined$fexpend_predictions), na.rm = TRUE), length.out = 11)
@@ -612,7 +646,10 @@ Row
 ### Predictions
 ```{r, echo = FALSE}
 temp2 <- reactive({shp_file2() %>%as.data.frame%>% dplyr::select(c("GEOID","location.y", "fexpend_predictions","female.y", "hhsize.y", "hispanic.y","black.y", "kids.y", "elderly.y", "education.y", "employed.y","married.y", "disability.y", "urban_c.y"))%>%
-                  rename(`Predicted Expenditure` = fexpend_predictions)
+                  rename(`Predicted Expenditure` = fexpend_predictions, `Location` = location.y, `Females per Household` = female.y,
+                         `Hispanics per Household` = hispanic.y, `Blacks per Household` = black.y, `Kids per Household` = kids.y, 
+                         `Elderly per Household` = elderly.y, `Educated per Household` = education.y, `Employed per Household` = employed.y,
+                         `Married per Household` = married.y, `If Disabled in Household` = disability.y, `Urban level` = urban_c.y)
 })
 
 renderDataTable({temp2()})
