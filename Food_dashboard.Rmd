@@ -333,7 +333,34 @@ summary(fsecurity.glm2)
 exp(coef(fsecurity.glm2))
 exp(confint(fsecurity.glm2))
 
+<<<<<<< HEAD
 ```
+=======
+Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity decreases by a factor of exp(-0.110751) = .89516 for every educated person within the house. This means that for every new educated individual living within the house, food insecurity of the house decreases from the mean by about 10.55%.
+
+Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity decreases by a factor of exp(-0.175185) = .8393 for every educated person within the house. This means that for every new elderly person living within the house, food insecurity of the house decreases from the mean by about 16.04%.
+
+Micropolitan Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity for households in micropolitan areas is exp(-0.230339) = .79426 times the mean level of food insecurity for the baseline large metro area. 
+
+Non core / Possibly Rural Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity for households in rural areas is exp(-0.007156) = .99287 times the mean level of food insecurity for the baseline large metro area. 
+</font>
+
+
+### Interpretations for Zero-Inflation Model
+<font size = "3">
+Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds a house is food secure is exp(-1.0453348) = 0.3515741. This means that if there is a disabled person living within the household, the odds of a house having a food insecurity level of 0 or greater increases by 64.84%.
+
+Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is food secure is exp(0.7795625) = 2.1805181. This means that for every person within the house with an associates degree or higher, the odds of a house having a food insecurity level of 0 or greater decreases by 118%.
+
+Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a house is food secure is exp(0.6967225) = 2.0071634. This means that for every elderly person within the house, the odds of a house having a food insecurity level of 0 or greater decreases by 100%.
+
+Micropolitan Interpretation (Count Model): 
+
+Non core / Possibly Rural Interpretation (Count Model): 
+
+
+</font>
+>>>>>>> parent of 9663c9e (Update Food_dashboard.Rmd)
 
 Descriptive Model - Food Expenditure {data-navmenu="Descriptive Models"}
 ===
