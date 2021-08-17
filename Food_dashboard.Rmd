@@ -80,8 +80,10 @@ Row
 ### Key Variables
 <font size = 2>
 Response Variables:
+
 * fsecurity: The number of positively-answered questions from a food insecurity survey.
 * fexpend: The weekly food expenditure per person in USD.
+
 Explanatory Variables:
 
 * Hhsize: Number of family members within a household
