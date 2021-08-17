@@ -419,11 +419,11 @@ Non core / Possibly Rural Interpretation (Count Model): With all other variables
 
 ### Interpretations for Zero-Inflation Model
 <font size = "3">
-Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds a house is food secure is exp(-1.0453348) = 0.3515741. This means that if there is a disabled person living within the household, the odds of a house having a food insecurity level of 0 or greater increases by 64.84%.
+Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds a house is food insecure increase by a factor of exp(-1.0453348) = 0.3515741. This means that if there is a disabled person living within the household, the odds of a house having a food insecurity level of 1 or greater increases by 64.84%.
 
-Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is food secure is exp(0.7795625) = 2.1805181. This means that for every person within the house with an associates degree or higher, the odds of a house having a food insecurity level of 0 or greater decreases by 118%.
+Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is food insecure decrease by a factor of exp(0.7795625) = 2.1805181. This means that for every person within the house with an associates degree or higher, the odds of a house having a food insecurity level of 1 or greater decreases by 118%.
 
-Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a house is food secure is exp(0.6967225) = 2.0071634. This means that for every elderly person within the house, the odds of a house having a food insecurity level of 0 or greater decreases by 100%.
+Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a house is food insecure decrease by a factor of exp(0.6967225) = 2.0071634. This means that for every elderly person within the house, the odds of a house having a food insecurity level of 1 or greater decreases by 100%.
 
 Micropolitan Interpretation (Zero-Inflation Model): 
 
@@ -481,15 +481,19 @@ exp(confint(fexpend.glm3))
 
 ### Interpretations for Gamma Model
 <font size = "3">
-HHSIZE INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the amount of money used to  buy food for each individual decreases by about 20.4% per person compared to the mean.
-
-ELDERLY INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-.04794) = .9531918. This means that for every new elderly person within the household, the amount of money in U.S. dollars used to buy food for each individual decreases by about 4.68% per person compared to the mean.
+Explanatory Variables that Increase Food Expenditure:
 
 EMPLOYED INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the amount of money in U.S. dollars used to buy food for each individual increase by about 6.9% per person compared to the mean.
 
-DISABILITY INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the amount of money in U.S. dollars used to buy food for each individual decreases by about 6.37% per person compared to the mean.
-
 EDUCATION INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(0.12464) = 1.1327362. This means that for every new educated individual within the household, the amount of money in U.S. dollars used to buy food for each individual increases by about 13.27% per person compared to the mean. 
+
+Explanatory Variables that Decrease Food Expenditure:
+
+HSIZE INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-.22794) = .7961747. This means that for every new person that lives within the house the amount of money used to  buy food for each individual decreases by about 20.4% per person compared to the mean.
+
+ELDERLY INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-.04794) = .9531918. This means that for every new elderly person within the household, the amount of money in U.S. dollars used to buy food for each individual decreases by about 4.68% per person compared to the mean.
+
+DISABILITY INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(-0.06584) = .9362819. This means that for every new employed individual within the household, the amount of money in U.S. dollars used to buy food for each individual decreases by about 6.37% per person compared to the mean.
 
 MICROPOLITAN INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure for households in micropolitan areas is exp(-0.201771) = .81728 times the mean amount of food expenditure for households in large metro areas.
 
@@ -499,6 +503,8 @@ NON-CORE / POSSIBLY RURAL INTERPRETATION (Gamma Model): With all other variables
 
 ### Interpretations for Bernoulli Model
 <font size = "3">
+Explanatory Variables that Increase Probability of $0:
+
 HHSIZE INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.07890) = .9241349. This means that for every new person within the household, the odds of said household spending $0 on food per person decreases by about 7.6%.
 
 ELDERLY INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.01478) = .9853277. This means that for every new elderly person within the household, the odds of said household spending $0 on food per person decreases by about 1.47%. 
@@ -513,7 +519,11 @@ MICROPOLITAN INTERPRETATION (Bernoulli Model): With all other variables held con
 exp(-0.052550) =  compared to the baseline large metro area. This means that 
 
 NON-CORE / POSSIBLY RURAL INTERPRETATION (Bernoulli Model): With all other variables held constant the odds of spending $0 changes by a factor of exp(-0.291537) =  compared to the baseline large metro area. This means that 
+
+Explanatory Variables that Decrease Probability of $0:
+
 </font>
+
 
 Food Security{data-navmenu="Heat Map Of Predictions"}
 ===
