@@ -405,6 +405,8 @@ Explanatory Variables that Increase Food Insecurity:
 
 Disability Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity increases by a factor of exp(0.259602) = 1.2964 if there is a disabled person living within the house. This means that if there is a disabled person living within the house, food insecurity of the house increases from the mean by about 30%.
 
+Explanatory Variables that Decrease Food Insecurity:
+
 Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity decreases by a factor of exp(-0.110751) = .89516 for every educated person within the house. This means that for every new educated individual living within the house, food insecurity of the house decreases from the mean by about 10.55%.
 
 Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity decreases by a factor of exp(-0.175185) = .8393 for every educated person within the house. This means that for every new elderly person living within the house, food insecurity of the house decreases from the mean by about 16.04%.
@@ -412,9 +414,6 @@ Elderly Interpretation (Count Model): With all other variables held constant, fo
 Micropolitan Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity for households in micropolitan areas is exp(-0.230339) = .79426 times the mean level of food insecurity for the baseline large metro area. 
 
 Non core / Possibly Rural Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity for households in rural areas is exp(-0.007156) = .99287 times the mean level of food insecurity for the baseline large metro area. 
-
-Explanatory Variables that Decrease Food Insecurity:
-
 </font>
 
 
