@@ -483,9 +483,9 @@ exp(confint(fexpend.glm3))
 <font size = "3">
 Explanatory Variables that Increase Food Expenditure:
 
-EMPLOYED INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the amount of money in U.S. dollars used to buy food for each individual increase by about 6.9% per person compared to the mean.
+EMPLOYED INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure increases by a factor of exp(.06672) = 1.0690010. This means that for every new employed individual within the household, the amount of money in U.S. dollars used to buy food for each individual increase by about 6.9% per person compared to the mean.
 
-EDUCATION INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure changes by a factor of exp(0.12464) = 1.1327362. This means that for every new educated individual within the household, the amount of money in U.S. dollars used to buy food for each individual increases by about 13.27% per person compared to the mean. 
+EDUCATION INTERPRETATION (Gamma Model): With all other variables held constant, for individuals who purchase food, the mean amount of food expenditure increases by a factor of exp(0.12464) = 1.1327362. This means that for every new educated individual within the household, the amount of money in U.S. dollars used to buy food for each individual increases by about 13.27% per person compared to the mean. 
 
 Explanatory Variables that Decrease Food Expenditure:
 
