@@ -79,7 +79,22 @@ Row
 --------------
 ### Key Variables
 <font size = 2>
-Variables used in order to predict levels of food insecurity and amount of USD used to buy food for one person in each household for a week are household size, number of elderly within household, number of hispanics within household, number of blacks within household, number of kids within household, number of individuals with an associates or higher within a household, number of employed within a household, number of married within a household, and number of disabled within a household. 
+Response Variables:
+
+fsecurity: The number of positively-answered questions from a food insecurity survey.
+fexpend: The weekly food expenditure per person in USD.
+
+Explanatory Variables:
+
+Hhsize: Number of family members within a household
+Elderly: Number of elderly family members within a household
+Hispanic: Number of hispanic family members within a household
+Black: Number of black family members within a household
+Kids: Number of kids within a household
+Educated: Number of family members with an associates degree or higher
+Employed: Number of family members who are employed
+Married: Number of family members within the household who are married
+Disabled: If the household has one or more family members who are disabled. 
 </font>
 
 Row
@@ -87,9 +102,9 @@ Row
 ### Analysis of Response variables
 ```{r, fig.width = 15, fig.height = 8}
 
-a1 <- ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecurity Level", y = "Number of Households")
+a1 <- ggplot(data = cps_fsecurity, aes (x = fsecurity))+geom_bar() + geom_text(stat = 'count',aes(label=..count..), vjust = -1) + labs(x = "Food Insecurity Level - Number of positively-answered food insecurity questions", y = "Number of Households")
 
-a2 <- ggplot(data = cps_fexpend, aes (x = fexpend, fill = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food Expense In USD", y = "Number of Households") + scale_x_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "BuGn")
+a2 <- ggplot(data = cps_fexpend, aes (x = fexpend, fill = fexpend))+geom_histogram(binwidth = 5) + labs(x = "Food expense - weekly food expenditure per person", y = "Number of Households") + scale_x_continuous(labels=scales::dollar_format()) + scale_fill_brewer(palette = "BuGn")
 
 grid.arrange(a1, a2, nrow = 1)
 ```
@@ -385,11 +400,11 @@ exp(confint(fsecurity.glm2))
 
 ### Interpretations for Count Model
 <font size = "3">
-Disability Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity increases by a factor of exp(.2593606) = 1.2961011 if there is a disabled person living within the house. This means that if there is a disabled person living within the house, food insecurity of the house increases from the mean by about 30%.
+Disability Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity increases by a factor of exp(.2593606) = 1.2961011 if there is a disabled person living within the house. This means that if there is a disabled person living within the house, food insecurity of the house increases from the mean by about 30%.
 
-Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean amount of food insecurity decreases by a factor of exp(-.1114594) = .8945277 for every educated person within the house. This means that for every new educated individual living within the house, food insecurity of the house decreases from the mean by about 10.55%.
+Education Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity decreases by a factor of exp(-.1114594) = .8945277 for every educated person within the house. This means that for every new educated individual living within the house, food insecurity of the house decreases from the mean by about 10.55%.
 
-Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the level of food insecurity decreases by a factor of exp(-.1748214) = .8396069 for every educated person within the house. This means that for every new elderly person living within the house, food insecurity of the house decreases from the mean by about 16.04%. </font>
+Elderly Interpretation (Count Model): With all other variables held constant, for vulnerable individuals, the mean level of food insecurity decreases by a factor of exp(-.1748214) = .8396069 for every educated person within the house. This means that for every new elderly person living within the house, food insecurity of the house decreases from the mean by about 16.04%. </font>
 
 
 ### Interpretations for Zero-Inflation Model
