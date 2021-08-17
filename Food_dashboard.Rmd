@@ -379,8 +379,11 @@ acs = read.csv("Ryan_Data/acs(clean).csv")
 
 acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
 
-
-ia_shp = block_groups(state = "IA")
+#LRF NOTE: state.abb is pre-loaded in base r
+shp_files <- list() #create an empty list
+for(idx in 1:length(state.abb)){
+shp_files[[idx]] = block_groups(state = state.abb[idx])
+}
 
 county_list = unique(counties("Iowa")$NAME)
 county_list = county_list[order(county_list)]
