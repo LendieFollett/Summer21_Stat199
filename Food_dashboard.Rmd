@@ -425,9 +425,9 @@ Education Interpretation (Zero-Inflation Model): With all other variables held c
 
 Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a house is food secure is exp(0.6967225) = 2.0071634. This means that for every elderly person within the house, the odds of a house having a food insecurity level of 0 or greater decreases by 100%.
 
-Micropolitan Interpretation (Count Model): 
+Micropolitan Interpretation (Zero-Inflation Model): 
 
-Non core / Possibly Rural Interpretation (Count Model): 
+Non core / Possibly Rural Interpretation (Zero-Inflation Model): 
 
 
 </font>
