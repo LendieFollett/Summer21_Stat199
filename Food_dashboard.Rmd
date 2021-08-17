@@ -504,24 +504,23 @@ NON-CORE / POSSIBLY RURAL INTERPRETATION (Gamma Model): With all other variables
 ### Interpretations for Bernoulli Model
 <font size = "3">
 Explanatory Variables that Increase Probability of $0:
+ 
+DISABILITY INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(0.25147) = 1.2859122. This means that for every new disabled person within the household, the odds of said household spending $0 on food per person increases by about 28.59%.
+
+Explanatory Variables that Decrease Probability of $0:
 
 HHSIZE INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.07890) = .9241349. This means that for every new person within the household, the odds of said household spending $0 on food per person decreases by about 7.6%.
 
 ELDERLY INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.01478) = .9853277. This means that for every new elderly person within the household, the odds of said household spending $0 on food per person decreases by about 1.47%. 
 
- EMPLOYED INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.30615)= .7362754. This means that for every new employed person within the household, the odds of said household spending $0 on food per person decreases by about 26.37%.
- 
-DISABILITY INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(0.25147) = 1.2859122. This means that for every new disabled person within the household, the odds of said household spending $0 on food per person increases by about 28.59%.
+EMPLOYED INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.30615)= .7362754. This means that for every new employed person within the household, the odds of said household spending $0 on food per person decreases by about 26.37%.
 
-EDUCATION INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.25484) = .7750404. This means that for every new educated person within the household, the odds of said household spending $0 on food per person decreases by about 22.50%.
+DUCATION INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of exp(-0.25484) = .7750404. This means that for every new educated person within the household, the odds of said household spending $0 on food per person decreases by about 22.50%.
 
 MICROPOLITAN INTERPRETATION (Bernoulli Model): With all other variables held constant, the odds of spending $0 changes by a factor of 
 exp(-0.052550) =  compared to the baseline large metro area. This means that 
 
 NON-CORE / POSSIBLY RURAL INTERPRETATION (Bernoulli Model): With all other variables held constant the odds of spending $0 changes by a factor of exp(-0.291537) =  compared to the baseline large metro area. This means that 
-
-Explanatory Variables that Decrease Probability of $0:
-
 </font>
 
 

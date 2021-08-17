@@ -3,7 +3,7 @@
 # data visualizations and then begin to create randomForest, ROCCurve,
 # etc. 
 
-#rm(list = ls())
+rm(list = ls())
 
 source("Ryan_Code/data_cleaning.R")
 
@@ -267,6 +267,10 @@ ggplot() + geom_boxplot(aes(group = employed, x = employed, y = fexpend, fill = 
   
 
 # ANALYSIS OF HHSIZE VARIABLE
+ggplot(data = cps_fsecurity, aes(x = hhsize)) + geom_histogram(binwidth = 1) + 
+  #geom_text(stat = 'count', aes(label = ..count..), vjust = -1) +
+  labs(x = "Number of Family Members Household", y = "Number of Households")
+
 cps_fexpend_employed <- cps_fexpend_f %>% group_by(hhsize_f) %>% summarise(Average = mean(fexpend))
 
 ggplot(aes(x = hhsize_f, y = Average, fill = Average), data = cps_fexpend_employed) + geom_bar(stat = "Identity") +
@@ -284,6 +288,24 @@ ggplot(data = cps_fexpend, aes(x = hhsize, y = fexpend))+geom_jitter()+ labs(x =
 
 # ADD Illustrations and add to glm specifically for different presentation
 
+# CREATE PLOTS FOR urban_c 
+
+ggplot(data = cps_fsecurity, aes(x = urban_c)) + 
+  geom_bar() + 
+  geom_text(stat = 'count', aes(label = ..count..), hjust = -1) +
+  labs(x = "", y =  "Count") +#LRF: add labels 
+  coord_flip() #the x axis is smooshed - thijs helps with that
+
+#LRF: take a look at this - don't have to create all those temporary datasets
+cps_fsecurity %>% 
+  group_by(urban_c) %>% 
+  summarise(Average = mean(fsecurity)) %>%#LRF: pipe the data right into ggplot!
+ggplot(aes(x = urban_c, y = Average, fill = Average)) +
+  geom_bar(stat = "Identity")  +
+  coord_flip()+ #LRF: again, the x axis was smooshed
+  labs(x = "", y = "Proportion of Food Insecure")#LRF: axis labels!
+
+  
 ggplot(data = cps_fexpend, aes(x = urban_c)) + 
   geom_bar() + 
   geom_text(stat = 'count', aes(label = ..count..), hjust = -1) +
@@ -305,7 +327,15 @@ labs(x = "", y = "Average Spent Per Week, Person") + #gLRF: ood labels
 
 # CREATE GLM WITH URBANICITY INCLUDED FOR BOTH FOOD SECURITY AND EXPENDITURE
 
+urbanicity.glm <- zeroinfl(fsecurity ~ disability + education + elderly + urban_c| disability + education + elderly + urban_c, data = cps_fsecurity)
+
 urbanicity.glm2 <- glm(fexpend ~ hhsize + elderly + employed + disability + education + urban_c, data = cps_fexpend_new, family = Gamma(link = "log"))
+
+urbanicity.glm
+
+urbanicity.glm2
+
+AIC(urbanicity.glm)
 
 # CREATE Heatmap, other cluster based visualizations?
 
@@ -321,49 +351,47 @@ acs$fexpend_predictions <- predict(fexpend_final_forest, acs, type = "response")
 
 write.csv(acs, "Ryan_Data/final_acs_fexpend.csv")
 
-# acs_test1 = read.csv("Ryan_Data/final_acs_fexpend.csv")
-# 
-# acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
-# 
-# 
-# #this is block groups w/in tracts
-# ia_shp = block_groups(state = "IA")
-# 
-# county_list = unique(counties("Iowa")$NAME)
-# county_list = county_list[order(county_list)]
-# all_counties = block_groups(state = 'IA', county = county_list)
-# 
-# ia_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
-#   rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
-# 
-# 
-# pal_bin = colorBin(
-#   palette = "YlOrRd", domain = ia_shp_join$elderly,
-#   bins = seq(0, max(ia_shp_join$elderly, na.rm = TRUE), length.out = 9)
-# )
-# 
-# leaflet(ia_shp_join, height = 500, width = 1000) %>%
-#   addTiles() %>%
-#   addPolygons(
-#     fillColor =~ pal_bin(elderly),
-#     color = "white",
-#     stroke = FALSE,
-#     fillOpacity = 0.6,
-#     highlight = highlightOptions(
-#       color = "black",
-#       bringToFront = TRUE
-#     )
-#   )%>%
-#   leaflet::addLegend(
-#     pal = pal_bin, values=~elderly,
-#     opacity = 0.7, title = "Iowa Elderly",
-#     position = "bottomright"
-#   )
-# 
-# # REPLACE BOXPLOTS WITH THIS
-# geom_jitter(aes(x = your_x, y = your_numeric_y)) + geom_violin(aes(x = your_x, y = your_numeric_y), alpha = I(0.5))
-# 
-# # SHOULD MENTION ECONOMIES OF SCALE IN THE HOUSEHOLD SIZE ANALYSIS
-# 
-# 
-# # CREATE A LIST OF ALL OF THE STATE NAMES AND THEN ALLOW A PERSON TO SELECT THE STATE 
+acs_test1 = read.csv("Ryan_Data/final_acs_fexpend.csv")
+
+acs$GEOID = as.character(paste0(acs$GEOID, substr(acs$X, 13, 13)))
+
+
+#this is block groups w/in tracts
+ia_shp = block_groups(state = "IA")
+
+county_list = unique(counties("Iowa")$NAME)
+county_list = county_list[order(county_list)]
+all_counties = block_groups(state = 'IA', county = county_list)
+
+ia_shp_join = left_join(ia_shp, acs, by='GEOID') %>%
+  rmapshaper::ms_simplify(keep = 0.01, keep_shapes = TRUE)
+
+
+pal_bin = colorBin(
+  palette = "YlOrRd", domain = ia_shp_join$elderly,
+  bins = seq(0, max(ia_shp_join$elderly, na.rm = TRUE), length.out = 9)
+)
+
+leaflet(ia_shp_join, height = 500, width = 1000) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor =~ pal_bin(elderly),
+    color = "white",
+    stroke = FALSE,
+    fillOpacity = 0.6,
+    highlight = highlightOptions(
+      color = "black",
+      bringToFront = TRUE
+    )
+  )%>%
+  leaflet::addLegend(
+    pal = pal_bin, values=~elderly,
+    opacity = 0.7, title = "Iowa Elderly",
+    position = "bottomright"
+  )
+
+# REPLACE BOXPLOTS WITH THIS
+geom_jitter(aes(x = your_x, y = your_numeric_y)) + geom_violin(aes(x = your_x, y = your_numeric_y), alpha = I(0.5))
+
+# SHOULD MENTION ECONOMIES OF SCALE IN THE HOUSEHOLD SIZE ANALYSIS
+
