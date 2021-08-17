@@ -80,21 +80,19 @@ Row
 ### Key Variables
 <font size = 2>
 Response Variables:
-
-fsecurity: The number of positively-answered questions from a food insecurity survey.
-fexpend: The weekly food expenditure per person in USD.
-
+* fsecurity: The number of positively-answered questions from a food insecurity survey.
+* fexpend: The weekly food expenditure per person in USD.
 Explanatory Variables:
 
-Hhsize: Number of family members within a household
-Elderly: Number of elderly family members within a household
-Hispanic: Number of hispanic family members within a household
-Black: Number of black family members within a household
-Kids: Number of kids within a household
-Educated: Number of family members with an associates degree or higher
-Employed: Number of family members who are employed
-Married: Number of family members within the household who are married
-Disabled: If the household has one or more family members who are disabled. 
+* Hhsize: Number of family members within a household
+* Elderly: Number of elderly family members within a household
+* Hispanic: Number of hispanic family members within a household
+* Black: Number of black family members within a household
+* Kids: Number of kids within a household
+* Educated: Number of family members with an associates degree or higher
+* Employed: Number of family members who are employed
+* Married: Number of family members within the household who are married
+* Disabled: If the household has one or more family members who are disabled. 
 </font>
 
 Row
