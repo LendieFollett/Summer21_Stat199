@@ -21,14 +21,10 @@ library(ggplot2)
 library(dplyr)
 library(RColorBrewer)
 library(reshape2)
-library(skimr)
 library(randomForest)
 library(caret)
 library(e1071)
-library(corrplot)
 library(MASS)
-library(gt)
-library(Metrics)
 library(gridExtra)
 library(pscl)
 library(boot)
@@ -419,11 +415,11 @@ Non core / Possibly Rural Interpretation (Count Model): With all other variables
 
 ### Interpretations for Zero-Inflation Model
 <font size = "2">
-Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds a house is food insecure increase by a factor of exp(-1.0453348) = 0.3515741. This means that if there is a disabled person living within the household, the odds of a house having a food insecurity level of 1 or greater increases by 64.84%.
+Disability Interpretation (Zero-Inflation Model): With all other variables held constant, the odds a house is food *secure* change by a factor of exp(-1.0453348) = 0.3515741 (so they decrease). This means that if there is a disabled person living within the household, the odds of a house having a food insecurity level of 1 or greater increases by 64.84%.
 
-Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is food insecure decrease by a factor of exp(0.7795625) = 2.1805181. This means that for every person within the house with an associates degree or higher, the odds of a house having a food insecurity level of 1 or greater decreases by 118%.
+Education Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a household is food secure change by a factor of exp(0.7795625) = 2.1805181 (so they increase). This means that for every person within the house with an associates degree or higher, the odds of a house having a food insecurity level of 1 or greater decreases by 118%.
 
-Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a house is food insecure decrease by a factor of exp(0.6967225) = 2.0071634. This means that for every elderly person within the house, the odds of a house having a food insecurity level of 1 or greater decreases by 100%.
+Elderly Interpretation (Zero-Inflation Model): With all other variables held constant, the odds that a house is food secure change by a factor of exp(0.6967225) = 2.0071634 (so they almost double). This means that for every elderly person within the house, the odds of a house having a food insecurity level of 1 or greater decreases by 100%.
 
 Micropolitan Interpretation (Zero-Inflation Model): 
 
